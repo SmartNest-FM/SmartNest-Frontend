@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/screens/main_screens/main_login.dart';
+import 'package:smartnest/screens/main_screens/register_data_screen.dart';
 import 'screens/main_screens/welcome_screen.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      home: const LoginScreen(), 
+      home: const RegisterDataScreen(), 
     );
   }
 }

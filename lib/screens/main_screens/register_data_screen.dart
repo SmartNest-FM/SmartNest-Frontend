@@ -1,60 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:smartnest/widgets/button/button_primary.dart';
+import 'package:smartnest/config/theme/app_theme.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterDataScreen extends StatefulWidget {
+  const RegisterDataScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterDataScreen> createState() => _RegisterDataScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterDataScreenState extends State<RegisterDataScreen> {
+  
+  bool aceptarTerminos = false;
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double imageHeight = screenHeight * 0.23; // Altura de la imagen
+    final double imageHeight = screenHeight * 0.20;
 
     return Scaffold(
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: screenHeight),
           child: Container(
-            width: screenWidth, // Asegura que el contenedor se ajuste al ancho de la pantalla
-            decoration: const BoxDecoration(
-              color: Color(0xFF709ccc),
+            width: screenWidth,
+            decoration:  BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AppTheme.getColorThemes()[0],
+                  AppTheme.getColorThemes()[6]
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20), // Añadir padding horizontal para evitar overflow
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center, // Centra horizontalmente el contenido
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 30),
                   const Center(
                     child: Text(
-                      'Iniciar Sesión',
+                      'Registro',
                       style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
                     ),
                   ),
-                  const SizedBox(height: 35),
-                  Container(
-                    child: Image.asset(
-                      'lib/img/img_login.png',
-                      height: imageHeight,
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.white, // Color de la línea
-                          width: 1.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   const Text(
-                    'Bienvenido de nuevo!',
+                    'Registrate ahora mismo!',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -63,56 +57,80 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 2),
                   const Text(
-                    'Inicia sesión en tu cuenta de SmartNest',
+                    'Registrate en tu cuenta de SmartNest ',
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white,
                     ),
                   ),
+                  const SizedBox(height: 25),
+                  ClipOval(
+                    child:
+                      Image(
+                        image: const AssetImage('lib/img/img_user.jpg'),
+                        height: imageHeight
+                      ),
+                  ),      
                   const SizedBox(height: 20),
-                  _buildInputField('Email', Icons.email),
+                  GestureDetector(
+                    onTap: () {
+                     
+                    },
+                    child: const Text(
+                      'Cargar foto del niño o niña',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),   
+                  const SizedBox(height: 20),
+                  _buildInputField('Nombre del Apoderado', Icons.email),
                   const SizedBox(height: 15),
-                  _buildInputField('Contraseña', Icons.lock, isPassword: true),
-                  const SizedBox(height: 20),
+                  _buildInputField('Nombres del Niño o Niña', Icons.lock),
+                  const SizedBox(height: 15),
+                  _buildInputField('Edad', Icons.lock),
+                  const SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Checkbox(
+                        value: aceptarTerminos,
+                        onChanged: (value) {
+                          setState(() {
+                            aceptarTerminos = value ?? false;
+                          });
+                        },
+                      ),
+                      const Text(
+                        'Aceptar términos y condiciones',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                   GestureDetector(
                     onTap: () {
-                      print('Procede a mandar al screen registro xd');
+                      
                     },
                     child: const Text(
-                      '¿No tienes una cuenta? Regístrate',
+                      'Tienes una cuenta? Iniciar sesion',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
                         decoration: TextDecoration.underline,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  GestureDetector(
-                    onTap: () {
-                      // Acción para recuperar contraseña
-                    },
-                    child: const Text(
-                      '¿Olvidaste tu contraseña?',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  ButtonPrimary(
-                    onPressed: () {},
-                    text: 'Iniciar Sesión',
-                  ),
-                  SizedBox(height: screenHeight * 0.1), // Espacio inferior para centrar el contenido
+                  ),  
                 ],
               ),
-            ),
+            ),  
           ),
-        ),
-      ),
+        )
+      )
     );
   }
 
