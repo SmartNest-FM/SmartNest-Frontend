@@ -30,7 +30,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center, // Centra horizontalmente el contenido
                 children: [
-                  SizedBox(height: screenHeight * 0.1), // Espacio superior para centrar el contenido
+                  const SizedBox(height: 30),
+                  const Center(
+                    child: Text(
+                      'Iniciar Sesión',
+                      style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  const SizedBox(height: 35),
                   Container(
                     child: Image.asset(
                       'lib/img/img_login.png',
@@ -39,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: const BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: Colors.black, // Color de la línea
+                          color: Colors.white, // Color de la línea
                           width: 1.0,
                         ),
                       ),
@@ -51,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -58,21 +66,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Inicia sesión en tu cuenta de SmartNest',
                     style: TextStyle(
                       fontSize: 14,
+                      color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   _buildInputField('Email', Icons.email),
                   const SizedBox(height: 15),
                   _buildInputField('Contraseña', Icons.lock, isPassword: true),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   GestureDetector(
                     onTap: () {
-                      // Acción para registrarse
+                      
                     },
                     child: const Text(
                       '¿No tienes una cuenta? Regístrate',
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 14,
                         decoration: TextDecoration.underline,
                       ),
@@ -86,18 +95,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                       '¿Olvidaste tu contraseña?',
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 14,
                         decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 25),
                   ButtonPrimary(
                     onPressed: () {},
                     text: 'Iniciar Sesión',
                   ),
-                  SizedBox(height: screenHeight * 0.1), // Espacio inferior para centrar el contenido
+                   // Espacio inferior para centrar el contenido
                 ],
               ),
             ),

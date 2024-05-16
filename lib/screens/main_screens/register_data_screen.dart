@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class RegisterDataScreen extends StatefulWidget {
+  const RegisterDataScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<RegisterDataScreen> createState() => _RegisterDataScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterDataScreenState extends State<RegisterDataScreen> {
   
+  bool aceptarTerminos = false;
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double imageHeight = screenHeight * 0.25;
+    final double imageHeight = screenHeight * 0.20;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -63,20 +65,54 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   const SizedBox(height: 25),
-                  
-                  Image(
-                    image: const AssetImage('lib/img/img_register.png'),
-                    height: imageHeight
-                  ),
-                      
+                  ClipOval(
+                    child:
+                      Image(
+                        image: const AssetImage('lib/img/img_user.jpg'),
+                        height: imageHeight
+                      ),
+                  ),      
                   const SizedBox(height: 20),
-                  
+                  GestureDetector(
+                    onTap: () {
+                     
+                    },
+                    child: const Text(
+                      'Cargar foto del niño o niña',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),   
                   const SizedBox(height: 20),
-                  _buildInputField('Email', Icons.email),
+                  _buildInputField('Nombre del Apoderado', Icons.email),
                   const SizedBox(height: 15),
-                  _buildInputField('Contraseña', Icons.lock, isPassword: true),
-                  const SizedBox(height: 35),
-                  
+                  _buildInputField('Nombres del Niño o Niña', Icons.lock),
+                  const SizedBox(height: 15),
+                  _buildInputField('Edad', Icons.lock),
+                  const SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Checkbox(
+                        value: aceptarTerminos,
+                        onChanged: (value) {
+                          setState(() {
+                            aceptarTerminos = value ?? false;
+                          });
+                        },
+                      ),
+                      const Text(
+                        'Aceptar términos y condiciones',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                   GestureDetector(
                     onTap: () {
                       
