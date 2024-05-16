@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/screens/main_screens/main_login.dart';
 import 'package:smartnest/widgets/button/button1.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -37,7 +38,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             Image.asset('lib/img/welcome_img.png'),
             const SizedBox(height: 30),
             Button1(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainLogin()),
+                );
+              },
               text: 'Comenzar',
             ),
             const SizedBox(height: 120),

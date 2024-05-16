@@ -2,6 +2,8 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/screens/main_screens/login_screen.dart';
+import 'package:smartnest/screens/main_screens/register_screen.dart';
 import 'package:smartnest/widgets/button/button_fb.dart';
 import 'package:smartnest/widgets/button/button_google.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
@@ -72,11 +74,21 @@ class _MainLoginState extends State<MainLogin> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ButtonPrimary(
-                              onPressed: () {}, text: 'Iniciar Sesión'),
+                              onPressed: () {
+                                 Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                                );
+                              }, text: 'Iniciar Sesión'),
                           const SizedBox(
                               width: 20), // Espacio entre los botones
                           ButtonSecondary(
-                              onPressed: () {}, text: 'Registrarse'),
+                              onPressed: () {
+                                 Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => RegisterScreen()),
+                                );
+                              }, text: 'Registrarse'),
                         ],
                       ),
                     ],
