@@ -11,79 +11,95 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double imageHeight = screenHeight * 0.25; // Ajusta el valor según tus necesidades
+
     return Scaffold(
-        body: Container(
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: screenHeight),
+          child: Container(
+            width: screenWidth, // Asegura que el contenedor se ajuste al ancho de la pantalla
             decoration: const BoxDecoration(
               color: Color(0xFF709ccc),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 100),
-                Image.asset('lib/img/img_login.png'),
-                const SizedBox(height: 30),
-                const Text(
-                  'Bienvenido de nuevo!',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20), // Añadir padding horizontal para evitar overflow
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center, // Centra horizontalmente el contenido
+                children: [
+                  SizedBox(height: screenHeight * 0.1), // Espacio superior para centrar el contenido
+                  Image.asset(
+                    'lib/img/img_login.png',
+                    height: imageHeight,
                   ),
-                ),
-                const SizedBox(height: 7),
-                const Text(
-                  'Inicia sesión en tu cuenta de SmartNest',
-                  style: TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _buildInputField('Email', Icons.email),
-                const SizedBox(height: 10),
-                _buildInputField('Contraseña', Icons.lock, isPassword: true),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    // Aquí puedes añadir la acción que quieras realizar cuando se haga clic en "Registrate"
-                    // Por ejemplo, puedes navegar a una nueva pantalla de registro
-                  },
-                  child: const Text(
-                    '¿No tienes una cuenta? Registrate',
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Bienvenido de nuevo!',
                     style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      decoration: TextDecoration.underline,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Aquí puedes añadir la acción que quieras realizar cuando se haga clic en "Registrate"
-                    // Por ejemplo, puedes navegar a una nueva pantalla de registro
-                  },
-                  child: const Text(
-                    '¿Olvidaste tu contraseña?',
+                  const SizedBox(height: 2),
+                  const Text(
+                    'Inicia sesión en tu cuenta de SmartNest',
                     style: TextStyle(
-                      color: Colors.black,
                       fontSize: 14,
-                      decoration: TextDecoration.underline,
                     ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                ButtonPrimary(
-                  onPressed: () {},
-                  text: 'Iniciar Sesión',
-                )
-              ],
-            )
-          )
-        );
+                  const SizedBox(height: 20),
+                  _buildInputField('Email', Icons.email),
+                  const SizedBox(height: 15),
+                  _buildInputField('Contraseña', Icons.lock, isPassword: true),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      // Acción para registrarse
+                    },
+                    child: const Text(
+                      '¿No tienes una cuenta? Regístrate',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  GestureDetector(
+                    onTap: () {
+                      // Acción para recuperar contraseña
+                    },
+                    child: const Text(
+                      '¿Olvidaste tu contraseña?',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  ButtonPrimary(
+                    onPressed: () {},
+                    text: 'Iniciar Sesión',
+                  ),
+                  SizedBox(height: screenHeight * 0.1), // Espacio inferior para centrar el contenido
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget _buildInputField(String hintText, IconData icon,
-      {bool isPassword = false}) {
+  Widget _buildInputField(String hintText, IconData icon, {bool isPassword = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20), // Asegura que el campo de entrada no se desborde horizontalmente
       child: SizedBox(
         width: 320,
         child: TextField(
@@ -96,7 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide.none,
-              
             ),
           ),
         ),
