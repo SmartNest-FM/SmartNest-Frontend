@@ -13,7 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double imageHeight = screenHeight * 0.25; // Ajusta el valor según tus necesidades
+    final double imageHeight = screenHeight * 0.23; // Altura de la imagen
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -31,9 +31,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center, // Centra horizontalmente el contenido
                 children: [
                   SizedBox(height: screenHeight * 0.1), // Espacio superior para centrar el contenido
-                  Image.asset(
-                    'lib/img/img_login.png',
-                    height: imageHeight,
+                  Container(
+                    child: Image.asset(
+                      'lib/img/img_login.png',
+                      height: imageHeight,
+                    ),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.black, // Color de la línea
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   const Text(
