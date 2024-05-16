@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/widgets/button/button_primary.dart';
 
 class RegisterDataScreen extends StatefulWidget {
   const RegisterDataScreen({super.key});
@@ -125,6 +126,11 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                       ),
                     ),
                   ),  
+                  const SizedBox(height: 35),
+                  ButtonPrimary(
+                    onPressed: () {},
+                    text: 'Registrarse',
+                  ),
                 ],
               ),
             ),  
