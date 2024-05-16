@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smartnest/screens/main_screens/forgot_password_screen.dart';
+import 'package:smartnest/screens/main_screens/register_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -76,7 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 25),
                   GestureDetector(
                     onTap: () {
-                      
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterScreen()),
+                      );
                     },
                     child: const Text(
                       '¿No tienes una cuenta? Regístrate',
@@ -87,10 +92,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 15),
                   GestureDetector(
                     onTap: () {
-                      // Acción para recuperar contraseña
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                      );
                     },
                     child: const Text(
                       '¿Olvidaste tu contraseña?',

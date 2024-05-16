@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/screens/main_screens/login_screen.dart';
+import 'package:smartnest/screens/main_screens/register_data_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -79,7 +81,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   
                   GestureDetector(
                     onTap: () {
-                      
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
                     },
                     child: const Text(
                       'Tienes una cuenta? Iniciar sesion',
@@ -92,7 +97,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),  
                   const SizedBox(height: 35),
                   ButtonPrimary(
-                    onPressed: () {},
+                    onPressed: () {
+                      //logica cuando se registre entra con exito
+                       Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterDataScreen()),
+                      );
+                    },
                     text: 'Registrarse',
                   ),
                 ],
