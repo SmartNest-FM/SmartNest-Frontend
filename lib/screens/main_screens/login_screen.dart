@@ -69,14 +69,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   _buildInputField('Email', Icons.email),
                   const SizedBox(height: 15),
                   _buildInputField('Contraseña', Icons.lock, isPassword: true),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   GestureDetector(
                     onTap: () {
-                      print('Procede a mandar al screen registro xd');
+                      
                     },
                     child: const Text(
                       '¿No tienes una cuenta? Regístrate',
@@ -101,12 +101,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 25),
                   ButtonPrimary(
                     onPressed: () {},
                     text: 'Iniciar Sesión',
                   ),
-                  SizedBox(height: screenHeight * 0.1), // Espacio inferior para centrar el contenido
+                   // Espacio inferior para centrar el contenido
                 ],
               ),
             ),
