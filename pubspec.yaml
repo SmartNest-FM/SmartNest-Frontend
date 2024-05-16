@@ -61,6 +61,7 @@ flutter:
     - lib/img/welcome_img.png
     - lib/img/social_network/facebook.png
     - lib/img/social_network/google.png
+    - lib/img/img_login.png
     
 
   # The following line ensures that the Material Icons font is
