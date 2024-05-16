@@ -64,6 +64,8 @@ flutter:
     - lib/img/img_login.png
     - lib/img/img_user.jpg
     - lib/img/img_register.png
+    - lib/img/img_forgot_password.png
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
