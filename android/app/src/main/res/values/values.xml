@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">984158545347-knah28niujboh3ck37flgnlq46u35kn0.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://smartnest-fb3a7.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">984158545347</string>
+    <string name="google_api_key" translatable="false">AIzaSyA8PYt0yr-MdpJqELF1gJW_eQv6RfABrEY</string>
+    <string name="google_app_id" translatable="false">1:984158545347:android:a6dae651adfebf35340976</string>
+    <string name="project_id" translatable="false">smartnest-fb3a7</string>
+</resources>

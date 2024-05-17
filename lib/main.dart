@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smartnest/screens/main_screens/forgot_password_screen.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
@@ -6,7 +7,9 @@ import 'package:smartnest/screens/main_screens/register_data_screen.dart';
 import 'package:smartnest/screens/main_screens/register_screen.dart';
 import 'screens/main_screens/welcome_screen.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

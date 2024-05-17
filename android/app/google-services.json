@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "984158545347",
+    "project_id": "smartnest-fb3a7",
+    "storage_bucket": "smartnest-fb3a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984158545347:android:a6dae651adfebf35340976",
+        "android_client_info": {
+          "package_name": "com.example.smartnest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "984158545347-knah28niujboh3ck37flgnlq46u35kn0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8PYt0yr-MdpJqELF1gJW_eQv6RfABrEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "984158545347-knah28niujboh3ck37flgnlq46u35kn0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

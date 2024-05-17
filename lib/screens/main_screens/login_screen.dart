@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/main_screens/forgot_password_screen.dart';
 import 'package:smartnest/screens/main_screens/register_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +14,40 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+   final FirebaseAuthServices _auth = FirebaseAuthServices();
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => RegisterScreen()),
+      );
+    } catch (e) {
+      // Manejar errores de inicio de sesión aquí
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al iniciar sesión: $e'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -72,9 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 25),
-                  _buildInputField('Email', Icons.email),
+                  _buildInputField('Email', Icons.email, controller: _emailController),
                   const SizedBox(height: 15),
-                  _buildInputField('Contraseña', Icons.lock, isPassword: true),
+                  _buildInputField('Contraseña', Icons.lock, isPassword: true, controller: _passwordController),
                   const SizedBox(height: 25),
                   GestureDetector(
                     onTap: () {
@@ -111,7 +148,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 25),
                   ButtonPrimary(
-                    onPressed: () {},
+                    onPressed: () {
+                       _login();
+                       Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
                     text: 'Iniciar Sesión',
                   ),
                    // Espacio inferior para centrar el contenido
@@ -124,12 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildInputField(String hintText, IconData icon, {bool isPassword = false}) {
+  Widget _buildInputField(String hintText, IconData icon, {bool isPassword = false, required TextEditingController controller}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20), // Asegura que el campo de entrada no se desborde horizontalmente
       child: SizedBox(
         width: 320,
         child: TextField(
+          controller: controller,
           obscureText: isPassword,
           decoration: InputDecoration(
             hintText: hintText,

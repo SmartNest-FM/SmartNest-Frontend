@@ -1,8 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/screens/main_screens/register_data_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
+
+
+
+
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,6 +19,39 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   
+  final FirebaseAuthServices _auth = FirebaseAuthServices();
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _register() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    try {
+      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } catch (e) {
+      // Manejar errores de registro aquí
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al registrarse: $e'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -74,9 +113,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20),
                   
                   const SizedBox(height: 20),
-                  _buildInputField('Email', Icons.email),
+                  _buildInputField('Email', Icons.email, controller: _emailController),
                   const SizedBox(height: 15),
-                  _buildInputField('Contraseña', Icons.lock, isPassword: true),
+                  _buildInputField('Contraseña', Icons.lock, isPassword: true, controller: _passwordController),
                   const SizedBox(height: 35),
                   
                   GestureDetector(
@@ -99,10 +138,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ButtonPrimary(
                     onPressed: () {
                       //logica cuando se registre entra con exito
-                       Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => RegisterDataScreen()),
-                      );
+                      _register();
+                     
                     },
                     text: 'Registrarse',
                   ),
@@ -115,12 +152,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildInputField(String hintText, IconData icon, {bool isPassword = false}) {
+  Widget _buildInputField(String hintText, IconData icon, {bool isPassword = false, required TextEditingController controller}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20), // Asegura que el campo de entrada no se desborde horizontalmente
       child: SizedBox(
         width: 320,
         child: TextField(
+          controller: controller,
           obscureText: isPassword,
           decoration: InputDecoration(
             hintText: hintText,
@@ -136,4 +174,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+
+  
 }
