@@ -35,15 +35,50 @@ class _LoginScreenState extends State<LoginScreen> {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => RegisterScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     } catch (e) {
-      // Manejar errores de inicio de sesión aquí
-      print('Error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error al iniciar sesión: $e'),
-        ),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.black.withOpacity(0.75),
+            content: Card(
+              color: Colors.black.withOpacity(0.75),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      'Error al iniciar sesión',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Por favor, inténtalo de nuevo.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('Cerrar'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       );
     }
   }
@@ -150,10 +185,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ButtonPrimary(
                     onPressed: () {
                        _login();
-                       Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
                     },
                     text: 'Iniciar Sesión',
                   ),
