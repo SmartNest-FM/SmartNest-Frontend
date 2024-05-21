@@ -28,15 +28,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 150),
             const Center(
               child: Text(
                 'SmartNest',
                 style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
               ),
             ),
-            const SizedBox(height: 30),
-            Image.asset('lib/img/welcome_img.png'),
-            const SizedBox(height: 30),
+            const SizedBox(height: 50),
+            Image.asset('lib/img/welcome_img.png', height:237),
+            const SizedBox(height: 70),
             Button1(
               onPressed: () {
                 Navigator.push(
@@ -46,7 +47,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               },
               text: 'Comenzar',
             ),
-            const SizedBox(height: 120),
+            const SizedBox(height: 130),
             // ignore: sized_box_for_whitespace
             Container(
               width: 300,
