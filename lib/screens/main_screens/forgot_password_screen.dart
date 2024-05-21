@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
+import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -9,6 +12,152 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+
+  final FirebaseAuthServices _auth = FirebaseAuthServices();
+  TextEditingController _emailController = TextEditingController();
+
+  Future<void> _resetPassword() async {
+    String email = _emailController.text.trim();
+    if (_auth.currentUser != null) {
+      try {
+        await _auth.sendPasswordResetEmail(email: email);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.black.withOpacity(0.75),
+              content: Card(
+                color: Colors.black.withOpacity(0.75),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        'Correo enviado',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Se ha enviado un correo para restablecer tu contraseña',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ButtonPrimary(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        text: 'Aceptar',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.black.withOpacity(0.75),
+              content: Card(
+                color: Colors.black.withOpacity(0.75),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        'Error al enviar correo',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'No se ha podido enviar el correo para restablecer tu contraseña',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ButtonPrimary(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        text: 'Aceptar',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }
+    }else{
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.black.withOpacity(0.75),
+              content: Card(
+                color: Colors.black.withOpacity(0.75),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        'Error al enviar correo',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'No se ha encontrado ningun usuario registradodas con ese correo electrónico',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ButtonPrimary(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        text: 'Aceptar',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+    }
+    
+  }
+
+
   @override
   Widget build(BuildContext context) {
 
@@ -76,7 +225,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   SizedBox(
                     width: 200 ,
                     child: ButtonPrimary(
-                      onPressed: () {},
+                      onPressed: () {
+                        _resetPassword();
+                      },
                       text: 'Restablecer Contraseña',
                     ),
                   ),
@@ -96,6 +247,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       child: SizedBox(
         width: 320,
         child: TextField(
+          controller: _emailController,
           obscureText: isPassword,
           decoration: InputDecoration(
             hintText: hintText,
@@ -106,6 +258,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide.none,
             ),
+            
           ),
         ),
       ),

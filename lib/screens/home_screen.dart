@@ -46,15 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
+        ), 
+        child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('SmartNest Home', style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
-              SizedBox(height: 30),
+              Text('SmartNest', style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
+              SizedBox(height: 30, width: 420),
               ButtonPrimary(onPressed: (){
                 _signOut();
                 
@@ -62,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
             
           ),
-        ),
         
       ),
     );
