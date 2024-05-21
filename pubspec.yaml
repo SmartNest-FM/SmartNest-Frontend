@@ -68,6 +68,8 @@ flutter:
     - lib/img/img_user.jpg
     - lib/img/img_register.png
     - lib/img/img_forgot_password.png
+    - lib/img/percentage.png
+    - lib/img/youtube_icon.png
 
 
   # The following line ensures that the Material Icons font is
