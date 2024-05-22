@@ -42,6 +42,7 @@ dependencies:
   flutter_speed_dial: ^7.0.0
   firebase_core: ^2.30.1
   firebase_auth: ^4.19.4
+  percent_indicator: ^4.0.1
 
 dev_dependencies:
   flutter_test:
