@@ -73,6 +73,7 @@ flutter:
     - lib/img/percentage.png
     - lib/img/youtube_icon.png
     - lib/img/setting.png
+    - lib/img/youtube_icon.png
 
 
   # The following line ensures that the Material Icons font is

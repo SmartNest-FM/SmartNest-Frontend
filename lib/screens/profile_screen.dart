@@ -5,8 +5,6 @@ import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
-import 'package:smartnest/widgets/button/button_primary.dart';
-import 'package:smartnest/widgets/button/button_secondary.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
