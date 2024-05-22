@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/model/user.dart';
+import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class RegisterDataScreen extends StatefulWidget {
-  const RegisterDataScreen({super.key});
+  final UserModel userSend;
+
+  const RegisterDataScreen({super.key, required this.userSend});
 
   @override
   State<RegisterDataScreen> createState() => _RegisterDataScreenState();
 }
 
 class _RegisterDataScreenState extends State<RegisterDataScreen> {
-  
+  TextEditingController _apoderadoController = TextEditingController();
+  TextEditingController _nombreController = TextEditingController();
+  TextEditingController _edadController = TextEditingController();
+
+
+  @override
+  void initState() {
+    super.initState();
+    _apoderadoController.text = '';
+    _nombreController.text = '';
+    _edadController.text = '';
+  }
+
   bool aceptarTerminos = false;
 
   @override
@@ -87,11 +106,11 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                     ),
                   ),   
                   const SizedBox(height: 20),
-                  _buildInputField('Nombre del Apoderado', Icons.email),
+                  _buildInputField('Nombre del Apoderado', Icons.email, controller: _apoderadoController),
                   const SizedBox(height: 15),
-                  _buildInputField('Nombres del Niño o Niña', Icons.lock),
+                  _buildInputField('Nombres del Niño o Niña', Icons.lock, controller: _nombreController),
                   const SizedBox(height: 15),
-                  _buildInputField('Edad', Icons.lock),
+                  _buildInputField('Edad', Icons.lock, controller: _edadController),
                   const SizedBox(height: 25),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -115,7 +134,10 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
                     },
                     child: const Text(
                       'Tienes una cuenta? Iniciar sesion',
@@ -128,7 +150,19 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                   ),  
                   const SizedBox(height: 35),
                   ButtonPrimary(
-                    onPressed: () {},
+                    onPressed: () {
+                       UserModel updatedUser = UserModel(
+                        id: widget.userSend.uid,
+                        uid: widget.userSend.uid,
+                        emailUser: widget.userSend.emailUser,
+                        nameTutor: _apoderadoController.text.trim(),
+                        nameUser: _nombreController.text.trim(),
+                        ageUser: int.parse(_edadController.text.trim()),
+                        photo: widget.userSend.photo,
+                      );
+
+                      _saveUpdatedUser(updatedUser);
+                    },
                     text: 'Registrarse',
                   ),
                 ],
@@ -140,12 +174,28 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
     );
   }
 
-  Widget _buildInputField(String hintText, IconData icon, {bool isPassword = false}) {
+  Future<void> _saveUpdatedUser(UserModel updatedUser) async {
+    print(updatedUser.toMap());
+    final response = await http.post(
+      Uri.parse('http:localhost:3000/users'), 
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(updatedUser.toMap()), // Convertir el modelo de usuario a JSON
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update user');
+    }
+  }
+
+  Widget _buildInputField(String hintText, IconData icon, {bool isPassword = false , TextEditingController? controller}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20), // Asegura que el campo de entrada no se desborde horizontalmente
       child: SizedBox(
         width: 320,
         child: TextField(
+          controller: controller,
           obscureText: isPassword,
           decoration: InputDecoration(
             hintText: hintText,

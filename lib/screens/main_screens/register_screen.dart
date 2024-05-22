@@ -2,13 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/screens/main_screens/register_data_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
-
-
-
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -37,9 +36,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
+
+      String uid = _auth.currentUser!.uid;
+
+      UserModel user = UserModel(
+        id: '', 
+        uid: uid,
+        emailUser: email,   
+        nameTutor: '',
+        nameUser: '',
+        ageUser: 0,
+        photo: 'https://medlineplus.gov/images/DownSyndrome.jpg',
+      );
+
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(
+          builder: (context) => RegisterDataScreen(userSend: user),
+        ),
       );
     } catch (e) {
      
@@ -85,7 +99,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         },
       );
+
     }
+
+     
   }
 
   @override
@@ -175,7 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onPressed: () {
                       //logica cuando se registre entra con exito
                       _register();
-                     
+
                     },
                     text: 'Registrarse',
                   ),
@@ -213,3 +230,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   
 }
+
+
+ 
