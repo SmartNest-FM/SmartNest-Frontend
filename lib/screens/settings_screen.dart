@@ -3,6 +3,7 @@ import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
+import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 import 'package:smartnest/widgets/button/button_secondary.dart';
@@ -19,16 +20,11 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
 
-  // Define las variables _lastWords y _isListening
-  String _lastWords = '';
-  bool _isListening = false;
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
   bool _isMicActive = false;
-  bool _isTestingMic = false;
 
   Future<void> _signOut() async {
     try {
@@ -154,7 +150,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ListTile(
               leading: const Icon(Icons.trending_up),
               title: const Text('Progreso de aprendizaje'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PercentageScreen()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.settings),

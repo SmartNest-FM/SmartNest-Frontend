@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
+import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
@@ -101,7 +102,10 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.trending_up), // Icono para el progreso de aprendizaje
               title: const Text('Progreso de aprendizaje'),
               onTap: () {
-                // Acción al presionar "Progreso de aprendizaje"
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PercentageScreen()),
+                );
               },
             ),
             ListTile(

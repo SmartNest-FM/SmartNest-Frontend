@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smartnest/screens/home_screen.dart';
+import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/main_screens/forgot_password_screen.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
@@ -42,8 +43,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      home: SettingsScreen()
-      //home: SettingsScreen()
+      home: PercentageScreen()
     );
   }
 
