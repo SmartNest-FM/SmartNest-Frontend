@@ -7,12 +7,26 @@ import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/screens/main_screens/main_login.dart';
 import 'package:smartnest/screens/main_screens/register_data_screen.dart';
 import 'package:smartnest/screens/main_screens/register_screen.dart';
+import 'package:smartnest/screens/settings_screen.dart';
 import 'screens/main_screens/welcome_screen.dart';
+
+
+import 'package:permission_handler/permission_handler.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  await _requestMicPermission();
+
   runApp(const MyApp());
+}
+
+Future<void> _requestMicPermission() async {
+  var status = await Permission.microphone.status;
+  if (status.isDenied || status.isPermanentlyDenied) {
+    await Permission.microphone.request();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -28,8 +42,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      //home: WelcomeScreen()
-      home: ProfileScreen()
+      home: SettingsScreen()
+      //home: SettingsScreen()
     );
   }
+
+  
 }

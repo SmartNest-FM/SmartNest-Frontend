@@ -3,25 +3,32 @@ import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
-import 'package:smartnest/screens/settings_screen.dart';
+import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 import 'package:smartnest/widgets/button/button_secondary.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
+  
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _SettingsScreenState extends State<SettingsScreen> {
+
+  // Define las variables _lastWords y _isListening
+  String _lastWords = '';
+  bool _isListening = false;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  bool _isMicActive = false;
+  bool _isTestingMic = false;
 
   Future<void> _signOut() async {
     try {
@@ -40,45 +47,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Widget _buildInputField(String hintText, IconData icon, TextEditingController controller, {bool isPassword = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20), // Asegura que el campo de entrada no se desborde horizontalmente
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-        decoration: InputDecoration(
-          hintText: hintText,
-          prefixIcon: Icon(icon),
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-      ),
-    );
+  Future<void> _requestMicPermission() async {
+    var status = await Permission.microphone.status;
+    if (status.isDenied || status.isPermanentlyDenied) {
+      if (await Permission.microphone.request().isGranted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Permiso de micrófono concedido')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Permiso de micrófono denegado')),
+        );
+      }
+    }
   }
+
+  void _toggleMic(bool value) {
+    if (value) {
+      _requestMicPermission().then((_) {
+        setState(() {
+          _isMicActive = value;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Permiso de micrófono concedido')),
+        );
+      });
+    } else {
+      setState(() {
+        _isMicActive = value;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Permiso de micrófono denegado')),
+        );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Mis Datos', style: TextStyle(color: Colors.white)),
+        title: const Text('Configuración', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.red,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
-            },
-            iconSize: 40,
-            color: Colors.white,
-          ),
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
+          iconSize: 40,
+          color: Colors.white,
+        ),
         actions: [
-          
           IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () {
@@ -107,9 +130,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               leading: const Icon(Icons.person),
               title: const Text('Perfil'),
               onTap: () {
-                 Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
                 );
               },
             ),
@@ -172,82 +195,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Colors.white,
             child: Container(
               width: 370,
-              height: 520,
+              height: 600,
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
                   const Text(
-                    'Perfil',
+                    'Configuración',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 25),
-                  CircleAvatar(
-                    radius: 46.5,
-                    backgroundImage: AssetImage('lib/img/img_user.jpg'),
+                  Image.asset(
+                    'lib/img/setting.png',
+                    height: 191,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.upload, size: 16),
-                      SizedBox(width: 5),
-                      Text(
-                        'Actualizar foto del niño',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 35),
-                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Expanded(flex: 2, child: Text('Nombres')),
-                      Expanded(
-                        flex: 7,
-                        child: _buildInputField('Name', Icons.person, _nameController),
+                      const Text(
+                        'Micrófono',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      Switch(
+                        value: _isMicActive,
+                        onChanged: _toggleMic,
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      const Expanded(flex: 2, child: Text('Edad')),
-                      Expanded(
-                        flex: 7,
-                        child: _buildInputField('Edad', Icons.cake, _ageController),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      const Expanded(flex: 2, child: Text('Correo electrónico')),
-                      Expanded(
-                        flex: 7,
-                        child: _buildInputField('Email', Icons.email, _emailController),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Text(
-                        'Actualiza tus datos',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Icon(Icons.edit, size: 16),
-                    ],
-                  ),
+                  const Text(
+                    'Probar micrófono',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -257,3 +242,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+
+
