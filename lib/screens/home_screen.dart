@@ -3,6 +3,7 @@ import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
+import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 import 'package:smartnest/widgets/button/button_secondary.dart';
 
@@ -107,7 +108,10 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.settings), // Icono para la configuración
               title: const Text('Configuración'),
               onTap: () {
-                // Acción al presionar "Configuración"
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()),
+                );
               },
             ),
             ListTile(

@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  permission_handler: ^11.3.1
   cupertino_icons: ^1.0.6
   provider: ^6.0.5
   http: ^0.13.5
@@ -70,6 +71,7 @@ flutter:
     - lib/img/img_forgot_password.png
     - lib/img/percentage.png
     - lib/img/youtube_icon.png
+    - lib/img/setting.png
 
 
   # The following line ensures that the Material Icons font is
