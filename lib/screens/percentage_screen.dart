@@ -6,7 +6,6 @@ import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
-import 'package:smartnest/widgets/button/button_secondary.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:smartnest/widgets/button/button_secondary2.dart';
 
@@ -177,7 +176,7 @@ class _PercentageScreenState extends State<PercentageScreen> {
                   const SizedBox(height: 30),
                   CircularPercentIndicator(
                     radius: 60.0,
-                    lineWidth: 8.0,
+                    lineWidth: 10.0,
                     percent: _valuePercentage,
                     center: Text("${(_valuePercentage * 100).toStringAsFixed(0)} %"),
                     progressColor: const Color(0xFF1D4F7C),

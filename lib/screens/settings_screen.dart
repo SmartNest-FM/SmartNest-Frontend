@@ -5,8 +5,6 @@ import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
-import 'package:smartnest/widgets/button/button_primary.dart';
-import 'package:smartnest/widgets/button/button_secondary.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 
@@ -30,11 +28,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       await _auth.signOut();
       Navigator.push(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const WelcomeScreen()),
       );
     } catch (e) {
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error al cerrar sesión: $e'),
@@ -47,10 +45,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     var status = await Permission.microphone.status;
     if (status.isDenied || status.isPermanentlyDenied) {
       if (await Permission.microphone.request().isGranted) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Permiso de micrófono concedido')),
         );
       } else {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Permiso de micrófono denegado')),
         );

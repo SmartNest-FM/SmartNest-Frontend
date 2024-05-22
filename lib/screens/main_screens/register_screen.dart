@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
@@ -6,8 +5,6 @@ import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/screens/main_screens/register_data_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

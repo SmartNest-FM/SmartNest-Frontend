@@ -1,9 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
-import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
-import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/screens/main_screens/register_screen.dart';
 import 'package:smartnest/widgets/button/button_fb.dart';

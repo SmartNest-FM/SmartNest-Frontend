@@ -5,8 +5,7 @@ import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
-import 'package:smartnest/widgets/button/button_primary.dart';
-import 'package:smartnest/widgets/button/button_secondary.dart';
+import 'package:smartnest/screens/use_guide_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,11 +24,11 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await _auth.signOut();
       Navigator.push(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => const WelcomeScreen()),
       );
     } catch (e) {
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error al cerrar sesión: $e'),
@@ -227,24 +226,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Expanded(
                           flex: 2,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Progreso de\nAprendizaje',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => PercentageScreen()),
+                              );
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Progreso de\nAprendizaje',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Image.asset(
-                                'lib/img/percentage.png',
-                                height: 100,
-                              ),
-                            ],
+                                const SizedBox(height: 8),
+                                Image.asset(
+                                  'lib/img/percentage.png',
+                                  height: 100,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -289,24 +296,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Expanded(
                           flex: 2,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Guia de Uso',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => UseGuideScreen()),
+                              );
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Guia de Uso',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Image.asset(
-                                'lib/img/youtube_icon.png',
-                                height: 100,
-                              ),
-                            ],
+                                const SizedBox(height: 8),
+                                Image.asset(
+                                  'lib/img/youtube_icon.png',
+                                  height: 100,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
