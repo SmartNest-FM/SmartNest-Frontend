@@ -27,8 +27,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      //home: WelcomeScreen(), 
-      home: HomeScreen()
+      home: WelcomeScreen()
     );
   }
 }

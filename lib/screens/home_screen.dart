@@ -14,8 +14,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  final FirebaseAuthServices _auth = FirebaseAuthServices();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final FirebaseAuthServices _auth = FirebaseAuthServices();
 
   Future<void> _signOut() async {
     try {
@@ -37,6 +38,87 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: const Text(''),
+         backgroundColor: Colors.red,
+        // Botón del navbar
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            // Abre el drawer
+            _scaffoldKey.currentState?.openDrawer();
+          },
+          iconSize: 40,
+          color: Colors.white,
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+              const UserAccountsDrawerHeader(
+                accountName: Text("José Perez Mansilla"),
+                accountEmail: Text(""),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: AssetImage('lib/img/img_user.jpg'), // Ruta de la imagen
+                ),
+                decoration: BoxDecoration(
+                  color: Color(0xFF1D4F7C),
+                ),
+              ),
+
+            ListTile(
+              leading: const Icon(Icons.person), // Icono para el perfil
+              title: const Text('Perfil'),
+              onTap: () {
+                // Acción al presionar "Perfil"
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.home), // Icono para el inicio
+              title: const Text('Inicio'),
+              onTap: () {
+                // screen home
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.bar_chart), // Icono para los niveles
+              title: const Text('Niveles'),
+              onTap: () {
+                // Acción al presionar "Niveles"
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.trending_up), // Icono para el progreso de aprendizaje
+              title: const Text('Progreso de aprendizaje'),
+              onTap: () {
+                // Acción al presionar "Progreso de aprendizaje"
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings), // Icono para la configuración
+              title: const Text('Configuración'),
+              onTap: () {
+                // Acción al presionar "Configuración"
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.exit_to_app), // Icono para cerrar sesión
+              title: const Text('Cerrar sesión'),
+              onTap: () {
+                // Acción al presionar "Cerrar sesión"
+                _signOut();
+              },
+            ),
+
+          ],
+        ),
+      ),
       body: Container(
         decoration:  BoxDecoration(
           gradient: LinearGradient(
@@ -53,10 +135,6 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Text('SmartNest', style: TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
               const SizedBox(height: 30, width: 420),
-              /* ButtonPrimary(onPressed: (){
-                _signOut();
-                
-              }, text: 'Salir de sesión') */
                GestureDetector(
                 onTap: () {
                   // Llevar al screen de niveles
