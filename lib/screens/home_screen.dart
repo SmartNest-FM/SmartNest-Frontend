@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
+import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 import 'package:smartnest/widgets/button/button_secondary.dart';
 
@@ -69,21 +70,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
             ListTile(
-              leading: const Icon(Icons.person), // Icono para el perfil
+              leading: const Icon(Icons.person), 
               title: const Text('Perfil'),
               onTap: () {
-                // Acción al presionar "Perfil"
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.home), // Icono para el inicio
+              leading: const Icon(Icons.home), 
               title: const Text('Inicio'),
               onTap: () {
-                // screen home
                 Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
+                );
               },
             ),
             ListTile(
