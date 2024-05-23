@@ -74,6 +74,11 @@ flutter:
     - lib/img/youtube_icon.png
     - lib/img/setting.png
     - lib/img/youtube_icon.png
+    - lib/img/level1.png
+    - lib/img/level2.png
+    - lib/img/level3.png
+    - lib/img/level4.png
+    - lib/img/level5.png
 
 
   # The following line ensures that the Material Icons font is
