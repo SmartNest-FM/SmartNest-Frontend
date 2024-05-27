@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/home_screen.dart';
+import 'package:smartnest/screens/level1_screen.dart';
+import 'package:smartnest/screens/level2_screen.dart';
+import 'package:smartnest/screens/level3_screen.dart';
+import 'package:smartnest/screens/level4_screen.dart';
+import 'package:smartnest/screens/level5_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -201,7 +206,11 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                         fontSize: 15, color: Colors.grey)),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Acción al presionar el botón
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Level1Screen()),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(110, 20),
@@ -253,7 +262,11 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                         fontSize: 15, color: Colors.grey)),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Acción al presionar el botón
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Level2Screen()),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(110, 20),
@@ -307,7 +320,11 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Acción al presionar el botón
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Level3Screen()),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(110, 20),
@@ -359,7 +376,11 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                         fontSize: 15, color: Colors.grey)),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Acción al presionar el botón
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Level4Screen()),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(110, 20),
@@ -411,7 +432,11 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                         fontSize: 15, color: Colors.grey)),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Acción al presionar el botón
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Level5Screen()),
+                                    );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     fixedSize: Size(110, 20),
