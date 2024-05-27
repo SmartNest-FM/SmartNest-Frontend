@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/home_screen.dart';
+import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -103,7 +104,12 @@ class _Level1ScreenState extends State<Level1Screen> {
             ListTile(
               leading: const Icon(Icons.bar_chart),
               title: const Text('Niveles'),
-              onTap: () {},
+              onTap: () {
+                 Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LevelsScreen()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.trending_up),
@@ -148,6 +154,7 @@ class _Level1ScreenState extends State<Level1Screen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -155,17 +162,20 @@ class _Level1ScreenState extends State<Level1Screen> {
                     'Reproducir enunciado',
                     style: TextStyle(fontSize: 18,color: Colors.white),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.play_arrow, color: Colors.blue),
+                  SizedBox(
+                  height: 60.0, // Aquí defines la altura deseada
+                  child: IconButton(
+                    icon: Image.asset('lib/img/play_button_image.png'),
                     onPressed: () {
                       // Aquí va la lógica para reproducir el enunciado
                     },
                   ),
+                )
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 130),
               Image.asset(
-                'lib/img/img_cat.png', // Reemplazar con tu imagen
+                'lib/img/level_1/img_cat.png', // Reemplazar con tu imagen
                 width: 150,
                 height: 150,
               ),
@@ -174,7 +184,7 @@ class _Level1ScreenState extends State<Level1Screen> {
                 '¿Qué Animal es este?',
                 style: TextStyle(fontSize: 18,color: Colors.white),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               ButtonActivities(
                 text: 'Perro',
                 onPressed: () {},
@@ -188,6 +198,25 @@ class _Level1ScreenState extends State<Level1Screen> {
               ButtonActivities(
                 text: 'Loro',
                 onPressed: () {},
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Responder',
+                    style: TextStyle(fontSize: 18,color: Colors.white),
+                  ),
+                  SizedBox(
+                  height: 60.0, // Aquí defines la altura deseada
+                  child: IconButton(
+                    icon: Image.asset('lib/img/microphone.png'),
+                    onPressed: () {
+                      // Aquí va la lógica para reproducir el enunciado
+                    },
+                  ),
+                )
+                ],
               ),
             ],
           ),

@@ -79,6 +79,9 @@ flutter:
     - lib/img/level3.png
     - lib/img/level4.png
     - lib/img/level5.png
+    - lib/img/play_button_image.png
+    - lib/img/microphone.png
+    - lib/img/level_1/img_cat.png
 
 
   # The following line ensures that the Material Icons font is
