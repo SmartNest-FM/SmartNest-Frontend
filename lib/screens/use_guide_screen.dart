@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/home_screen.dart';
+import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -110,7 +111,12 @@ class _UseGuideScreenState extends State<UseGuideScreen> {
             ListTile(
               leading: const Icon(Icons.bar_chart),
               title: const Text('Niveles'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LevelsScreen()),
+                );
+              },
             ),
             ListTile(
               leading: const Icon(Icons.trending_up),
