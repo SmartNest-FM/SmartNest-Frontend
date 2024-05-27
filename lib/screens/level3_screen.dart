@@ -9,14 +9,14 @@ import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_activities.dart';
 
-class Level2Screen extends StatefulWidget {
-  const Level2Screen({super.key});
+class Level3Screen extends StatefulWidget {
+  const Level3Screen({super.key});
 
   @override
-  State<Level2Screen> createState() => _Level2ScreenState();
+  State<Level3Screen> createState() => _Level3ScreenState();
 }
 
-class _Level2ScreenState extends State<Level2Screen> {
+class _Level3ScreenState extends State<Level3Screen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
@@ -176,9 +176,9 @@ class _Level2ScreenState extends State<Level2Screen> {
               const SizedBox(height: 60),
               const Center(
                 child: Text(
-                  'El gato maullaba de alegria ',
+                  'Un gato callejero, con ojos de esmeralda, encontró un hogar en el corazón de una niña solitaria.',
                   textAlign: TextAlign.center, // Asegura el centrado del texto
-                  style: TextStyle(fontSize: 25, color: Colors.white),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
               const SizedBox(height: 15),
@@ -189,22 +189,22 @@ class _Level2ScreenState extends State<Level2Screen> {
               ),
               const SizedBox(height: 20),
               const Text(
-                '¿Qué Animal es este?',
+                '¿De que color eran los ojos del gato?',
                 style: TextStyle(fontSize: 18,color: Colors.white),
               ),
               const SizedBox(height: 30),
               ButtonActivities(
-                text: 'Perro',
+                text: 'Marrones',
                 onPressed: () {},
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: 'Gato',
+                text: 'Grises',
                 onPressed: () {},
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: 'Loro',
+                text: 'Negros',
                 onPressed: () {},
               ),
               const SizedBox(height: 30),

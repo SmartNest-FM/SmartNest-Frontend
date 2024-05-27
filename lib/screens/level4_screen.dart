@@ -8,15 +8,18 @@ import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_activities.dart';
+import 'package:smartnest/widgets/button/button_primary.dart';
+import 'package:smartnest/widgets/button/button_primary2.dart';
+import 'package:smartnest/widgets/button/button_vocabulary.dart';
 
-class Level2Screen extends StatefulWidget {
-  const Level2Screen({super.key});
+class Level4Screen extends StatefulWidget {
+  const Level4Screen({super.key});
 
   @override
-  State<Level2Screen> createState() => _Level2ScreenState();
+  State<Level4Screen> createState() => _Level4ScreenState();
 }
 
-class _Level2ScreenState extends State<Level2Screen> {
+class _Level4ScreenState extends State<Level4Screen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
@@ -173,41 +176,147 @@ class _Level2ScreenState extends State<Level2Screen> {
                 )
                 ],
               ),
-              const SizedBox(height: 60),
-              const Center(
-                child: Text(
-                  'El gato maullaba de alegria ',
-                  textAlign: TextAlign.center, // Asegura el centrado del texto
-                  style: TextStyle(fontSize: 25, color: Colors.white),
+              const SizedBox(height: 20),
+              
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    children: [
+                      TextSpan(text: 'Acontinuación reconoce la palabra seleccionada de color azul y en base al vocabulario responde lo siguiente: Un gato callejero, con ojos de esmeralda, encontró un '),
+                      TextSpan(
+                        text: 'hogar',
+                        style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                      TextSpan(text: ' en el corazón de una niña solitaria.'),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 30),
+              
               Image.asset(
                 'lib/img/level_1/img_cat.png', // Reemplazar con tu imagen
                 width: 150,
                 height: 150,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               const Text(
-                '¿Qué Animal es este?',
+                '¿El gato enconctró un refugio o un descampado?',
                 style: TextStyle(fontSize: 18,color: Colors.white),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
+              ButtonVocabulary(onPressed: (){
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.black.withOpacity(0.75),
+                      content: Card(
+                        color: Colors.black.withOpacity(0.75),
+                        child: Padding(
+                          padding: const EdgeInsets.all(14.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                'Sinonimos de Hogar',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '1. Casa',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    '2. Domicilio',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '3. Residencia',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    '4. Refugio',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '5. Morada',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    '6. Vivienda',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Cerrar'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }, text: 'Ver Vocabulario'),
+              const SizedBox(height: 20),
               ButtonActivities(
-                text: 'Perro',
+                text: 'Descampado',
                 onPressed: () {},
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: 'Gato',
+                text: 'Refugio',
                 onPressed: () {},
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: 'Loro',
+                text: 'Basurero',
                 onPressed: () {},
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
