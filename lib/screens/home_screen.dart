@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -94,7 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.bar_chart), // Icono para los niveles
               title: const Text('Niveles'),
               onTap: () {
-                // Acción al presionar "Niveles"
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LevelsScreen()),
+                );
               },
             ),
             ListTile(
