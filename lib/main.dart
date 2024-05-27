@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:smartnest/screens/level1_screen.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'screens/main_screens/welcome_screen.dart';
 
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      home: const WelcomeScreen()
+      home: const Level1Screen()
     );
   }
 
