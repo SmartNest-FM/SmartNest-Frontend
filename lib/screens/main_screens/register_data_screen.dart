@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/model/user.dart';
+import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
 
@@ -59,8 +60,13 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Éxito"),
-            content: Text("Datos actualizados correctamente."),
+            title: Center(
+              child: Text("Éxito"),
+            ),
+            content: Text(
+              "Datos actualizados correctamente.",
+              textAlign: TextAlign.justify,
+            ),
             actions: [
               TextButton(
                 onPressed: () {
@@ -72,6 +78,13 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
           );
         },
       );
+
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+
     } else {
       // Error al actualizar
       showDialog(
