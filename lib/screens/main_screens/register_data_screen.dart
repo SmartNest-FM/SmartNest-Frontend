@@ -10,7 +10,7 @@ import 'dart:convert';
 class RegisterDataScreen extends StatefulWidget {
   final UserModel userSend;
 
-  const RegisterDataScreen({super.key, required this.userSend});
+  const RegisterDataScreen({super.key, required this.userSend });
 
   @override
   State<RegisterDataScreen> createState() => _RegisterDataScreenState();
@@ -31,6 +31,69 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
   }
 
   bool aceptarTerminos = false;
+
+  
+  Future<void> _updateUser() async {
+
+    UserModel updatedUser = UserModel(
+      id: widget.userSend.id,
+      uid: widget.userSend.uid,
+      emailuser: widget.userSend.emailuser,
+      nametutor: _apoderadoController.text,
+      nameuser: _nombreController.text,
+      age: int.parse(_edadController.text),
+      photouser: widget.userSend.photouser,
+    );
+
+    var response = await http.put(
+      Uri.parse('http://10.0.2.2:8080/user/${updatedUser.id}'), // Asegúrate de usar la URL correcta
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(updatedUser.toMap()),
+    );
+
+    if (response.statusCode == 200) {
+      // Actualización exitosa
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Éxito"),
+            content: Text("Datos actualizados correctamente."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Cerrar"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Error al actualizar
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("Hubo un error al actualizar los datos. Por favor, inténtelo de nuevo."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Cerrar"),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -151,18 +214,28 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                   const SizedBox(height: 35),
                   ButtonPrimary(
                     onPressed: () {
-                       UserModel updatedUser = UserModel(
-                        id: widget.userSend.uid,
-                        uid: widget.userSend.uid,
-                        emailUser: widget.userSend.emailUser,
-                        nameTutor: _apoderadoController.text.trim(),
-                        nameUser: _nombreController.text.trim(),
-                        ageUser: int.parse(_edadController.text.trim()),
-                        photo: widget.userSend.photo,
-                      );
-
-                      _saveUpdatedUser(updatedUser);
-                    },
+                        if (aceptarTerminos) {
+                          _updateUser();
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Error"),
+                                content: Text("Debe aceptar los términos y condiciones."),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("Cerrar"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
                     text: 'Registrarse',
                   ),
                 ],
@@ -174,20 +247,6 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
     );
   }
 
-  Future<void> _saveUpdatedUser(UserModel updatedUser) async {
-    print(updatedUser.toMap());
-    final response = await http.post(
-      Uri.parse('http:localhost:3000/users'), 
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(updatedUser.toMap()), // Convertir el modelo de usuario a JSON
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to update user');
-    }
-  }
 
   Widget _buildInputField(String hintText, IconData icon, {bool isPassword = false , TextEditingController? controller}) {
     return Padding(

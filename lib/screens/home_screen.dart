@@ -151,7 +151,10 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 30, width: 420),
                GestureDetector(
                 onTap: () {
-                  // Llevar al screen de niveles
+                  Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => LevelsScreen()),
+                  );
                 },
                 child: Container(
                   width: 365,
@@ -214,7 +217,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
               GestureDetector(
                 onTap: () {
-                  // Llevar al screen de progreso de aprendizaje
+                   Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => PercentageScreen()),
+                  );
                 },
                 child: Container(
                   width: 365,
@@ -284,7 +290,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
               GestureDetector(
                 onTap: () {
-                  // Llevar al screen de guia de uso
+                  Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => UseGuideScreen()),
+                  );
                 },
                 child: Container(
                   width: 365,

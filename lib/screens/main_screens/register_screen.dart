@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
@@ -5,6 +6,8 @@ import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/main_screens/login_screen.dart';
 import 'package:smartnest/screens/main_screens/register_data_screen.dart';
 import 'package:smartnest/widgets/button/button_primary.dart';
+
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -31,20 +34,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
+    
+
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
       String uid = _auth.currentUser!.uid;
 
       UserModel user = UserModel(
-        id: '', 
+        id: 0,
         uid: uid,
-        emailUser: email,   
-        nameTutor: '',
-        nameUser: '',
-        ageUser: 0,
-        photo: 'https://medlineplus.gov/images/DownSyndrome.jpg',
+        emailuser: email,   
+        nametutor: '',
+        nameuser: '',
+        age: 0,
+        photouser: '',
       );
+
+      var response = await http.post(
+        Uri.parse('http://10.0.2.2:8080/user'),  // Asegúrate de usar la URL correcta
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(user.toMap()),
+      );
+
+
+    // Obtener el cuerpo de la respuesta del servidor
+    String responseBody = response.body;
+
+    // Buscar la parte del mensaje que contiene el ID
+    int index = responseBody.lastIndexOf('=');
+    String idString = responseBody.substring(index + 1).trim();
+
+     // Convertir la cadena del ID en un entero
+    int userId = int.parse(idString);
+
+    // Actualizar el objeto UserModel con el ID obtenido del servidor
+    user.id = userId; 
 
       Navigator.push(
         context,
@@ -52,6 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           builder: (context) => RegisterDataScreen(userSend: user),
         ),
       );
+
     } catch (e) {
      
       showDialog(
@@ -193,6 +221,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     text: 'Registrarse',
                   ),
+                  
                 ],
               ),
             ),  
