@@ -8,6 +8,11 @@ import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/screens/use_guide_screen.dart';
 
+import 'dart:convert';
+import 'dart:io';
+import 'package:smartnest/model/user.dart';
+import 'package:http/http.dart' as http;
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -20,6 +25,14 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final FirebaseAuthServices _auth = FirebaseAuthServices();
+
+  UserModel? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
 
   Future<void> _signOut() async {
     try {
@@ -35,6 +48,32 @@ class _HomeScreenState extends State<HomeScreen> {
           content: Text('Error al cerrar sesión: $e'),
         ),
       );
+    }
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      String uid = _auth.currentUser!.uid;
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+
+      if (response.statusCode == 200) {
+        var userData = jsonDecode(response.body);
+        setState(() {
+          _user = UserModel.fromMap(userData);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al cargar datos del usuario: ${response.reasonPhrase}')),
+          
+        );
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cargar datos del usuario: $e')),
+       
+      );
+       print(e);
     }
   }
 
@@ -60,11 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-              const UserAccountsDrawerHeader(
-                accountName: Text("José Perez Mansilla"),
-                accountEmail: Text(""),
+              UserAccountsDrawerHeader(
+                accountName: Text(_user?.nameuser ?? "Nombre no disponible"),
+                accountEmail: Text(_user?.emailuser ?? "Email no disponible"),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage('lib/img/img_user.jpg'), // Ruta de la imagen
+                  backgroundImage: _user != null && _user!.photouser != null
+                  ? FileImage(File(_user!.photouser!))
+                  : AssetImage('lib/img/user_no_photo.png'),
                 ),
                 decoration: BoxDecoration(
                   color: Color(0xFF1D4F7C),

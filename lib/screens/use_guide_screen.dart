@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
@@ -9,6 +11,9 @@ import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_primary2.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
 
 class UseGuideScreen extends StatefulWidget {
   const UseGuideScreen({super.key});
@@ -24,6 +29,14 @@ class _UseGuideScreenState extends State<UseGuideScreen> {
 
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
+
+  UserModel? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
 
   Future<void> _signOut() async {
     try {
@@ -43,6 +56,31 @@ class _UseGuideScreenState extends State<UseGuideScreen> {
     }
   }
 
+  Future<void> _loadUserData() async {
+    try {
+      String uid = _auth.currentUser!.uid;
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+
+      if (response.statusCode == 200) {
+        var userData = jsonDecode(response.body);
+        setState(() {
+          _user = UserModel.fromMap(userData);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al cargar datos del usuario: ${response.reasonPhrase}')),
+          
+        );
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cargar datos del usuario: $e')),
+       
+      );
+       print(e);
+    }
+  }
 
 
   @override
@@ -78,11 +116,13 @@ class _UseGuideScreenState extends State<UseGuideScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const UserAccountsDrawerHeader(
-              accountName: Text("José Perez Mansilla"),
-              accountEmail: Text(""),
+            UserAccountsDrawerHeader(
+              accountName: Text(_user?.nameuser ?? "Nombre no disponible"),
+              accountEmail: Text(_user?.emailuser ?? "Email no disponible"),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('lib/img/img_user.jpg'),
+                backgroundImage: _user != null && _user!.photouser != null
+                ? FileImage(File(_user!.photouser!))
+                : AssetImage('lib/img/user_no_photo.png'),
               ),
               decoration: BoxDecoration(
                 color: Color(0xFF1D4F7C),

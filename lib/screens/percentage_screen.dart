@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
@@ -10,6 +11,9 @@ import 'package:smartnest/widgets/button/button_primary.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:smartnest/widgets/button/button_secondary2.dart';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
 
 class PercentageScreen extends StatefulWidget {
   const PercentageScreen({super.key});
@@ -27,6 +31,14 @@ class _PercentageScreenState extends State<PercentageScreen> {
 
   final _valuePercentage = 0.7;
 
+  UserModel? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
   Future<void> _signOut() async {
     try {
       await _auth.signOut();
@@ -41,6 +53,32 @@ class _PercentageScreenState extends State<PercentageScreen> {
           content: Text('Error al cerrar sesión: $e'),
         ),
       );
+    }
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      String uid = _auth.currentUser!.uid;
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+
+      if (response.statusCode == 200) {
+        var userData = jsonDecode(response.body);
+        setState(() {
+          _user = UserModel.fromMap(userData);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al cargar datos del usuario: ${response.reasonPhrase}')),
+          
+        );
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cargar datos del usuario: $e')),
+       
+      );
+       print(e);
     }
   }
 
@@ -79,11 +117,13 @@ class _PercentageScreenState extends State<PercentageScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            const UserAccountsDrawerHeader(
-              accountName: Text("José Perez Mansilla"),
-              accountEmail: Text(""),
+            UserAccountsDrawerHeader(
+              accountName: Text(_user?.nameuser ?? "Nombre no disponible"),
+              accountEmail: Text(_user?.emailuser ?? "Email no disponible"),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('lib/img/img_user.jpg'),
+                backgroundImage: _user != null && _user!.photouser != null
+                ? FileImage(File(_user!.photouser!))
+                : AssetImage('lib/img/user_no_photo.png'),
               ),
               decoration: BoxDecoration(
                 color: Color(0xFF1D4F7C),
