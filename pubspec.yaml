@@ -45,6 +45,7 @@ dependencies:
   percent_indicator: ^4.0.1
   carousel_slider: ^4.0.0
   image_picker: ^0.8.4+4
+  flutter_keyboard_visibility: ^5.0.1
 
 dev_dependencies:
   flutter_test:

@@ -9,12 +9,13 @@ import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 
 import 'package:image_picker/image_picker.dart';
-
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:smartnest/widgets/button/button_primary.dart';
+import 'package:smartnest/widgets/button/button_primary2.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -436,7 +437,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Colors.white,
             child: Container(
               width: 370,
-              height: 510,
+              height: 490,
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
@@ -510,7 +511,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 24),
                   
                   Row(
                     mainAxisSize: MainAxisSize.min,
@@ -541,7 +542,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       if (isEditing)
-                        ButtonPrimary(
+                        ButtonPrimary2(
                           onPressed: () {
                             _updateUserData().then((_) {
                               setState(() {
