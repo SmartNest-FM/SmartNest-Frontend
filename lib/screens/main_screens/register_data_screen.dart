@@ -47,7 +47,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
       nametutor: _apoderadoController.text,
       nameuser: _nombreController.text,
       age: int.parse(_edadController.text),
-      photouser: _imagePath ?? '',
+      photouser: _imagePath ?? 'lib/img/user_no_photo.png',
     );
 
     var response = await http.put(

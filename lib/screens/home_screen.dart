@@ -103,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 accountName: Text(_user?.nameuser ?? "Nombre no disponible"),
                 accountEmail: Text(_user?.emailuser ?? "Email no disponible"),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage: _user != null && _user!.photouser != null
+                  backgroundImage: _user != null && _user!.photouser != null  && File(_user!.photouser!).existsSync()
                   ? FileImage(File(_user!.photouser!))
                   : AssetImage('lib/img/user_no_photo.png'),
                 ),
