@@ -7,6 +7,7 @@ import 'package:smartnest/model/phonological_awareness.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/activities.dart';
 import 'package:smartnest/screens/home_screen.dart';
+import 'package:smartnest/screens/level1_screen4.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
@@ -16,6 +17,8 @@ import 'package:smartnest/widgets/button/button_activities.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:smartnest/widgets/button/button_primary2.dart';
 
 
 class Level1Screen3 extends StatefulWidget {
@@ -32,6 +35,10 @@ class _Level1Screen3State extends State<Level1Screen3> {
   PhonologicalAwarenessModel? phonologicalAwarenessModel;
   
   UserModel? _user;
+
+  bool _isCorrectAnswer = false;
+
+   PhonologicalAwarenessModel? phonologicalAwarenessUpdate;
 
   @override
   void initState() {
@@ -55,6 +62,128 @@ class _Level1Screen3State extends State<Level1Screen3> {
       }
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  Future<void> _showSuccessDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // El dialogo no se puede cerrar tocando fuera de él
+      builder: (BuildContext context) {
+        return Center(
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    color: Colors.blue,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          '¡Genial!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Image.network(
+                    'https://cdn-icons-png.flaticon.com/512/6142/6142783.png',
+                    fit: BoxFit.contain, // Ajusta la imagen al contenedor
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '¡Lo hiciste fantástico!',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonPrimary2(
+                      onPressed: (){
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Level1Screen4()),
+                        );
+                      },
+                      text: 'Continuar'
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateUserResponse(String? userResponse) async {
+    if (phonologicalAwarenessModel == null || phonologicalAwarenessModel?.level_id == null) {
+      print('Error: phonologicalAwarenessModel or level_id is null');
+      return;
+    }
+
+    phonologicalAwarenessUpdate = PhonologicalAwarenessModel(
+      id: phonologicalAwarenessModel?.id ?? 0,
+      main_image: phonologicalAwarenessModel?.main_image ?? '',
+      question: phonologicalAwarenessModel?.question ?? '',
+      user_response: userResponse ?? '',
+      correct_answer: phonologicalAwarenessModel?.correct_answer ?? '',
+      correct: userResponse == phonologicalAwarenessModel?.correct_answer,
+      level_id: phonologicalAwarenessModel?.level_id ?? 0,
+      answer_one: phonologicalAwarenessModel?.answer_one ?? '',
+      answer_two: phonologicalAwarenessModel?.answer_two ?? '',
+      answer_three: phonologicalAwarenessModel?.answer_three ?? '',
+    );
+
+    print('phonologicalAwarenessUpdate: ${phonologicalAwarenessUpdate?.toMap()}');
+
+    try {
+      var response = await http.put(
+        Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/${phonologicalAwarenessModel?.id}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(phonologicalAwarenessUpdate?.toMap()),
+      );
+
+      if (response.statusCode != 200) {
+        print('Failed to update user response: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      } else {
+        print('User response updated successfully');
+        if (userResponse == phonologicalAwarenessModel?.correct_answer) {
+          _showSuccessDialog();
+        }
+      }
+    } catch (e) {
+      print('Error while updating user response: $e');
     }
   }
 
@@ -271,17 +400,47 @@ class _Level1Screen3State extends State<Level1Screen3> {
               const SizedBox(height: 30),
               ButtonActivities(
                 text: phonologicalAwarenessModel?.answer_one ?? '',
-                onPressed: () {},
+                onPressed: () async{
+                  String? userResponse = phonologicalAwarenessModel?.answer_one;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 10),
               ButtonActivities(
                 text: phonologicalAwarenessModel?.answer_two ?? '',
-                onPressed: () {},
+                onPressed: () async{
+                  String? userResponse = phonologicalAwarenessModel?.answer_two;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 10),
               ButtonActivities(
                 text: phonologicalAwarenessModel?.answer_three ?? '',
-                onPressed: () {},
+                onPressed: () async{
+                  String? userResponse = phonologicalAwarenessModel?.answer_three;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 30),
               Row(

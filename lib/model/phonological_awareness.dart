@@ -6,7 +6,7 @@ class PhonologicalAwarenessModel {
   String? question;
   String user_response;
   String correct_answer;
-  bool is_correct;
+  bool correct;
   int level_id; 
   String answer_one;
   String answer_two;
@@ -18,7 +18,7 @@ class PhonologicalAwarenessModel {
     required this.question,
     required this.user_response,
     required this.correct_answer,
-    required this.is_correct,
+    required this.correct,
     required this.level_id,
     required this.answer_one,
     required this.answer_two,
@@ -33,7 +33,7 @@ class PhonologicalAwarenessModel {
       question: map['question'],
       user_response: map['userResponse'],
       correct_answer: map['correctAnswer'],
-      is_correct: map['correct'],
+      correct: map['correct'],
       level_id: map['level']['id'],
       answer_one: map['answerOne'],
       answer_two: map['answerTwo'],
@@ -45,15 +45,17 @@ class PhonologicalAwarenessModel {
    Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'main_image': main_image,
+      'mainImage': main_image,
       'question': question,
-      'user_response': user_response,
-      'correct_answer': correct_answer,
-      'is_correct': is_correct,
-      'level_id': level_id,
-      'answer_one': answer_one,
-      'answer_two': answer_two,
-      'answer_three': answer_three
+      'userResponse': user_response,
+      'correctAnswer': correct_answer,
+      'correct': correct,
+      'level': {
+        'id': level_id,
+      },
+      'answerOne': answer_one,
+      'answerTwo': answer_two,
+      'answerThree': answer_three
     };
   }
 

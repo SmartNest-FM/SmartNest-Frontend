@@ -4,10 +4,11 @@ class ButtonActivities extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
 
+
   const ButtonActivities({
     Key? key,
     required this.text,
-    required this.onPressed,
+    required this.onPressed
   }) : super(key: key);
 
   @override
