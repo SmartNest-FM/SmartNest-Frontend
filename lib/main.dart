@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Roboto',
       ),
-      home: const WelcomeScreen()
+      home: const WelcomeScreen(),
+    
     );
   }
 

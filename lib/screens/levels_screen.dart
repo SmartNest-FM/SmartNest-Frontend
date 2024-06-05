@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
+import 'package:smartnest/screens/activities.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level1_screen.dart';
 import 'package:smartnest/screens/level2_screen.dart';
@@ -12,6 +13,7 @@ import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
+import 'package:smartnest/model/level.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -31,10 +33,21 @@ class _LevelsScreenState extends State<LevelsScreen> {
 
   UserModel? _user;
 
+  LevelModel? _level1;
+  LevelModel? _level2;
+  LevelModel? _level3;
+  LevelModel? _level4;
+  LevelModel? _level5;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _loadLevelData(1); // Cargar datos del nivel 1
+    _loadLevelData(2); // Cargar datos del nivel 2
+    _loadLevelData(3); // Cargar datos del nivel 3
+    _loadLevelData(4); // Cargar datos del nivel 4
+    _loadLevelData(5); // Cargar datos del nivel 5
   }
 
   Future<void> _signOut() async {
@@ -61,7 +74,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
       var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
-        var userData = jsonDecode(response.body);
+        var userData = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
           _user = UserModel.fromMap(userData);
         });
@@ -80,6 +93,41 @@ class _LevelsScreenState extends State<LevelsScreen> {
        print(e);
     }
   }
+
+  
+  Future<void> _loadLevelData(int levelNumber) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/level/$levelNumber'));
+      if (response.statusCode == 200) {
+        var levelData = jsonDecode(response.body);
+        var level = LevelModel.fromMap(levelData);
+        setState(() {
+          switch (levelNumber) {
+            case 1:
+              _level1 = level;
+              break;
+            case 2:
+              _level2 = level;
+              break;
+            case 3:
+              _level3 = level;
+              break;
+            case 4:
+              _level4 = level;
+              break;
+            case 5:
+              _level5 = level;
+              break;
+          }
+        });
+      } else {
+        // Manejar el error si no se pudo cargar los datos del nivel
+      }
+    } catch (e) {
+      // Manejar el error si ocurrió una excepción al cargar los datos del nivel
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -228,20 +276,22 @@ class _LevelsScreenState extends State<LevelsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              'lib/img/level1.png',
+                            _level1 != null ? Image.network(
+                              _level1!.urlImg,
                               height: 80,
-                            ),
+                            ) : Container(),
                             Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Nivel 1',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue[800])),
+                                Text(_level1 != null ? _level1!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue[800]
+                                  ),
+                                ),
                                 Text('10 actividades',
                                     style: TextStyle(
                                         fontSize: 15, color: Colors.grey)),
@@ -250,7 +300,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const Level1Screen()),
+                                          builder: (context) => const ActivitiesScreen()),
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -284,20 +334,22 @@ class _LevelsScreenState extends State<LevelsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              'lib/img/level2.png',
-                              height: 80, // Alto de la imagen
-                            ),
+                            _level2 != null ? Image.network(
+                              _level2!.urlImg,
+                              height: 80,
+                            ) : Container(),
                             Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Nivel 2',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue[800])),
+                                Text(_level2 != null ? _level2!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue[800]
+                                  ),
+                                ),
                                 Text('10 actividades',
                                     style: TextStyle(
                                         fontSize: 15, color: Colors.grey)),
@@ -340,20 +392,21 @@ class _LevelsScreenState extends State<LevelsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              'lib/img/level3.png',
+                            _level3 != null ? Image.network(
+                              _level3!.urlImg,
                               height: 80,
-                            ),
+                            ) : Container(),
                             Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Nivel 3',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue[800])
+                                Text(_level3 != null ? _level3!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue[800]
+                                  ),
                                 ),
                                 Text('10 actividades',
                                     style: TextStyle(
@@ -398,20 +451,22 @@ class _LevelsScreenState extends State<LevelsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              'lib/img/level4.png',
-                              height: 80, // Alto de la imagen
-                            ),
+                            _level4 != null ? Image.network(
+                              _level4!.urlImg,
+                              height: 80,
+                            ) : Container(),
                             Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Nivel 4',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue[800])),
+                                Text(_level4 != null ? _level4!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue[800]
+                                  ),
+                                ),
                                 Text('10 actividades',
                                     style: TextStyle(
                                         fontSize: 15, color: Colors.grey)),
@@ -454,20 +509,22 @@ class _LevelsScreenState extends State<LevelsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              'lib/img/level5.png',
-                              height: 80, // Alto de la imagen
-                            ),
+                            _level5 != null ? Image.network(
+                              _level5!.urlImg,
+                              height: 80,
+                            ) : Container(),
                             Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Nivel 5',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue[800])),
+                                Text(_level5 != null ? _level5!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue[800]
+                                  ),
+                                ),
                                 Text('10 actividades',
                                     style: TextStyle(
                                         fontSize: 15, color: Colors.grey)),
@@ -497,7 +554,8 @@ class _LevelsScreenState extends State<LevelsScreen> {
                               ],
                             ),
                           ],
-                        )),
+                        )
+                      ),
                   ],
                 ),
               ),

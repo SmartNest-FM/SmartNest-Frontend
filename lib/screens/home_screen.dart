@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
       var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
-        var userData = jsonDecode(response.body);
+        var userData = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
           _user = UserModel.fromMap(userData);
         });

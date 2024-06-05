@@ -17,14 +17,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 
-class Level1Screen extends StatefulWidget {
-  const Level1Screen({super.key});
+class Level1Screen6 extends StatefulWidget {
+  const Level1Screen6({super.key});
 
   @override
-  State<Level1Screen> createState() => _Level1ScreenState();
+  State<Level1Screen6> createState() => _Level1Screen6State();
 }
 
-class _Level1ScreenState extends State<Level1Screen> {
+class _Level1Screen6State extends State<Level1Screen6> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
@@ -36,7 +36,7 @@ class _Level1ScreenState extends State<Level1Screen> {
   void initState() {
     super.initState();
     _loadUserData();
-    fetchPhonologicalAwareness(1); // Aquí cambia el ID si es necesario
+    fetchPhonologicalAwareness(6); // Aquí cambia el ID si es necesario
   }
 
   Future<void> fetchPhonologicalAwareness(int id) async {
