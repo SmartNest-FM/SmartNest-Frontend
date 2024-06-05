@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
-import 'package:smartnest/model/phonological_awareness.dart';
+import 'package:smartnest/model/fluent_reading.dart';
 import 'package:smartnest/model/user.dart';
-import 'package:smartnest/screens/activities.dart';
+import 'package:smartnest/screens/activities2.dart';
 import 'package:smartnest/screens/home_screen.dart';
-import 'package:smartnest/screens/level1_screen2.dart';
+import 'package:smartnest/screens/level2_screen3.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
@@ -15,49 +15,46 @@ import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_activities.dart';
 
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:smartnest/widgets/button/button_dynamic.dart';
+import 'package:http/http.dart' as http;
 import 'package:smartnest/widgets/button/button_primary2.dart';
 
-
-class Level1Screen extends StatefulWidget {
-  const Level1Screen({super.key});
+class Level2Screen2 extends StatefulWidget {
+  const Level2Screen2({super.key});
 
   @override
-  State<Level1Screen> createState() => _Level1ScreenState();
+  State<Level2Screen2> createState() => _Level2Screen2State();
 }
 
-class _Level1ScreenState extends State<Level1Screen> {
+class _Level2Screen2State extends State<Level2Screen2> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
-  PhonologicalAwarenessModel? phonologicalAwarenessModel;
-  
   UserModel? _user;
+
+  FluentReadingModel? fluentReadingModel;
 
   bool _isCorrectAnswer = false;
 
-  PhonologicalAwarenessModel? phonologicalAwarenessUpdate;
+   FluentReadingModel? fluentReadingModelUpdate;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    fetchPhonologicalAwareness(1); // Aquí cambia el ID si es necesario
+    fetchFluentReading(2);
   }
 
-  Future<void> fetchPhonologicalAwareness(int id) async {
+  Future<void> fetchFluentReading(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
-          phonologicalAwarenessModel = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          fluentReadingModel = FluentReadingModel.fromMap(jsonResponse); 
           
         });
-        print( phonologicalAwarenessModel?.main_image ?? '');
+        print( fluentReadingModel?.main_image ?? '');
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
@@ -126,7 +123,7 @@ class _Level1ScreenState extends State<Level1Screen> {
                       onPressed: (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const Level1Screen2()),
+                          MaterialPageRoute(builder: (context) => const Level2Screen3()),
                         );
                       },
                       text: 'Continuar'
@@ -144,36 +141,35 @@ class _Level1ScreenState extends State<Level1Screen> {
     );
   }
 
-
-
-
-
   Future<void> updateUserResponse(String? userResponse) async {
-    if (phonologicalAwarenessModel == null || phonologicalAwarenessModel?.level_id == null) {
-      print('Error: phonologicalAwarenessModel or level_id is null');
+    if (fluentReadingModel == null || fluentReadingModel?.level_id == null) {
+      print('Fluent reading model or level id is null');
       return;
     }
 
-    phonologicalAwarenessUpdate = PhonologicalAwarenessModel(
-      id: phonologicalAwarenessModel?.id ?? 0,
-      main_image: phonologicalAwarenessModel?.main_image ?? '',
-      question: phonologicalAwarenessModel?.question ?? '',
+    fluentReadingModelUpdate = FluentReadingModel(
+      id: fluentReadingModel?.id ?? 0,
+      main_image: fluentReadingModel?.main_image ?? '',
+      question: fluentReadingModel?.question ?? '',
+      statement: fluentReadingModel?.statement ?? '',
       user_response: userResponse ?? '',
-      correct_answer: phonologicalAwarenessModel?.correct_answer ?? '',
-      correct: userResponse == phonologicalAwarenessModel?.correct_answer,
-      level_id: phonologicalAwarenessModel?.level_id ?? 0,
-      answer_one: phonologicalAwarenessModel?.answer_one ?? '',
-      answer_two: phonologicalAwarenessModel?.answer_two ?? '',
-      answer_three: phonologicalAwarenessModel?.answer_three ?? '',
+      correct_answer: fluentReadingModel?.correct_answer ?? '',
+      correct: userResponse == fluentReadingModel?.correct_answer,
+      level_id: fluentReadingModel?.level_id ?? 0,
+      answer_one: fluentReadingModel?.answer_one ?? '',
+      answer_two: fluentReadingModel?.answer_two ?? '',
+      answer_three: fluentReadingModel?.answer_three ?? '',
     );
+
+    print('fluentReadingUpdate: ${fluentReadingModelUpdate?.toMap()}');
 
     try {
       var response = await http.put(
-        Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/${phonologicalAwarenessModel?.id}'),
+        Uri.parse('http://10.0.2.2:8080/fluentReading/${fluentReadingModel?.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(phonologicalAwarenessUpdate?.toMap()),
+        body: jsonEncode(fluentReadingModelUpdate?.toMap()),
       );
 
       if (response.statusCode != 200) {
@@ -181,8 +177,7 @@ class _Level1ScreenState extends State<Level1Screen> {
         print('Response body: ${response.body}');
       } else {
         print('User response updated successfully');
-
-        if (userResponse == phonologicalAwarenessModel?.correct_answer) {
+        if (userResponse == fluentReadingModel?.correct_answer) {
           _showSuccessDialog();
         }
       }
@@ -190,7 +185,6 @@ class _Level1ScreenState extends State<Level1Screen> {
       print('Error while updating user response: $e');
     }
   }
-
 
   Future<void> _loadUserData() async {
     try {
@@ -218,7 +212,6 @@ class _Level1ScreenState extends State<Level1Screen> {
     }
   }
 
-
   Future<void> _signOut() async {
     try {
       await _auth.signOut();
@@ -242,14 +235,14 @@ class _Level1ScreenState extends State<Level1Screen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Actividad 1', style: TextStyle(color: Colors.white)),
+        title: const Text('Actividad 2', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.red,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const ActivitiesScreen()),
+              MaterialPageRoute(builder: (context) => const Activities2Screen()),
             );
           },
           iconSize: 40,
@@ -351,7 +344,6 @@ class _Level1ScreenState extends State<Level1Screen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -364,7 +356,6 @@ class _Level1ScreenState extends State<Level1Screen> {
                     'Reproducir enunciado',
                     style: TextStyle(fontSize: 18,color: Colors.white),
                   ),
-                  
                   SizedBox(
                   height: 60.0, // Aquí defines la altura deseada
                   child: IconButton(
@@ -376,10 +367,16 @@ class _Level1ScreenState extends State<Level1Screen> {
                 )
                 ],
               ),
-              const SizedBox(height: 130),
-
+              const SizedBox(height: 60),
+              Center(
+                child: Text(
+                fluentReadingModel?.statement ?? '',
+                  style: TextStyle(fontSize: 21,color: Colors.white),
+                ),
+              ),
+              const SizedBox(height: 20),
               Image.network(
-                phonologicalAwarenessModel?.main_image ?? '',
+                fluentReadingModel?.main_image ?? '',
                 width: 150,
                 height: 150,
                 loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -396,18 +393,18 @@ class _Level1ScreenState extends State<Level1Screen> {
                   return Text('Failed to load image: $error');
                 },
               ),
-
               const SizedBox(height: 20),
-              Text(
-               phonologicalAwarenessModel?.question ?? '',
-                style: TextStyle(fontSize: 18,color: Colors.white),
+              Center(
+                child: Text(
+                fluentReadingModel?.question ?? '',
+                  style: TextStyle(fontSize: 18,color: Colors.white),
+                ),
               ),
               const SizedBox(height: 30),
-              
               ButtonActivities(
-                text: phonologicalAwarenessModel?.answer_one ?? '',
+                text: fluentReadingModel?.answer_one ?? '',
                 onPressed: () async{
-                  String? userResponse = phonologicalAwarenessModel?.answer_one;
+                  String? userResponse = fluentReadingModel?.answer_one;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
@@ -420,9 +417,9 @@ class _Level1ScreenState extends State<Level1Screen> {
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: phonologicalAwarenessModel?.answer_two ?? '',
+                text: fluentReadingModel?.answer_two ?? '',
                 onPressed: () async{
-                  String? userResponse = phonologicalAwarenessModel?.answer_two;
+                  String? userResponse = fluentReadingModel?.answer_two;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
@@ -435,9 +432,9 @@ class _Level1ScreenState extends State<Level1Screen> {
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: phonologicalAwarenessModel?.answer_three ?? '',
+                text: fluentReadingModel?.answer_three ?? '',
                 onPressed: () async{
-                  String? userResponse = phonologicalAwarenessModel?.answer_three;
+                  String? userResponse = fluentReadingModel?.answer_three;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
@@ -473,8 +470,4 @@ class _Level1ScreenState extends State<Level1Screen> {
       ),
     );
   }
-
-
 }
-
- 

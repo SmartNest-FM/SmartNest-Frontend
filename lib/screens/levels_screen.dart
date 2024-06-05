@@ -3,12 +3,16 @@ import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/activities.dart';
+import 'package:smartnest/screens/activities2.dart';
+import 'package:smartnest/screens/activities3.dart';
+import 'package:smartnest/screens/activities4.dart';
+import 'package:smartnest/screens/activities5.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level1_screen.dart';
 import 'package:smartnest/screens/level2_screen.dart';
 import 'package:smartnest/screens/level3_screen.dart';
-import 'package:smartnest/screens/level4_screen.dart';
 import 'package:smartnest/screens/level5_screen.dart';
+import 'package:smartnest/screens/level4_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -358,7 +362,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const Level2Screen()),
+                                          builder: (context) => const Activities2Screen()),
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -417,7 +421,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const Level3Screen()),
+                                          builder: (context) => const Activities3Screen()),
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -475,7 +479,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const Level4Screen()),
+                                          builder: (context) => const Activities4Screen()),
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
@@ -533,7 +537,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const Level5Screen()),
+                                          builder: (context) => const Activities5Screen()),
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
