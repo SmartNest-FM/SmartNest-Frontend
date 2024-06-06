@@ -6,7 +6,7 @@ import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/model/vocabulary_verb.dart';
 import 'package:smartnest/screens/home_screen.dart';
-import 'package:smartnest/screens/level5_screen2.dart';
+import 'package:smartnest/screens/level5_screen7.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
@@ -19,14 +19,14 @@ import 'package:smartnest/widgets/button/button_vocabulary.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class Level5Screen extends StatefulWidget {
-  const Level5Screen({super.key});
+class Level5Screen6 extends StatefulWidget {
+  const Level5Screen6({super.key});
 
   @override
-  State<Level5Screen> createState() => _Level5ScreenState();
+  State<Level5Screen6> createState() => _Level5Screen6State();
 }
 
-class _Level5ScreenState extends State<Level5Screen> {
+class _Level5Screen6State extends State<Level5Screen6> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
@@ -122,7 +122,7 @@ class _Level5ScreenState extends State<Level5Screen> {
                       onPressed: (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const Level5Screen2()),
+                          MaterialPageRoute(builder: (context) => const Level5Screen7()),
                         );
                       },
                       text: 'Continuar'
@@ -239,7 +239,7 @@ class _Level5ScreenState extends State<Level5Screen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Actividad 1', style: TextStyle(color: Colors.white)),
+        title: const Text('Actividad 6', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.red,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

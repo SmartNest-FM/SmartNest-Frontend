@@ -15,6 +15,17 @@ import 'package:smartnest/screens/level1_screen6.dart';
 import 'package:smartnest/screens/level1_screen7.dart';
 import 'package:smartnest/screens/level1_screen8.dart';
 import 'package:smartnest/screens/level1_screen9.dart';
+import 'package:smartnest/screens/level2_screen5.dart';
+import 'package:smartnest/screens/level5_screen.dart';
+import 'package:smartnest/screens/level5_screen10.dart';
+import 'package:smartnest/screens/level5_screen2.dart';
+import 'package:smartnest/screens/level5_screen3.dart';
+import 'package:smartnest/screens/level5_screen4.dart';
+import 'package:smartnest/screens/level5_screen5.dart';
+import 'package:smartnest/screens/level5_screen6.dart';
+import 'package:smartnest/screens/level5_screen7.dart';
+import 'package:smartnest/screens/level5_screen8.dart';
+import 'package:smartnest/screens/level5_screen9.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -228,7 +239,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen()),
                             );
                           },
                         ),
@@ -250,7 +261,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen2()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen2()),
                             );
                           },
                         ),
@@ -272,7 +283,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen3()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen3()),
                             );
                           },
                         ),
@@ -294,7 +305,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen4()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen4()),
                             );
                           },
                         ),
@@ -316,7 +327,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen5()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen5()),
                             );
                           },
                         ),
@@ -338,7 +349,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen6()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen6()),
                             );
                           },
                         ),
@@ -360,7 +371,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen7()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen7()),
                             );
                           },
                         ),
@@ -382,7 +393,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen8()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen8()),
                             );
                           },
                         ),
@@ -404,7 +415,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen9()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen9()),
                             );
                           },
                         ),
@@ -426,7 +437,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen10()),
+                              MaterialPageRoute(builder: (context) => const Level5Screen10()),
                             );
                           },
                         ),
