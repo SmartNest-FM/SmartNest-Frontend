@@ -15,6 +15,8 @@ import 'package:smartnest/screens/level1_screen6.dart';
 import 'package:smartnest/screens/level1_screen7.dart';
 import 'package:smartnest/screens/level1_screen8.dart';
 import 'package:smartnest/screens/level1_screen9.dart';
+import 'package:smartnest/screens/level4_screen.dart';
+import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -99,7 +101,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (context) => const LevelsScreen()),
             );
           },
           iconSize: 40,
@@ -228,7 +230,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen()),
+                              MaterialPageRoute(builder: (context) => const Level4Screen()),
                             );
                           },
                         ),

@@ -15,6 +15,7 @@ import 'package:smartnest/screens/level1_screen6.dart';
 import 'package:smartnest/screens/level1_screen7.dart';
 import 'package:smartnest/screens/level1_screen8.dart';
 import 'package:smartnest/screens/level1_screen9.dart';
+import 'package:smartnest/screens/level3_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -228,7 +229,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen()),
                             );
                           },
                         ),

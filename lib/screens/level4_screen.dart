@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/model/combination_reading_images.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
+import 'package:smartnest/screens/level4_screen2.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
@@ -15,6 +17,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:smartnest/widgets/button/button_primary2.dart';
 
 class Level4Screen extends StatefulWidget {
   const Level4Screen({super.key});
@@ -29,10 +32,159 @@ class _Level4ScreenState extends State<Level4Screen> {
 
   UserModel? _user;
 
+  CombinationReadingImagesModel? combinationReadingImagesModel;
+
+  bool _isCorrectAnswer = false;
+
+  CombinationReadingImagesModel? combinationReadingImagesModelUpdate;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    fetchCombinationReadingImages(1);
+  }
+
+  Future<void> fetchCombinationReadingImages(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          combinationReadingImagesModel = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> _showSuccessDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // El dialogo no se puede cerrar tocando fuera de él
+      builder: (BuildContext context) {
+        return Center(
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    color: Colors.blue,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          '¡Genial!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Image.network(
+                    'https://cdn-icons-png.flaticon.com/512/6142/6142783.png',
+                    fit: BoxFit.contain, // Ajusta la imagen al contenedor
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  '¡Lo hiciste fantástico!',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonPrimary2(
+                      onPressed: (){
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Level4Screen2()),
+                        );
+                      },
+                      text: 'Continuar'
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateUserResponse(String? userResponse) async {
+    if (combinationReadingImagesModel == null || combinationReadingImagesModel?.level_id == null) {
+      print('Combination Reading Images model or level id is null');
+      return;
+    }
+
+    combinationReadingImagesModelUpdate = CombinationReadingImagesModel(
+      id: combinationReadingImagesModel?.id ?? 0,
+      main_image: combinationReadingImagesModel?.main_image ?? '',
+      second_image: combinationReadingImagesModel?.second_image ?? '',
+      third_image: combinationReadingImagesModel?.third_image ?? '',
+      question: combinationReadingImagesModel?.question ?? '',
+      statement: combinationReadingImagesModel?.statement ?? '',
+      user_response: userResponse ?? '',
+      correct_answer: combinationReadingImagesModel?.correct_answer ?? '',
+      correct: userResponse == combinationReadingImagesModel?.correct_answer,
+      level_id: combinationReadingImagesModel?.level_id ?? 0,
+      answer_one: combinationReadingImagesModel?.answer_one ?? '',
+      answer_two: combinationReadingImagesModel?.answer_two ?? '',
+      answer_three: combinationReadingImagesModel?.answer_three ?? '',
+    );
+
+    print('combinationReadingImagesUpdate: ${combinationReadingImagesModelUpdate?.toMap()}');
+
+    try {
+      var response = await http.put(
+        Uri.parse('http://10.0.2.2:8080/combinationReadingImages/${combinationReadingImagesModel?.id}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(combinationReadingImagesModelUpdate?.toMap()),
+      );
+
+      if (response.statusCode != 200) {
+        print('Failed to update user response: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      } else {
+        print('User response updated successfully');
+        if (userResponse == combinationReadingImagesModel?.correct_answer) {
+          _showSuccessDialog();
+        }
+      }
+    } catch (e) {
+      print('Error while updating user response: $e');
+    }
   }
 
   Future<void> _loadUserData() async {
@@ -230,39 +382,88 @@ class _Level4ScreenState extends State<Level4Screen> {
                   viewportFraction: 0.8,
                 ),
                 items: [
-                  'lib/img/level_1/img_cat.png',
-                  'lib/img/level_1/img_cat.png',
-                  'lib/img/level_1/img_cat.png',
+                  combinationReadingImagesModel?.main_image ?? '',
+                  combinationReadingImagesModel?.second_image ?? '',
+                  combinationReadingImagesModel?.third_image ?? '',
                 ].map((i) {
                   return Builder(
                     builder: (BuildContext context) {
-                      return Image.asset(i, fit: BoxFit.cover);
+                      return Image.network(
+                        i,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                          return Text('Failed to load image: $error');
+                        },
+                      );
                     },
                   );
                 }).toList(),
               ),
               const SizedBox(height: 20),
-              const Center(
-                child: Text(
-                  '¿Cuál es la oración correcta para estas imagenes?',
-                  textAlign: TextAlign.center, // Asegura el centrado del texto
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Ajusta el padding según tus necesidades
+                  child: Text(
+                    combinationReadingImagesModel?.question ?? '',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    textAlign: TextAlign.center, // Asegura que el texto se centre dentro de su contenedor
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
               ButtonActivities(
-                text: 'El gato esta comiendo',
-                onPressed: () {},
+                text: combinationReadingImagesModel?.answer_one ?? '',
+                onPressed: () async{
+                  String? userResponse = combinationReadingImagesModel?.answer_one;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: 'El gato esta llorando',
-                onPressed: () {},
+                text: combinationReadingImagesModel?.answer_two ?? '',
+                onPressed: () async{
+                  String? userResponse = combinationReadingImagesModel?.answer_two;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: 'El gato esta corriendo',
-                onPressed: () {},
+                text: combinationReadingImagesModel?.answer_three ?? '',
+                onPressed: () async{
+                  String? userResponse = combinationReadingImagesModel?.answer_three;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
               ),
               const SizedBox(height: 30),
               Row(

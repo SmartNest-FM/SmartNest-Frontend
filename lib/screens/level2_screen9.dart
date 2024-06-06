@@ -369,9 +369,13 @@ class _Level2Screen9State extends State<Level2Screen9> {
               ),
               const SizedBox(height: 60),
               Center(
-                child: Text(
-                fluentReadingModel?.statement ?? '',
-                  style: TextStyle(fontSize: 21,color: Colors.white),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0), // Espacio a los lados
+                  child: Text(
+                    fluentReadingModel?.statement ?? '',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    textAlign: TextAlign.center, // Centra el texto dentro del contenedor
+                  ),
                 ),
               ),
               const SizedBox(height: 20),

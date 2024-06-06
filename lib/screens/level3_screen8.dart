@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/fluent_reading.dart';
+import 'package:smartnest/model/reading_comprehension.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/activities2.dart';
 import 'package:smartnest/screens/home_screen.dart';
-import 'package:smartnest/screens/level2_screen9.dart';
+import 'package:smartnest/screens/level2_screen2.dart';
+import 'package:smartnest/screens/level3_screen9.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
@@ -19,42 +21,41 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:smartnest/widgets/button/button_primary2.dart';
 
-class Level2Screen8 extends StatefulWidget {
-  const Level2Screen8({super.key});
+class Level3Screen8 extends StatefulWidget {
+  const Level3Screen8({super.key});
 
   @override
-  State<Level2Screen8> createState() => _Level2Screen8State();
+  State<Level3Screen8> createState() => _Level3Screen8State();
 }
 
-class _Level2Screen8State extends State<Level2Screen8> {
+class _Level3Screen8State extends State<Level3Screen8> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
   UserModel? _user;
 
-  FluentReadingModel? fluentReadingModel;
+  ReadingComprehensionModel? readingComprehensionModel;
 
   bool _isCorrectAnswer = false;
 
-   FluentReadingModel? fluentReadingModelUpdate;
+  ReadingComprehensionModel? readingComprehensionModelUpdate;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    fetchFluentReading(8);
+    fetchReadingComprehension(8);
   }
 
-  Future<void> fetchFluentReading(int id) async {
+  Future<void> fetchReadingComprehension(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
-          fluentReadingModel = FluentReadingModel.fromMap(jsonResponse); 
+          readingComprehensionModel = ReadingComprehensionModel.fromMap(jsonResponse); 
           
         });
-        print( fluentReadingModel?.main_image ?? '');
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
@@ -123,7 +124,7 @@ class _Level2Screen8State extends State<Level2Screen8> {
                       onPressed: (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const Level2Screen9()),
+                          MaterialPageRoute(builder: (context) => const Level3Screen9()),
                         );
                       },
                       text: 'Continuar'
@@ -142,34 +143,34 @@ class _Level2Screen8State extends State<Level2Screen8> {
   }
 
   Future<void> updateUserResponse(String? userResponse) async {
-    if (fluentReadingModel == null || fluentReadingModel?.level_id == null) {
+    if (readingComprehensionModel == null || readingComprehensionModel?.level_id == null) {
       print('Fluent reading model or level id is null');
       return;
     }
 
-    fluentReadingModelUpdate = FluentReadingModel(
-      id: fluentReadingModel?.id ?? 0,
-      main_image: fluentReadingModel?.main_image ?? '',
-      question: fluentReadingModel?.question ?? '',
-      statement: fluentReadingModel?.statement ?? '',
+    readingComprehensionModelUpdate = ReadingComprehensionModel(
+      id: readingComprehensionModel?.id ?? 0,
+      main_image: readingComprehensionModel?.main_image ?? '',
+      question: readingComprehensionModel?.question ?? '',
+      statement: readingComprehensionModel?.statement ?? '',
       user_response: userResponse ?? '',
-      correct_answer: fluentReadingModel?.correct_answer ?? '',
-      correct: userResponse == fluentReadingModel?.correct_answer,
-      level_id: fluentReadingModel?.level_id ?? 0,
-      answer_one: fluentReadingModel?.answer_one ?? '',
-      answer_two: fluentReadingModel?.answer_two ?? '',
-      answer_three: fluentReadingModel?.answer_three ?? '',
+      correct_answer: readingComprehensionModel?.correct_answer ?? '',
+      correct: userResponse == readingComprehensionModel?.correct_answer,
+      level_id: readingComprehensionModel?.level_id ?? 0,
+      answer_one: readingComprehensionModel?.answer_one ?? '',
+      answer_two: readingComprehensionModel?.answer_two ?? '',
+      answer_three: readingComprehensionModel?.answer_three ?? '',
     );
 
-    print('fluentReadingUpdate: ${fluentReadingModelUpdate?.toMap()}');
+    print('fluentReadingUpdate: ${readingComprehensionModelUpdate?.toMap()}');
 
     try {
       var response = await http.put(
-        Uri.parse('http://10.0.2.2:8080/fluentReading/${fluentReadingModel?.id}'),
+        Uri.parse('http://10.0.2.2:8080/fluentReading/${readingComprehensionModel?.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(fluentReadingModelUpdate?.toMap()),
+        body: jsonEncode(readingComprehensionModelUpdate?.toMap()),
       );
 
       if (response.statusCode != 200) {
@@ -177,7 +178,7 @@ class _Level2Screen8State extends State<Level2Screen8> {
         print('Response body: ${response.body}');
       } else {
         print('User response updated successfully');
-        if (userResponse == fluentReadingModel?.correct_answer) {
+        if (userResponse == readingComprehensionModel?.correct_answer) {
           _showSuccessDialog();
         }
       }
@@ -367,20 +368,20 @@ class _Level2Screen8State extends State<Level2Screen8> {
                 )
                 ],
               ),
-              const SizedBox(height: 60),
-              Center(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0), // Espacio a los lados
+              const SizedBox(height: 15),
+              Container(
+                constraints: BoxConstraints(maxWidth: 300), // Define un ancho máximo para el contenedor
+                child: Center(
                   child: Text(
-                    fluentReadingModel?.statement ?? '',
+                    readingComprehensionModel?.statement ?? '',
                     style: TextStyle(fontSize: 18, color: Colors.white),
-                    textAlign: TextAlign.center, // Centra el texto dentro del contenedor
+                    textAlign: TextAlign.center, // Alinea el texto al centro
                   ),
                 ),
               ),
               const SizedBox(height: 20),
               Image.network(
-                fluentReadingModel?.main_image ?? '',
+                readingComprehensionModel?.main_image ?? '',
                 width: 150,
                 height: 150,
                 loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
@@ -400,15 +401,15 @@ class _Level2Screen8State extends State<Level2Screen8> {
               const SizedBox(height: 20),
               Center(
                 child: Text(
-                fluentReadingModel?.question ?? '',
+                readingComprehensionModel?.question ?? '',
                   style: TextStyle(fontSize: 18,color: Colors.white),
                 ),
               ),
               const SizedBox(height: 30),
               ButtonActivities(
-                text: fluentReadingModel?.answer_one ?? '',
+                text: readingComprehensionModel?.answer_one ?? '',
                 onPressed: () async{
-                  String? userResponse = fluentReadingModel?.answer_one;
+                  String? userResponse = readingComprehensionModel?.answer_one;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
@@ -421,9 +422,9 @@ class _Level2Screen8State extends State<Level2Screen8> {
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: fluentReadingModel?.answer_two ?? '',
+                text: readingComprehensionModel?.answer_two ?? '',
                 onPressed: () async{
-                  String? userResponse = fluentReadingModel?.answer_two;
+                  String? userResponse = readingComprehensionModel?.answer_two;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
@@ -436,9 +437,9 @@ class _Level2Screen8State extends State<Level2Screen8> {
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: fluentReadingModel?.answer_three ?? '',
+                text: readingComprehensionModel?.answer_three ?? '',
                 onPressed: () async{
-                  String? userResponse = fluentReadingModel?.answer_three;
+                  String? userResponse = readingComprehensionModel?.answer_three;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {

@@ -3,58 +3,57 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
-import 'package:smartnest/model/fluent_reading.dart';
+import 'package:smartnest/model/combination_reading_images.dart';
 import 'package:smartnest/model/user.dart';
-import 'package:smartnest/screens/activities2.dart';
 import 'package:smartnest/screens/home_screen.dart';
-import 'package:smartnest/screens/level2_screen9.dart';
+import 'package:smartnest/screens/level4_screen6.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_activities.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:smartnest/widgets/button/button_primary2.dart';
 
-class Level2Screen8 extends StatefulWidget {
-  const Level2Screen8({super.key});
+class Level4Screen5 extends StatefulWidget {
+  const Level4Screen5({super.key});
 
   @override
-  State<Level2Screen8> createState() => _Level2Screen8State();
+  State<Level4Screen5> createState() => _Level4Screen5State();
 }
 
-class _Level2Screen8State extends State<Level2Screen8> {
+class _Level4Screen5State extends State<Level4Screen5> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
   UserModel? _user;
 
-  FluentReadingModel? fluentReadingModel;
+  CombinationReadingImagesModel? combinationReadingImagesModel;
 
   bool _isCorrectAnswer = false;
 
-   FluentReadingModel? fluentReadingModelUpdate;
+  CombinationReadingImagesModel? combinationReadingImagesModelUpdate;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    fetchFluentReading(8);
+    fetchCombinationReadingImages(5);
   }
 
-  Future<void> fetchFluentReading(int id) async {
+  Future<void> fetchCombinationReadingImages(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
-          fluentReadingModel = FluentReadingModel.fromMap(jsonResponse); 
+          combinationReadingImagesModel = CombinationReadingImagesModel.fromMap(jsonResponse); 
           
         });
-        print( fluentReadingModel?.main_image ?? '');
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
@@ -123,7 +122,7 @@ class _Level2Screen8State extends State<Level2Screen8> {
                       onPressed: (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const Level2Screen9()),
+                          MaterialPageRoute(builder: (context) => const Level4Screen6()),
                         );
                       },
                       text: 'Continuar'
@@ -142,34 +141,36 @@ class _Level2Screen8State extends State<Level2Screen8> {
   }
 
   Future<void> updateUserResponse(String? userResponse) async {
-    if (fluentReadingModel == null || fluentReadingModel?.level_id == null) {
-      print('Fluent reading model or level id is null');
+    if (combinationReadingImagesModel == null || combinationReadingImagesModel?.level_id == null) {
+      print('Combination Reading Images model or level id is null');
       return;
     }
 
-    fluentReadingModelUpdate = FluentReadingModel(
-      id: fluentReadingModel?.id ?? 0,
-      main_image: fluentReadingModel?.main_image ?? '',
-      question: fluentReadingModel?.question ?? '',
-      statement: fluentReadingModel?.statement ?? '',
+    combinationReadingImagesModelUpdate = CombinationReadingImagesModel(
+      id: combinationReadingImagesModel?.id ?? 0,
+      main_image: combinationReadingImagesModel?.main_image ?? '',
+      second_image: combinationReadingImagesModel?.second_image ?? '',
+      third_image: combinationReadingImagesModel?.third_image ?? '',
+      question: combinationReadingImagesModel?.question ?? '',
+      statement: combinationReadingImagesModel?.statement ?? '',
       user_response: userResponse ?? '',
-      correct_answer: fluentReadingModel?.correct_answer ?? '',
-      correct: userResponse == fluentReadingModel?.correct_answer,
-      level_id: fluentReadingModel?.level_id ?? 0,
-      answer_one: fluentReadingModel?.answer_one ?? '',
-      answer_two: fluentReadingModel?.answer_two ?? '',
-      answer_three: fluentReadingModel?.answer_three ?? '',
+      correct_answer: combinationReadingImagesModel?.correct_answer ?? '',
+      correct: userResponse == combinationReadingImagesModel?.correct_answer,
+      level_id: combinationReadingImagesModel?.level_id ?? 0,
+      answer_one: combinationReadingImagesModel?.answer_one ?? '',
+      answer_two: combinationReadingImagesModel?.answer_two ?? '',
+      answer_three: combinationReadingImagesModel?.answer_three ?? '',
     );
 
-    print('fluentReadingUpdate: ${fluentReadingModelUpdate?.toMap()}');
+    print('combinationReadingImagesUpdate: ${combinationReadingImagesModelUpdate?.toMap()}');
 
     try {
       var response = await http.put(
-        Uri.parse('http://10.0.2.2:8080/fluentReading/${fluentReadingModel?.id}'),
+        Uri.parse('http://10.0.2.2:8080/combinationReadingImages/${combinationReadingImagesModel?.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(fluentReadingModelUpdate?.toMap()),
+        body: jsonEncode(combinationReadingImagesModelUpdate?.toMap()),
       );
 
       if (response.statusCode != 200) {
@@ -177,7 +178,7 @@ class _Level2Screen8State extends State<Level2Screen8> {
         print('Response body: ${response.body}');
       } else {
         print('User response updated successfully');
-        if (userResponse == fluentReadingModel?.correct_answer) {
+        if (userResponse == combinationReadingImagesModel?.correct_answer) {
           _showSuccessDialog();
         }
       }
@@ -235,14 +236,14 @@ class _Level2Screen8State extends State<Level2Screen8> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Actividad 8', style: TextStyle(color: Colors.white)),
+        title: const Text('Actividad 1', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.red,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const Activities2Screen()),
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
             );
           },
           iconSize: 40,
@@ -368,47 +369,62 @@ class _Level2Screen8State extends State<Level2Screen8> {
                 ],
               ),
               const SizedBox(height: 60),
-              Center(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0), // Espacio a los lados
-                  child: Text(
-                    fluentReadingModel?.statement ?? '',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                    textAlign: TextAlign.center, // Centra el texto dentro del contenedor
-                  ),
+              
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 150,
+                  enlargeCenterPage: true,
+                  autoPlay: true,
+                  aspectRatio: 16 / 9,
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enableInfiniteScroll: true,
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  viewportFraction: 0.8,
                 ),
-              ),
-              const SizedBox(height: 20),
-              Image.network(
-                fluentReadingModel?.main_image ?? '',
-                width: 150,
-                height: 150,
-                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                          : null,
-                    ),
+                items: [
+                  combinationReadingImagesModel?.main_image ?? '',
+                  combinationReadingImagesModel?.second_image ?? '',
+                  combinationReadingImagesModel?.third_image ?? '',
+                ].map((i) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Image.network(
+                        i,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                          return Text('Failed to load image: $error');
+                        },
+                      );
+                    },
                   );
-                },
-                errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                  return Text('Failed to load image: $error');
-                },
+                }).toList(),
               ),
               const SizedBox(height: 20),
               Center(
-                child: Text(
-                fluentReadingModel?.question ?? '',
-                  style: TextStyle(fontSize: 18,color: Colors.white),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Ajusta el padding según tus necesidades
+                  child: Text(
+                    combinationReadingImagesModel?.question ?? '',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    textAlign: TextAlign.center, // Asegura que el texto se centre dentro de su contenedor
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
               ButtonActivities(
-                text: fluentReadingModel?.answer_one ?? '',
+                text: combinationReadingImagesModel?.answer_one ?? '',
                 onPressed: () async{
-                  String? userResponse = fluentReadingModel?.answer_one;
+                  String? userResponse = combinationReadingImagesModel?.answer_one;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
@@ -421,9 +437,9 @@ class _Level2Screen8State extends State<Level2Screen8> {
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: fluentReadingModel?.answer_two ?? '',
+                text: combinationReadingImagesModel?.answer_two ?? '',
                 onPressed: () async{
-                  String? userResponse = fluentReadingModel?.answer_two;
+                  String? userResponse = combinationReadingImagesModel?.answer_two;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
@@ -436,9 +452,9 @@ class _Level2Screen8State extends State<Level2Screen8> {
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: fluentReadingModel?.answer_three ?? '',
+                text: combinationReadingImagesModel?.answer_three ?? '',
                 onPressed: () async{
-                  String? userResponse = fluentReadingModel?.answer_three;
+                  String? userResponse = combinationReadingImagesModel?.answer_three;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
