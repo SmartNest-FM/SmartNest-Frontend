@@ -7,6 +7,7 @@ import 'package:smartnest/model/combination_reading_images.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level1_screen4.dart';
+import 'package:smartnest/screens/level4_screen4.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
@@ -122,7 +123,7 @@ class _Level4Screen3State extends State<Level4Screen3> {
                       onPressed: (){
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const Level1Screen4()),
+                          MaterialPageRoute(builder: (context) => const Level4Screen4()),
                         );
                       },
                       text: 'Continuar'
