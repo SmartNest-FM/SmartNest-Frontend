@@ -367,7 +367,7 @@ class _Level2Screen4State extends State<Level2Screen4> {
                 )
                 ],
               ),
-              const SizedBox(height: 60),
+              const SizedBox(height: 35),
               Center(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 16.0), // Espacio a los lados
