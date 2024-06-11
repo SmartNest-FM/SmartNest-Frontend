@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
+import 'package:smartnest/model/vocabulary_verb.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level1_screen.dart';
 import 'package:smartnest/screens/level1_screen10.dart';
@@ -47,10 +48,202 @@ class _Activities5ScreenState extends State<Activities5Screen> {
   final FirebaseAuthServices _auth = FirebaseAuthServices();
   UserModel? _user;
 
+  VocabularyVerbModel? vocabularyVerbModel;
+  VocabularyVerbModel? vocabularyVerbModel2;
+  VocabularyVerbModel? vocabularyVerbModel3;
+  VocabularyVerbModel? vocabularyVerbModel4;
+  VocabularyVerbModel? vocabularyVerbModel5;
+  VocabularyVerbModel? vocabularyVerbModel6;
+  VocabularyVerbModel? vocabularyVerbModel7;
+  VocabularyVerbModel? vocabularyVerbModel8;
+  VocabularyVerbModel? vocabularyVerbModel9;
+  VocabularyVerbModel? vocabularyVerbModel10;
+
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    fetchVocabularyVerb(1);
+    fetchVocabularyVerb2(2);
+    fetchVocabularyVerb3(3);
+    fetchVocabularyVerb4(4);
+    fetchVocabularyVerb5(5);
+    fetchVocabularyVerb6(6);
+    fetchVocabularyVerb7(7);
+    fetchVocabularyVerb8(8);
+    fetchVocabularyVerb9(9);
+    fetchVocabularyVerb10(10);
+  }
+
+  Future<void> fetchVocabularyVerb(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel2 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb3(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel3 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb4(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel4 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb5(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel5 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb6(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel6 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb7(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel7 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb8(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel8 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb9(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel9 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb10(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel10 = VocabularyVerbModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> _loadUserData() async {
@@ -245,7 +438,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -267,7 +462,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel2?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -289,7 +486,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel3?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -311,7 +510,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel4?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -333,7 +534,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel5?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -355,7 +558,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel6?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -377,7 +582,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel7?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -399,7 +606,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel8?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -421,7 +630,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel9?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -443,7 +654,9 @@ class _Activities5ScreenState extends State<Activities5Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            vocabularyVerbModel10?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/model/phonological_awareness.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level1_screen.dart';
@@ -36,11 +37,204 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
   final FirebaseAuthServices _auth = FirebaseAuthServices();
   UserModel? _user;
 
+  PhonologicalAwarenessModel? phonologicalAwareness1;
+  PhonologicalAwarenessModel? phonologicalAwareness2;
+  PhonologicalAwarenessModel? phonologicalAwareness3;
+  PhonologicalAwarenessModel? phonologicalAwareness4;
+  PhonologicalAwarenessModel? phonologicalAwareness5;
+  PhonologicalAwarenessModel? phonologicalAwareness6;
+  PhonologicalAwarenessModel? phonologicalAwareness7;
+  PhonologicalAwarenessModel? phonologicalAwareness8;
+  PhonologicalAwarenessModel? phonologicalAwareness9;
+  PhonologicalAwarenessModel? phonologicalAwareness10;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    fetchPhonologicalAwareness(1);
+    fetchPhonologicalAwareness2(2);
+    fetchPhonologicalAwareness3(3);
+    fetchPhonologicalAwareness4(4);
+    fetchPhonologicalAwareness5(5);
+    fetchPhonologicalAwareness6(6);
+    fetchPhonologicalAwareness7(7);
+    fetchPhonologicalAwareness8(8);
+    fetchPhonologicalAwareness9(9);
+    fetchPhonologicalAwareness10(10);
   }
+
+  Future<void> fetchPhonologicalAwareness(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness1 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness2 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness3(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness3 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness4(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness4 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness5(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness5 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness6(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness6 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness7(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness7 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness8(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness8 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness9(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness9 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness10(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwareness10 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  
 
   Future<void> _loadUserData() async {
     try {
@@ -234,7 +428,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness1?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -256,7 +452,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness2?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -278,7 +476,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness3?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -300,7 +500,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness4?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -322,7 +524,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness5?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -344,7 +548,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness6?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -366,7 +572,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness7?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -388,7 +596,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness8?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -410,7 +620,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness9?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -432,7 +644,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            phonologicalAwareness10?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),

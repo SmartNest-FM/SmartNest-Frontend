@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/model/combination_reading_images.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level1_screen.dart';
@@ -47,11 +48,203 @@ class _Activities4ScreenState extends State<Activities4Screen> {
   final FirebaseAuthServices _auth = FirebaseAuthServices();
   UserModel? _user;
 
+  CombinationReadingImagesModel? _combinationReadingImages;
+  CombinationReadingImagesModel? _combinationReadingImages2;
+  CombinationReadingImagesModel? _combinationReadingImages3;
+  CombinationReadingImagesModel? _combinationReadingImages4;
+  CombinationReadingImagesModel? _combinationReadingImages5;
+  CombinationReadingImagesModel? _combinationReadingImages6;
+  CombinationReadingImagesModel? _combinationReadingImages7;
+  CombinationReadingImagesModel? _combinationReadingImages8;
+  CombinationReadingImagesModel? _combinationReadingImages9;
+  CombinationReadingImagesModel? _combinationReadingImages10;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    fetchCombinationReadingImages(1);
+    fetchCombinationReadingImages2(2);
+    fetchCombinationReadingImages3(3);
+    fetchCombinationReadingImages4(4);
+    fetchCombinationReadingImages5(5);
+    fetchCombinationReadingImages6(6);
+    fetchCombinationReadingImages7(7);
+    fetchCombinationReadingImages8(8);
+    fetchCombinationReadingImages9(9);
+    fetchCombinationReadingImages10(10);
   }
+
+  Future<void> fetchCombinationReadingImages(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages2 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages3(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages3 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages4(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages4 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages5(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages5 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages6(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages6 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages7(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages7 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages8(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages8 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages9(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages9 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages10(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _combinationReadingImages10 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
 
   Future<void> _loadUserData() async {
     try {
@@ -245,7 +438,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -267,7 +462,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages2?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -289,7 +486,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages3?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -311,7 +510,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages4?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -333,7 +534,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages5?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -355,7 +558,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages6?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -377,7 +582,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages7?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -399,7 +606,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages8?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -421,7 +630,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages9?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -443,7 +654,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _combinationReadingImages10?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/model/fluent_reading.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level1_screen.dart';
@@ -46,11 +47,204 @@ class _Activities2ScreenState extends State<Activities2Screen> {
   final FirebaseAuthServices _auth = FirebaseAuthServices();
   UserModel? _user;
 
+  FluentReadingModel? _fluentReading;
+  FluentReadingModel? _fluentReading2;
+  FluentReadingModel? _fluentReading3;
+  FluentReadingModel? _fluentReading4;
+  FluentReadingModel? _fluentReading5;
+  FluentReadingModel? _fluentReading6;
+  FluentReadingModel? _fluentReading7;
+  FluentReadingModel? _fluentReading8;
+  FluentReadingModel? _fluentReading9;
+  FluentReadingModel? _fluentReading10;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    fetchFluentReading(1);
+    fetchFluentReading2(2);
+    fetchFluentReading3(3);
+    fetchFluentReading4(4);
+    fetchFluentReading5(5);
+    fetchFluentReading6(6);
+    fetchFluentReading7(7);
+    fetchFluentReading8(8);
+    fetchFluentReading9(9);
+    fetchFluentReading10(10);
   }
+
+  Future<void> fetchFluentReading(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading2 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading3(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading3 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading4(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading4 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading5(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading5 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading6(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading6 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading7(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading7 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading8(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading8 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading9(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading9 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading10(int id) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          _fluentReading10 = FluentReadingModel.fromMap(jsonResponse); 
+          
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+
 
   Future<void> _loadUserData() async {
     try {
@@ -244,7 +438,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -266,7 +462,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading2?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -288,7 +486,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading3?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -310,7 +510,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading4?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -330,9 +532,11 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                             );
                           },
                         ),
-                        ClipOval(
+                       ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading5?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -354,7 +558,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading6?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -376,7 +582,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading7?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -398,7 +606,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading8?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -420,7 +630,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading9?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),
@@ -442,7 +654,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
                         ),
                         ClipOval(
                           child: Image.asset(
-                            'lib/img/activitie_none.png',
+                            _fluentReading10?.correct == false
+                            ? 'lib/img/activitie_none.png'
+                            : 'lib/img/activitie_check.png',
                             width: 50,
                             height: 50,
                           ),

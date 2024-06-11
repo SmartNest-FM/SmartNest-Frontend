@@ -38,13 +38,17 @@ class _Level1Screen4State extends State<Level1Screen4> {
 
   bool _isCorrectAnswer = false;
 
-   PhonologicalAwarenessModel? phonologicalAwarenessUpdate;
+  PhonologicalAwarenessModel? phonologicalAwarenessUpdate;
+
+  String feedbackImageG = ''; // Definir feedbackImage
+  String feedbackMessageG = ''; // Definir feedbackMessage
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    fetchPhonologicalAwareness(4); // Aquí cambia el ID si es necesario
+    fetchPhonologicalAwareness(4); 
+     fetchFeedback(4);
   }
 
   Future<void> fetchPhonologicalAwareness(int id) async {
@@ -143,6 +147,30 @@ class _Level1Screen4State extends State<Level1Screen4> {
     );
   }
 
+  Future<void> fetchFeedback(int activityId) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonological/$activityId'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+        if (jsonResponse is List && jsonResponse.isNotEmpty) {
+          var firstActivity = jsonResponse[0]; // Tomar solo el primer elemento de la lista
+          String feedbackImage = firstActivity['image'];
+          String feedbackMessage = firstActivity['feedback'];
+          setState(() {
+            feedbackImageG = feedbackImage;
+            feedbackMessageG = feedbackMessage;
+          });
+        } else {
+          print('La respuesta del servidor está vacía o no es una lista.');
+        }
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<void> updateUserResponse(String? userResponse) async {
     if (phonologicalAwarenessModel == null || phonologicalAwarenessModel?.level_id == null) {
       print('Error: phonologicalAwarenessModel or level_id is null');
@@ -180,11 +208,105 @@ class _Level1Screen4State extends State<Level1Screen4> {
         print('User response updated successfully');
         if (userResponse == phonologicalAwarenessModel?.correct_answer) {
           _showSuccessDialog();
+        }else{
+          _showRetryDialog();
         }
       }
     } catch (e) {
       print('Error while updating user response: $e');
     }
+  }
+
+  Future<void> _showRetryDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    color: Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          '¡Inténtalo de nuevo!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Image.network(
+                    feedbackImageG,
+                    fit: BoxFit.contain,
+                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                      return Text('Failed to load image: $error');
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: Text(
+                    'Pista: ${feedbackMessageG}',
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonPrimary2(
+                      onPressed: (){
+                        Navigator.pop(context); // Cerrar el diálogo
+                        fetchPhonologicalAwareness(4);
+                        fetchFeedback(4); 
+                      },
+                      text: 'Reintentar',
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _loadUserData() async {

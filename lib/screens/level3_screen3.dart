@@ -41,11 +41,15 @@ class _Level3Screen3State extends State<Level3Screen3> {
 
   ReadingComprehensionModel? readingComprehensionModelUpdate;
 
+  String feedbackImageG = ''; 
+  String feedbackMessageG = ''; 
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
     fetchReadingComprehension(3);
+    fetchFeedback(3);
   }
 
   Future<void> fetchReadingComprehension(int id) async {
@@ -57,6 +61,30 @@ class _Level3Screen3State extends State<Level3Screen3> {
           readingComprehensionModel = ReadingComprehensionModel.fromMap(jsonResponse); 
           
         });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFeedback(int activityId) async {
+    try {
+      var response = await http.get(Uri.parse('http://10.0.2.2:8080/reading/$activityId'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+        if (jsonResponse is List && jsonResponse.isNotEmpty) {
+          var firstActivity = jsonResponse[0]; // Tomar solo el primer elemento de la lista
+          String feedbackImage = firstActivity['image'];
+          String feedbackMessage = firstActivity['feedback'];
+          setState(() {
+            feedbackImageG = feedbackImage;
+            feedbackMessageG = feedbackMessage;
+          });
+        } else {
+          print('La respuesta del servidor está vacía o no es una lista.');
+        }
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
@@ -181,11 +209,105 @@ class _Level3Screen3State extends State<Level3Screen3> {
         print('User response updated successfully');
         if (userResponse == readingComprehensionModel?.correct_answer) {
           _showSuccessDialog();
+        }else{
+          _showRetryDialog();
         }
       }
     } catch (e) {
       print('Error while updating user response: $e');
     }
+  }
+
+  Future<void> _showRetryDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    color: Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          '¡Inténtalo de nuevo!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Image.network(
+                    feedbackImageG,
+                    fit: BoxFit.contain,
+                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                      return Text('Failed to load image: $error');
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: Text(
+                    'Pista: ${feedbackMessageG}',
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonPrimary2(
+                      onPressed: (){
+                        Navigator.pop(context); // Cerrar el diálogo
+                        fetchReadingComprehension(3);
+                        fetchFeedback(3); 
+                      },
+                      text: 'Reintentar',
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _loadUserData() async {
@@ -369,7 +491,7 @@ class _Level3Screen3State extends State<Level3Screen3> {
                 )
                 ],
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 5),
               Container(
                 constraints: BoxConstraints(maxWidth: 300), // Define un ancho máximo para el contenedor
                 child: Center(
@@ -380,7 +502,7 @@ class _Level3Screen3State extends State<Level3Screen3> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Image.network(
                 readingComprehensionModel?.main_image ?? '',
                 width: 150,
@@ -399,7 +521,7 @@ class _Level3Screen3State extends State<Level3Screen3> {
                   return Text('Failed to load image: $error');
                 },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Center(
                 child: Text(
                 readingComprehensionModel?.question ?? '',

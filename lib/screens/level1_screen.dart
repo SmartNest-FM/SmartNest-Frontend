@@ -225,93 +225,97 @@ class _Level1ScreenState extends State<Level1Screen> {
     }
   }
 
-    Future<void> _showRetryDialog() async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return Center(
-        child: AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Container(
-                  color: Colors.red,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        '¡Inténtalo de nuevo!',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+  Future<void> _showRetryDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    color: Colors.red,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Center(
+                        child: Text(
+                          '¡Inténtalo de nuevo!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: 100,
-                height: 100,
-                child: Image.network(
-                  feedbackImageG,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                            : null,
-                      ),
-                    );
-                  },
-                  errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                    return Text('Failed to load image: $error');
-                  },
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Text(
-                'Pista: ${feedbackMessageG}',
-                style: TextStyle(fontSize: 18, color: Colors.black),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ButtonPrimary2(
-                    onPressed: (){
-                      Navigator.pop(context); // Cerrar el diálogo
-                      fetchPhonologicalAwareness(1); // Volver a cargar la actividad
-                      fetchFeedback(1); // Volver a cargar el feedback
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Image.network(
+                    feedbackImageG,
+                    fit: BoxFit.contain,
+                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                              : null,
+                        ),
+                      );
                     },
-                    text: 'Reintentar',
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-            ],
+                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                      return Text('Failed to load image: $error');
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
+                  child: Text(
+                    'Pista: ${feedbackMessageG}',
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonPrimary2(
+                      onPressed: (){
+                        Navigator.pop(context); // Cerrar el diálogo
+                        fetchPhonologicalAwareness(1); // Volver a cargar la actividad
+                        fetchFeedback(1); // Volver a cargar el feedback
+                      },
+                      text: 'Reintentar',
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
 
 
