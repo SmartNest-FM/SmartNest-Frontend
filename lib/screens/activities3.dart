@@ -16,6 +16,15 @@ import 'package:smartnest/screens/level1_screen7.dart';
 import 'package:smartnest/screens/level1_screen8.dart';
 import 'package:smartnest/screens/level1_screen9.dart';
 import 'package:smartnest/screens/level3_screen.dart';
+import 'package:smartnest/screens/level3_screen10.dart';
+import 'package:smartnest/screens/level3_screen2.dart';
+import 'package:smartnest/screens/level3_screen3.dart';
+import 'package:smartnest/screens/level3_screen4.dart';
+import 'package:smartnest/screens/level3_screen5.dart';
+import 'package:smartnest/screens/level3_screen6.dart';
+import 'package:smartnest/screens/level3_screen7.dart';
+import 'package:smartnest/screens/level3_screen8.dart';
+import 'package:smartnest/screens/level3_screen9.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -251,7 +260,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen2()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen2()),
                             );
                           },
                         ),
@@ -273,7 +282,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen3()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen3()),
                             );
                           },
                         ),
@@ -295,7 +304,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen4()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen4()),
                             );
                           },
                         ),
@@ -317,7 +326,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen5()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen5()),
                             );
                           },
                         ),
@@ -339,7 +348,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen6()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen6()),
                             );
                           },
                         ),
@@ -361,7 +370,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen7()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen7()),
                             );
                           },
                         ),
@@ -383,7 +392,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen8()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen8()),
                             );
                           },
                         ),
@@ -405,7 +414,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen9()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen9()),
                             );
                           },
                         ),
@@ -427,7 +436,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const Level1Screen10()),
+                              MaterialPageRoute(builder: (context) => const Level3Screen10()),
                             );
                           },
                         ),

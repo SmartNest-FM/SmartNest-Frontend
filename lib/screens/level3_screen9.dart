@@ -7,6 +7,7 @@ import 'package:smartnest/model/fluent_reading.dart';
 import 'package:smartnest/model/reading_comprehension.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/activities2.dart';
+import 'package:smartnest/screens/activities3.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level2_screen2.dart';
 import 'package:smartnest/screens/level3_screen10.dart';
@@ -243,7 +244,7 @@ class _Level3Screen9State extends State<Level3Screen9> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const Activities2Screen()),
+              MaterialPageRoute(builder: (context) => const Activities3Screen()),
             );
           },
           iconSize: 40,

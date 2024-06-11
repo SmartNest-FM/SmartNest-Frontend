@@ -5,6 +5,7 @@ import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/combination_reading_images.dart';
 import 'package:smartnest/model/user.dart';
+import 'package:smartnest/screens/activities4.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
@@ -242,7 +243,7 @@ class _Level4Screen10State extends State<Level4Screen10> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (context) => const Activities4Screen()),
             );
           },
           iconSize: 40,

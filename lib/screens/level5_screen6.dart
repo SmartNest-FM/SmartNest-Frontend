@@ -5,6 +5,7 @@ import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/model/vocabulary_verb.dart';
+import 'package:smartnest/screens/activities5.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/level5_screen7.dart';
 import 'package:smartnest/screens/levels_screen.dart';
@@ -246,7 +247,7 @@ class _Level5Screen6State extends State<Level5Screen6> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (context) => const Activities5Screen()),
             );
           },
           iconSize: 40,
