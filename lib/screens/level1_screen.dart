@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/feedback.dart';
@@ -23,8 +25,15 @@ import 'package:smartnest/widgets/button/button_dynamic.dart';
 import 'package:smartnest/widgets/button/button_primary2.dart';
 
 
+import 'package:dart_openai/dart_openai.dart';
+
+import 'package:path_provider/path_provider.dart';
+
+
+
 class Level1Screen extends StatefulWidget {
   const Level1Screen({super.key});
+
 
   @override
   State<Level1Screen> createState() => _Level1ScreenState();
@@ -45,13 +54,105 @@ class _Level1ScreenState extends State<Level1Screen> {
   String feedbackImageG = ''; // Definir feedbackImage
   String feedbackMessageG = ''; // Definir feedbackMessage
 
+  final FlutterSoundRecorder _soundRecorder = FlutterSoundRecorder();
+  
+  String answerAudio = '';
+  String audioFilePathG = '';
+
+  bool microphone_active = false;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
     fetchPhonologicalAwareness(1); // Aquí cambia el ID si es necesario
     fetchFeedback(1); // Aquí cambia el ID si es necesario
+
+     _initRecorder();
   }
+
+  void _initRecorder() async {
+    try {
+      await _soundRecorder.openAudioSession();
+      print('Audio session opened');
+    } catch (e) {
+      print('Error opening audio session: $e');
+    }
+  }
+
+  /* Future<void> transcribeAudio(String filePath, String apiKey) async {
+    // Crea una solicitud multipart
+    var request = http.MultipartRequest('POST', Uri.parse('https://api.openai.com/v1/audio/transcriptions'))
+      ..headers['Authorization'] = 'Bearer $apiKey'
+      ..headers['Content-Type'] = 'multipart/form-data'
+      ..files.add(await http.MultipartFile.fromPath('file', filePath))
+      ..fields['model'] = 'whisper-1';
+
+    // Envía la solicitud
+    var response = await request.send();
+
+    // Maneja la respuesta
+    if (response.statusCode == 200) {
+      var responseData = await response.stream.bytesToString();
+      print('Response data: $responseData');
+    } else {
+      print('Request failed with status: ${response.statusCode}');
+    }
+  } */
+
+  Future<String> convertSpeechToText(String filePath) async{
+    const apiKey = '';
+    var url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll({"Authorization":"Bearer $apiKey"});
+    request.fields["model"] = "whisper-1";
+    request.fields["language"] = "es";
+    request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    var response = await request.send();
+    var newresponse =await http.Response.fromStream(response);
+    final responseData = json.decode(newresponse.body);
+    print(responseData);
+    return "123";
+  }
+
+  Future<void> startRecording() async {
+    String tempDir = (await getTemporaryDirectory()).path;
+    String audioFilePath = '$tempDir/audio_temp.mp3';
+
+    audioFilePathG = audioFilePath;
+
+    try {
+      await _soundRecorder.startRecorder(
+        toFile: audioFilePath, // Ruta donde se guardará el archivo de audio
+        codec: Codec.mp3,
+      );
+      print('Recording started');
+    } catch (e) {
+      print('Error starting recording: $e');
+    }
+  }
+
+  Future<void> stopRecording() async {
+    microphone_active=false;
+    try {
+      String? path = await _soundRecorder.stopRecorder();
+      print('Recording stopped, audio file saved at: $path');
+      // Aquí puedes enviar el archivo de audio para su transcripción
+      convertSpeechToText(path!);
+
+      File audioFile = File(audioFilePathG);
+      if (await audioFile.exists()) {
+        await audioFile.delete();
+      }
+
+    } catch (e) {
+      print('Error stopping recording: $e');
+    }
+  }
+
+
+
+
 
   Future<void> fetchPhonologicalAwareness(int id) async {
     try {
@@ -497,8 +598,8 @@ class _Level1ScreenState extends State<Level1Screen> {
                   height: 60.0, // Aquí defines la altura deseada
                   child: IconButton(
                     icon: Image.asset('lib/img/play_button_image.png'),
-                    onPressed: () {
-                      // Aquí va la lógica para reproducir el enunciado
+                    onPressed: () async{
+                     
                     },
                   ),
                 )
@@ -577,24 +678,57 @@ class _Level1ScreenState extends State<Level1Screen> {
                 },
               ),
               const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Responder',
-                    style: TextStyle(fontSize: 18,color: Colors.white),
-                  ),
-                  SizedBox(
-                  height: 60.0, // Aquí defines la altura deseada
-                  child: IconButton(
-                    icon: Image.asset('lib/img/microphone.png'),
-                    onPressed: () {
-                      // Aquí va la lógica para reproducir el enunciado
-                    },
-                  ),
-                )
-                ],
-              ),
+              if(microphone_active==false)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Responder',
+                      style: TextStyle(fontSize: 18,color: Colors.white),
+                    ),
+                    SizedBox(
+                    height: 60.0, // Aquí defines la altura deseada
+                    child: IconButton(
+                      icon: Image.asset('lib/img/microphone.png'),
+                      onPressed: () async{
+                        /* final filePath = 'lib/img/leonardopn.mp3';
+                        final apiKey = '';
+
+                        print(File(filePath).existsSync());
+
+                        print(transcribeAudio(filePath, apiKey)); */
+
+                        /* FilePickerResult? result = await FilePicker.platform.pickFiles();
+                        if(result!=null){
+                          convertSpeechToText(result.files.single.path!);
+
+                        } */
+
+                        await startRecording();
+                      },
+                    ),
+                  )
+                  ],
+                ),
+              if(microphone_active==true) 
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Grabando...',
+                      style: TextStyle(fontSize: 18,color: Colors.white),
+                    ),
+                    SizedBox(
+                    height: 60.0, // Aquí defines la altura deseada
+                    child: IconButton(
+                      icon: Image.asset('lib/img/stop_button_image.png'),
+                      onPressed: () async{
+                        await stopRecording();
+                      },
+                    ),
+                  )
+                  ],
+                ),
             ],
           ),
         ),
