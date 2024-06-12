@@ -124,7 +124,7 @@ class _Level1ScreenState extends State<Level1Screen> {
     try {
       await _soundRecorder.startRecorder(
         toFile: audioFilePath, // Ruta donde se guardará el archivo de audio
-        codec: Codec.mp3,
+        codec: Codec.aacADTS,
       );
       print('Recording started');
     } catch (e) {
@@ -156,7 +156,7 @@ class _Level1ScreenState extends State<Level1Screen> {
 
   Future<void> fetchPhonologicalAwareness(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/phonologicalAwareness/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -252,7 +252,7 @@ class _Level1ScreenState extends State<Level1Screen> {
 
   Future<void> fetchFeedback(int activityId) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/phonological/$activityId'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/phonological/$activityId'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
@@ -302,7 +302,7 @@ class _Level1ScreenState extends State<Level1Screen> {
 
     try {
       var response = await http.put(
-        Uri.parse('http://10.0.2.2:8080/phonologicalAwareness/${phonologicalAwarenessModel?.id}'),
+        Uri.parse('https://smartnest.azurewebsites.net/phonologicalAwareness/${phonologicalAwarenessModel?.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -424,7 +424,7 @@ class _Level1ScreenState extends State<Level1Screen> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));

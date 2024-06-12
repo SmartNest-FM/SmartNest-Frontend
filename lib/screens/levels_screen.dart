@@ -75,7 +75,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -101,7 +101,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
   
   Future<void> _loadLevelData(int levelNumber) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/level/$levelNumber'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/level/$levelNumber'));
       if (response.statusCode == 200) {
         var levelData = jsonDecode(response.body);
         var level = LevelModel.fromMap(levelData);

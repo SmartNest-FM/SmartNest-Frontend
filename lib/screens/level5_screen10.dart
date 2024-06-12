@@ -51,7 +51,7 @@ class _Level5Screen10State extends State<Level5Screen10> {
 
   Future<void> fetchVocabularyVerb(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -68,7 +68,7 @@ class _Level5Screen10State extends State<Level5Screen10> {
 
   Future<void> fetchFeedback(int activityId) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabulary/$activityId'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabulary/$activityId'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
@@ -197,7 +197,7 @@ class _Level5Screen10State extends State<Level5Screen10> {
 
     try {
       var response = await http.put(
-        Uri.parse('http://10.0.2.2:8080/vocabularyVerb/${vocabularyVerbModel?.id}'),
+        Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/${vocabularyVerbModel?.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -315,7 +315,7 @@ class _Level5Screen10State extends State<Level5Screen10> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));

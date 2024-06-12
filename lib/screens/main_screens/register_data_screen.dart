@@ -51,7 +51,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
     );
 
     var response = await http.put(
-      Uri.parse('http://10.0.2.2:8080/user/${updatedUser.id}'), // Asegúrate de usar la URL correcta
+      Uri.parse('https://smartnest.azurewebsites.net/user/${updatedUser.id}'), // Asegúrate de usar la URL correcta
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

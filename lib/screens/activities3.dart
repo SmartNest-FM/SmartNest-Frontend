@@ -76,7 +76,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -93,7 +93,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension2(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -110,7 +110,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension3(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -127,7 +127,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension4(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -144,7 +144,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension5(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -161,7 +161,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension6(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -178,7 +178,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension7(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -195,7 +195,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension8(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -212,7 +212,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension9(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -229,7 +229,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
 
   Future<void> fetchReadingComprehension10(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/readingComprehension/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -247,7 +247,7 @@ class _Activities3ScreenState extends State<Activities3Screen> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));

@@ -52,7 +52,7 @@ class _Level4Screen4State extends State<Level4Screen4> {
 
   Future<void> fetchCombinationReadingImages(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -69,7 +69,7 @@ class _Level4Screen4State extends State<Level4Screen4> {
 
    Future<void> fetchFeedback(int activityId) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combination/$activityId'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combination/$activityId'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
@@ -195,7 +195,7 @@ class _Level4Screen4State extends State<Level4Screen4> {
 
     try {
       var response = await http.put(
-        Uri.parse('http://10.0.2.2:8080/combinationReadingImages/${combinationReadingImagesModel?.id}'),
+        Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/${combinationReadingImagesModel?.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -313,7 +313,7 @@ class _Level4Screen4State extends State<Level4Screen4> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));

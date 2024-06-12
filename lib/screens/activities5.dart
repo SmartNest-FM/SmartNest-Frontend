@@ -78,7 +78,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -95,7 +95,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb2(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -112,7 +112,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb3(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -129,7 +129,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb4(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -146,7 +146,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb5(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -163,7 +163,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb6(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -180,7 +180,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb7(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -197,7 +197,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb8(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -214,7 +214,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb9(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -231,7 +231,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
 
   Future<void> fetchVocabularyVerb10(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/vocabularyVerb/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -249,7 +249,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));

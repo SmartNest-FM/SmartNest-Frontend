@@ -51,7 +51,7 @@ class _Level2Screen4State extends State<Level2Screen4> {
 
   Future<void> fetchFluentReading(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluentReading/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -69,7 +69,7 @@ class _Level2Screen4State extends State<Level2Screen4> {
 
   Future<void> fetchFeedback(int activityId) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/fluent/$activityId'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluent/$activityId'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
@@ -193,7 +193,7 @@ class _Level2Screen4State extends State<Level2Screen4> {
 
     try {
       var response = await http.put(
-        Uri.parse('http://10.0.2.2:8080/fluentReading/${fluentReadingModel?.id}'),
+        Uri.parse('https://smartnest.azurewebsites.net/fluentReading/${fluentReadingModel?.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -311,7 +311,7 @@ class _Level2Screen4State extends State<Level2Screen4> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));

@@ -77,7 +77,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -94,7 +94,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages2(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -111,7 +111,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages3(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -128,7 +128,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages4(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -145,7 +145,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages5(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -162,7 +162,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages6(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -179,7 +179,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages7(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -196,7 +196,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages8(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -213,7 +213,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages9(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -230,7 +230,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
 
   Future<void> fetchCombinationReadingImages10(int id) async {
     try {
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/combinationReadingImages/$id'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
          setState(() {
@@ -249,7 +249,7 @@ class _Activities4ScreenState extends State<Activities4Screen> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('http://10.0.2.2:8080/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));
