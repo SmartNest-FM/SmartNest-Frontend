@@ -461,18 +461,20 @@ class _PercentageScreenState extends State<PercentageScreen> {
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 25),
                   ButtonSecondary2(onPressed: (){
                     speak('Vamos por buen camino ${_user?.nameuser}. ¡Tú puedes!');
                   }, text: '¡Sigue Estudiando!'),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 25),
                   ButtonPrimary(onPressed: (){
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LevelsScreen()),
                     );
-                  }, text: 'Comenzar')
+                  }, text: 'Comenzar'),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
