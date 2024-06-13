@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
@@ -14,11 +13,12 @@ import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_activities.dart';
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:smartnest/widgets/button/button_primary2.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class Level1Screen4 extends StatefulWidget {
@@ -43,12 +43,132 @@ class _Level1Screen4State extends State<Level1Screen4> {
   String feedbackImageG = ''; // Definir feedbackImage
   String feedbackMessageG = ''; // Definir feedbackMessage
 
+  final FlutterSoundRecorder _soundRecorder = FlutterSoundRecorder();
+  
+  String audioFilePathG = '';
+
+  bool microphone_active = false;
+
+  String gosuPath = '';
+
+  String answerRecorder = '';
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
     fetchPhonologicalAwareness(4); 
      fetchFeedback(4);
+     requestPermissions();
+  }
+
+  Future<void> requestPermissions() async {
+    if (await Permission.microphone.request().isGranted &&
+        await Permission.storage.request().isGranted) {
+        _initRecorder();
+    } else {
+      print('Permission denied' );
+    }
+  }
+
+  void _initRecorder() async {
+    try {
+      await _soundRecorder.openAudioSession();
+      print('Audio session opened');
+    } catch (e) {
+      print('Error opening audio session: $e');
+    }
+  }
+
+  Future<String> convertSpeechToText(String filePath) async{
+
+    const apiKey = '';
+    var url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
+    var request = http.MultipartRequest('POST', url);
+    request.headers.addAll({"Authorization":"Bearer $apiKey"});
+    request.fields["model"] = "whisper-1";
+    request.fields["language"] = "es";
+    request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    var response = await request.send();
+    var newresponse =await http.Response.fromStream(response);
+    final responseData = json.decode(newresponse.body);
+    
+    return responseData['text'] ?? '';
+  }
+
+  Future<void> startRecording() async {
+    String tempDir = (await getTemporaryDirectory()).path;
+    String audioFilePath = '$tempDir/audio_temp0.wav';
+
+    print('Recording started, audio file saved at: $audioFilePath');
+    audioFilePathG = audioFilePath;
+
+    try {
+      await _soundRecorder.startRecorder(
+        toFile: audioFilePath, // Ruta donde se guardará el archivo de audio
+        codec: Codec.pcm16WAV,
+      );
+      print('Recording started in the path: $audioFilePath');
+
+      gosuPath = audioFilePath;
+
+      setState(() {
+        microphone_active = true;
+      });
+    } catch (e) {
+      print('Error starting recording: $e');
+    }
+  }
+
+  Future<void> stopRecording() async {
+      try {
+      String? path = await _soundRecorder.stopRecorder();
+      if (path != null) {
+        print('Recording stopped, audio file saved at: $gosuPath');
+         // Aquí se envia el archivo de audio para su transcripción
+        String transcribedText = await convertSpeechToText('$gosuPath');
+
+        // Limpiar el texto transcrito
+        String cleanedText = transcribedText.trim().toLowerCase();
+      
+        // Enviar al metodo clean para limpiar caracteres
+        cleanedText = cleanText(cleanedText);
+
+        //Guardamos el dato en una variable
+        answerRecorder = cleanedText;
+
+        print('Transcribed text: $answerRecorder');
+
+        //convertir todo el texto en minuscula y comparar con la repsuesta en estatico
+        if(answerRecorder =='manzana'){
+          _showSuccessDialog();
+        }else{
+          _showRetryDialog();
+        }
+
+        // Eliminar el archivo después de completar las operaciones necesarias
+        File audioFile = File(gosuPath);
+        if (await audioFile.exists()) {
+          await audioFile.delete();
+          print('Audio file deleted: $gosuPath');
+        } else {
+          print('Audio file not found: $gosuPath');
+        }
+      } else {
+        print('Recording stopped, but path is null');
+      }
+
+      setState(() {
+        microphone_active = false;
+      });
+    } catch (e) {
+      print('Error stopping recording: $e');
+    }
+  }
+
+  String cleanText(String input) {
+    final RegExp regex = RegExp(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]');
+    return input.replaceAll(regex, '');
   }
 
   Future<void> fetchPhonologicalAwareness(int id) async {
@@ -565,24 +685,44 @@ class _Level1Screen4State extends State<Level1Screen4> {
                 },
               ),
               const SizedBox(height: 30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Responder',
-                    style: TextStyle(fontSize: 18,color: Colors.white),
-                  ),
-                  SizedBox(
-                  height: 60.0, // Aquí defines la altura deseada
-                  child: IconButton(
-                    icon: Image.asset('lib/img/microphone.png'),
-                    onPressed: () {
-                      // Aquí va la lógica para reproducir el enunciado
-                    },
-                  ),
-                )
-                ],
-              ),
+              if(microphone_active==false)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Responder',
+                      style: TextStyle(fontSize: 18,color: Colors.white),
+                    ),
+                    SizedBox(
+                    height: 60.0, // Aquí defines la altura deseada
+                    child: IconButton(
+                      icon: Image.asset('lib/img/microphone.png'),
+                      onPressed: () async{                      
+                        await startRecording();
+                      },
+                    ),
+                  )
+                  ],
+                ),
+              if(microphone_active==true) 
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Grabando...',
+                      style: TextStyle(fontSize: 18,color: Colors.white),
+                    ),
+                    SizedBox(
+                    height: 60.0, // Aquí defines la altura deseada
+                    child: IconButton(
+                      icon: Image.asset('lib/img/stop_button_image.jpg'),
+                      onPressed: () async{
+                        await stopRecording();
+                      },
+                    ),
+                  )
+                  ],
+                ),
             ],
           ),
         ),

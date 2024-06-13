@@ -1,12 +1,9 @@
 import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
-import 'package:smartnest/model/feedback.dart';
 import 'package:smartnest/model/phonological_awareness.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/activities.dart';
@@ -18,16 +15,9 @@ import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_activities.dart';
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:smartnest/widgets/button/button_dynamic.dart';
 import 'package:smartnest/widgets/button/button_primary2.dart';
-
-
-import 'package:dart_openai/dart_openai.dart';
-
 import 'package:path_provider/path_provider.dart';
 
 
@@ -713,8 +703,7 @@ class _Level1ScreenState extends State<Level1Screen> {
                     height: 60.0, // Aquí defines la altura deseada
                     child: IconButton(
                       icon: Image.asset('lib/img/microphone.png'),
-                      onPressed: () async{
-                       
+                      onPressed: () async{                      
                         await startRecording();
                       },
                     ),
