@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/feedback.dart';
@@ -56,19 +57,30 @@ class _Level1ScreenState extends State<Level1Screen> {
 
   final FlutterSoundRecorder _soundRecorder = FlutterSoundRecorder();
   
-  String answerAudio = '';
   String audioFilePathG = '';
 
   bool microphone_active = false;
+
+  String gosuPath = '';
+
+  String answerRecorder = '';
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    fetchPhonologicalAwareness(1); // Aquí cambia el ID si es necesario
-    fetchFeedback(1); // Aquí cambia el ID si es necesario
+    fetchPhonologicalAwareness(1); 
+    fetchFeedback(1); 
+    requestPermissions();
+  }
 
-     _initRecorder();
+  Future<void> requestPermissions() async {
+    if (await Permission.microphone.request().isGranted &&
+        await Permission.storage.request().isGranted) {
+        _initRecorder();
+    } else {
+      print('Permission denied' );
+    }
   }
 
   void _initRecorder() async {
@@ -80,27 +92,8 @@ class _Level1ScreenState extends State<Level1Screen> {
     }
   }
 
-  /* Future<void> transcribeAudio(String filePath, String apiKey) async {
-    // Crea una solicitud multipart
-    var request = http.MultipartRequest('POST', Uri.parse('https://api.openai.com/v1/audio/transcriptions'))
-      ..headers['Authorization'] = 'Bearer $apiKey'
-      ..headers['Content-Type'] = 'multipart/form-data'
-      ..files.add(await http.MultipartFile.fromPath('file', filePath))
-      ..fields['model'] = 'whisper-1';
-
-    // Envía la solicitud
-    var response = await request.send();
-
-    // Maneja la respuesta
-    if (response.statusCode == 200) {
-      var responseData = await response.stream.bytesToString();
-      print('Response data: $responseData');
-    } else {
-      print('Request failed with status: ${response.statusCode}');
-    }
-  } */
-
   Future<String> convertSpeechToText(String filePath) async{
+
     const apiKey = '';
     var url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
     var request = http.MultipartRequest('POST', url);
@@ -111,48 +104,84 @@ class _Level1ScreenState extends State<Level1Screen> {
     var response = await request.send();
     var newresponse =await http.Response.fromStream(response);
     final responseData = json.decode(newresponse.body);
-    print(responseData);
-    return "123";
+    
+    return responseData['text'] ?? '';
   }
 
   Future<void> startRecording() async {
     String tempDir = (await getTemporaryDirectory()).path;
-    String audioFilePath = '$tempDir/audio_temp.mp3';
+    String audioFilePath = '$tempDir/audio_temp0.wav';
 
+    print('Recording started, audio file saved at: $audioFilePath');
     audioFilePathG = audioFilePath;
 
     try {
       await _soundRecorder.startRecorder(
         toFile: audioFilePath, // Ruta donde se guardará el archivo de audio
-        codec: Codec.aacADTS,
+        codec: Codec.pcm16WAV,
       );
-      print('Recording started');
+      print('Recording started in the path: $audioFilePath');
+
+      gosuPath = audioFilePath;
+
+      setState(() {
+        microphone_active = true;
+      });
     } catch (e) {
       print('Error starting recording: $e');
     }
   }
 
   Future<void> stopRecording() async {
-    microphone_active=false;
-    try {
+      try {
       String? path = await _soundRecorder.stopRecorder();
-      print('Recording stopped, audio file saved at: $path');
-      // Aquí puedes enviar el archivo de audio para su transcripción
-      convertSpeechToText(path!);
+      if (path != null) {
+        print('Recording stopped, audio file saved at: $gosuPath');
+         // Aquí se envia el archivo de audio para su transcripción
+        String transcribedText = await convertSpeechToText('$gosuPath');
 
-      File audioFile = File(audioFilePathG);
-      if (await audioFile.exists()) {
-        await audioFile.delete();
+        // Limpiar el texto transcrito
+        String cleanedText = transcribedText.trim().toLowerCase();
+      
+        // Enviar al metodo clean para limpiar caracteres
+        cleanedText = cleanText(cleanedText);
+
+        //Guardamos el dato en una variable
+        answerRecorder = cleanedText;
+
+        print('Transcribed text: $answerRecorder');
+
+        //convertir todo el texto en minuscula y comparar con la repsuesta en estatico
+        if(answerRecorder =='jirafa'){
+          _showSuccessDialog();
+        }else{
+          _showRetryDialog();
+        }
+
+        // Eliminar el archivo después de completar las operaciones necesarias
+        File audioFile = File(gosuPath);
+        if (await audioFile.exists()) {
+          await audioFile.delete();
+          print('Audio file deleted: $gosuPath');
+        } else {
+          print('Audio file not found: $gosuPath');
+        }
+      } else {
+        print('Recording stopped, but path is null');
       }
 
+      setState(() {
+        microphone_active = false;
+      });
     } catch (e) {
       print('Error stopping recording: $e');
     }
   }
 
-
-
-
+  String cleanText(String input) {
+    final RegExp regex = RegExp(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]');
+    return input.replaceAll(regex, '');
+  }
 
   Future<void> fetchPhonologicalAwareness(int id) async {
     try {
@@ -273,12 +302,6 @@ class _Level1ScreenState extends State<Level1Screen> {
       print(e.toString());
     }
   }
-
-
-
-
-
-
 
 
   Future<void> updateUserResponse(String? userResponse) async {
@@ -691,19 +714,7 @@ class _Level1ScreenState extends State<Level1Screen> {
                     child: IconButton(
                       icon: Image.asset('lib/img/microphone.png'),
                       onPressed: () async{
-                        /* final filePath = 'lib/img/leonardopn.mp3';
-                        final apiKey = '';
-
-                        print(File(filePath).existsSync());
-
-                        print(transcribeAudio(filePath, apiKey)); */
-
-                        /* FilePickerResult? result = await FilePicker.platform.pickFiles();
-                        if(result!=null){
-                          convertSpeechToText(result.files.single.path!);
-
-                        } */
-
+                       
                         await startRecording();
                       },
                     ),
@@ -721,7 +732,7 @@ class _Level1ScreenState extends State<Level1Screen> {
                     SizedBox(
                     height: 60.0, // Aquí defines la altura deseada
                     child: IconButton(
-                      icon: Image.asset('lib/img/stop_button_image.png'),
+                      icon: Image.asset('lib/img/stop_button_image.jpg'),
                       onPressed: () async{
                         await stopRecording();
                       },
