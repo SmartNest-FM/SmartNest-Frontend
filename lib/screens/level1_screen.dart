@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
@@ -55,6 +56,9 @@ class _Level1ScreenState extends State<Level1Screen> {
 
   String answerRecorder = '';
 
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
@@ -62,7 +66,18 @@ class _Level1ScreenState extends State<Level1Screen> {
     fetchPhonologicalAwareness(1); 
     fetchFeedback(1); 
     requestPermissions();
+    //speak(phonologicalAwarenessModel?.question ?? '');
+    speak('Funciona perfectamente frido fritonguito');
   }
+
+  //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
+  }
+
 
   Future<void> requestPermissions() async {
     if (await Permission.microphone.request().isGranted &&
