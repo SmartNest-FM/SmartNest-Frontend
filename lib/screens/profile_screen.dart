@@ -159,84 +159,84 @@ class _ProfileScreenState extends State<ProfileScreen> {
 }
 
   Future<void> _updateUserData() async {
-  try {
-    // Obtener el UID del usuario autenticado
-    String uid = _auth.currentUser!.uid;
+    try {
+      // Obtener el UID del usuario autenticado
+      String uid = _auth.currentUser!.uid;
 
-    // Realizar una solicitud GET para obtener el ID del usuario basado en su UID
-    var getUserResponse = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
+      // Realizar una solicitud GET para obtener el ID del usuario basado en su UID
+      var getUserResponse = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
-    if (getUserResponse.statusCode == 200) {
-      // Obtener los datos del usuario de la respuesta
-      var userData = jsonDecode(getUserResponse.body);
-      String userId = userData['id'].toString();
+      if (getUserResponse.statusCode == 200) {
+        // Obtener los datos del usuario de la respuesta
+        var userData = jsonDecode(getUserResponse.body);
+        String userId = userData['id'].toString();
 
-      // Obtener los nuevos valores del usuario de los controladores
-      String newName = _nameController.text;
-      int newAge = int.parse(_ageController.text);
+        // Obtener los nuevos valores del usuario de los controladores
+        String newName = _nameController.text;
+        int newAge = int.parse(_ageController.text);
 
-      // Construir el cuerpo de la solicitud con los nuevos datos del usuario
-      var requestBody = jsonEncode({
-        "id": userData['id'],
-        "age": newAge,
-        "uId": userData['uId'],
-        "emailUser": userData['emailUser'],
-        "nameTutor": userData['nameTutor'],
-        "nameUser": newName,
-        "photoUser": userData['photoUser'], // Mantener la foto actual sin cambios
-      });
+        // Construir el cuerpo de la solicitud con los nuevos datos del usuario
+        var requestBody = jsonEncode({
+          "id": userData['id'],
+          "age": newAge,
+          "uId": userData['uId'],
+          "emailUser": userData['emailUser'],
+          "nameTutor": userData['nameTutor'],
+          "nameUser": newName,
+          "photoUser": userData['photoUser'], // Mantener la foto actual sin cambios
+        });
 
-      // Realizar una solicitud PUT para actualizar los datos del usuario
-      var updateUserResponse = await http.put(
-        Uri.parse('https://smartnest.azurewebsites.net/user/$userId'),
-        headers: {"Content-Type": "application/json"},
-        body: requestBody,
-      );
+        // Realizar una solicitud PUT para actualizar los datos del usuario
+        var updateUserResponse = await http.put(
+          Uri.parse('https://smartnest.azurewebsites.net/user/$userId'),
+          headers: {"Content-Type": "application/json"},
+          body: requestBody,
+        );
 
-      if (updateUserResponse.statusCode == 200) {
-        // Si la solicitud PUT es exitosa, realizar otra solicitud GET para obtener los datos actualizados del usuario
-        var updatedUserResponse = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/$userId'));
+        if (updateUserResponse.statusCode == 200) {
+          // Si la solicitud PUT es exitosa, realizar otra solicitud GET para obtener los datos actualizados del usuario
+          var updatedUserResponse = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/$userId'));
 
-        if (updatedUserResponse.statusCode == 200) {
-          // Actualizar el estado con los datos del usuario actualizados
-          var updatedUserData = jsonDecode(updatedUserResponse.body);
-          setState(() {
-            _user = UserModel.fromMap(updatedUserData);
-          });
+          if (updatedUserResponse.statusCode == 200) {
+            // Actualizar el estado con los datos del usuario actualizados
+            var updatedUserData = jsonDecode(updatedUserResponse.body);
+            setState(() {
+              _user = UserModel.fromMap(updatedUserData);
+            });
 
-          // Mostrar un mensaje de éxito
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Datos actualizados con éxito')),
-          );
+            // Mostrar un mensaje de éxito
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Datos actualizados con éxito')),
+            );
+          } else {
+            // Manejar error al obtener datos actualizados
+            print('Error al obtener datos actualizados del usuario: ${updatedUserResponse.reasonPhrase}');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error al obtener datos actualizados del usuario: ${updatedUserResponse.reasonPhrase}')),
+            );
+          }
         } else {
-          // Manejar error al obtener datos actualizados
-          print('Error al obtener datos actualizados del usuario: ${updatedUserResponse.reasonPhrase}');
+          // Si la solicitud PUT no es exitosa, mostrar un mensaje de error
+          print('Error al actualizar los datos del usuario: ${updateUserResponse.reasonPhrase}');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error al obtener datos actualizados del usuario: ${updatedUserResponse.reasonPhrase}')),
+            SnackBar(content: Text('Error al actualizar los datos del usuario: ${updateUserResponse.reasonPhrase}')),
           );
         }
       } else {
-        // Si la solicitud PUT no es exitosa, mostrar un mensaje de error
-        print('Error al actualizar los datos del usuario: ${updateUserResponse.reasonPhrase}');
+        // Si la solicitud GET no es exitosa, mostrar un mensaje de error
+        print('Error al obtener el ID del usuario: ${getUserResponse.reasonPhrase}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al actualizar los datos del usuario: ${updateUserResponse.reasonPhrase}')),
+          SnackBar(content: Text('Error al obtener el ID del usuario: ${getUserResponse.reasonPhrase}')),
         );
       }
-    } else {
-      // Si la solicitud GET no es exitosa, mostrar un mensaje de error
-      print('Error al obtener el ID del usuario: ${getUserResponse.reasonPhrase}');
+    } catch (e) {
+      // Manejar cualquier error que pueda ocurrir
+      print('Error al actualizar los datos del usuario: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al obtener el ID del usuario: ${getUserResponse.reasonPhrase}')),
+        SnackBar(content: Text('Error al actualizar los datos del usuario: $e')),
       );
     }
-  } catch (e) {
-    // Manejar cualquier error que pueda ocurrir
-    print('Error al actualizar los datos del usuario: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error al actualizar los datos del usuario: $e')),
-    );
   }
-}
 
 
 

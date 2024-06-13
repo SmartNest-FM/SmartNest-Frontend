@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/env/env.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/phonological_awareness.dart';
 import 'package:smartnest/model/user.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:flutter_tts/flutter_tts.dart';
 
 class Level1Screen7 extends StatefulWidget {
   const Level1Screen7({super.key});
@@ -53,6 +55,8 @@ class _Level1Screen7State extends State<Level1Screen7> {
 
   String answerRecorder = '';
 
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -61,6 +65,15 @@ class _Level1Screen7State extends State<Level1Screen7> {
     fetchPhonologicalAwareness(7); 
     fetchFeedback(7);
     requestPermissions();
+    speak('Responde cuál es la respuesta correcta para la siguiente actividad. Presione click en el botón de reproducir enunciado');
+  }
+
+  //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> requestPermissions() async {
@@ -83,7 +96,7 @@ class _Level1Screen7State extends State<Level1Screen7> {
 
   Future<String> convertSpeechToText(String filePath) async{
 
-    const apiKey = '';
+    const apiKey = apiKeyWhisper;
     var url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({"Authorization":"Bearer $apiKey"});
@@ -215,6 +228,7 @@ class _Level1Screen7State extends State<Level1Screen7> {
   }
 
   Future<void> _showSuccessDialog() async {
+    speak('¡Genial!, ¡Lo hiciste fantástico ${_user?.nameuser}!');
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // El dialogo no se puede cerrar tocando fuera de él
@@ -339,6 +353,7 @@ class _Level1Screen7State extends State<Level1Screen7> {
   }
 
   Future<void> _showRetryDialog() async {
+    speak('¡Inténtalo de nuevo!. Te daré una pista. ${feedbackMessageG}');
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -607,8 +622,8 @@ class _Level1Screen7State extends State<Level1Screen7> {
                   height: 60.0, // Aquí defines la altura deseada
                   child: IconButton(
                     icon: Image.asset('lib/img/play_button_image.png'),
-                    onPressed: () {
-                      // Aquí va la lógica para reproducir el enunciado
+                    onPressed: () async{
+                      await speak(phonologicalAwarenessModel?.question ?? '');
                     },
                   ),
                 )

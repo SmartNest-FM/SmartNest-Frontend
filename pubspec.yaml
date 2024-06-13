@@ -97,7 +97,6 @@ flutter:
     - lib/img/activitie_error.png
     - lib/img/activitie_none.png
     - lib/img/stop_button_image.jpg
-    - lib/img/leonardopn.mp3
 
 
   # The following line ensures that the Material Icons font is

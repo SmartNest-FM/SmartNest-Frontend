@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/model/combination_reading_images.dart';
+import 'package:smartnest/model/fluent_reading.dart';
+import 'package:smartnest/model/phonological_awareness.dart';
+import 'package:smartnest/model/reading_comprehension.dart';
 import 'package:smartnest/model/user.dart';
+import 'package:smartnest/model/vocabulary_verb.dart';
 import 'package:smartnest/screens/home_screen.dart';
 import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
@@ -14,6 +20,7 @@ import 'package:smartnest/widgets/button/button_secondary2.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
+
 
 class PercentageScreen extends StatefulWidget {
   const PercentageScreen({super.key});
@@ -29,14 +36,234 @@ class _PercentageScreenState extends State<PercentageScreen> {
 
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
-  final _valuePercentage = 0.7;
+  var _valuePercentage = 0.0;
 
   UserModel? _user;
+
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
+
+  PhonologicalAwarenessModel? phonologicalAwarenessModel;
+  PhonologicalAwarenessModel? phonologicalAwarenessModel2;
+  FluentReadingModel? fluentReadingModel;
+  FluentReadingModel? fluentReadingModel2;
+  ReadingComprehensionModel? readingComprehensionModel;
+  ReadingComprehensionModel? readingComprehensionModel2;
+  CombinationReadingImagesModel? combinationReadingImagesModel;
+  CombinationReadingImagesModel? combinationReadingImagesModel2;
+  VocabularyVerbModel? vocabularyVerbModel;
+  VocabularyVerbModel? vocabularyVerbModel2;
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    fetchPhonologicalAwareness(5);
+    fetchPhonologicalAwareness(5);
+    fetchPhonologicalAwareness(5);
+    fetchPhonologicalAwareness(5);
+    fetchPhonologicalAwareness(5);
+    fetchPhonologicalAwareness(10);
+    fetchFluentReading(10);
+    fetchReadingComprehension(10);
+    fetchCombinationReadingImages(10);
+    fetchVocabularyVerb(10);
+  }
+
+  Future<void> fetchVocabularyVerb(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel = VocabularyVerbModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchVocabularyVerb2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/vocabularyVerb/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          vocabularyVerbModel2 = VocabularyVerbModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          combinationReadingImagesModel2 = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchCombinationReadingImages(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/combinationReadingImages/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          combinationReadingImagesModel = CombinationReadingImagesModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchReadingComprehension(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          readingComprehensionModel = ReadingComprehensionModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchReadingComprehension2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/readingComprehension/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          readingComprehensionModel2 = ReadingComprehensionModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwarenessModel = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchPhonologicalAwareness2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/phonologicalAwareness/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          phonologicalAwarenessModel2 = PhonologicalAwarenessModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          fluentReadingModel = FluentReadingModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> fetchFluentReading2(int id) async {
+    try {
+      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+         setState(() {
+          fluentReadingModel2 = FluentReadingModel.fromMap(jsonResponse); 
+          _updateProgress();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+   void _updateProgress() {
+    double progress = 0.0;
+    if (phonologicalAwarenessModel?.correct ?? false) progress += 0.10;
+    if (phonologicalAwarenessModel2?.correct ?? false) progress += 0.10;
+    if (fluentReadingModel?.correct ?? false) progress += 0.10;
+    if (fluentReadingModel2?.correct ?? false) progress += 0.10;
+    if (readingComprehensionModel?.correct ?? false) progress += 0.10;
+    if (readingComprehensionModel2?.correct ?? false) progress += 0.10;
+    if (combinationReadingImagesModel?.correct ?? false) progress += 0.10;
+    if (combinationReadingImagesModel2?.correct ?? false) progress += 0.10;
+    if (vocabularyVerbModel?.correct ?? false) progress += 0.10;
+    if (vocabularyVerbModel2?.correct ?? false) progress += 0.10;
+
+    setState(() {
+      _valuePercentage = progress;
+    });
+  }
+
+
+   Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> _signOut() async {
@@ -229,16 +456,23 @@ class _PercentageScreenState extends State<PercentageScreen> {
                   ), 
                   const SizedBox(height: 30),
                   const Text(
-                    'Tu rendimiento esta en 70%',
+                    'Vamos por buen camino. ¡Tú puedes!',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 30),
-                  ButtonSecondary2(onPressed: (){}, text: '¡Sigue Estudiando!'),
+                  ButtonSecondary2(onPressed: (){
+                    speak('Vamos por buen camino ${_user?.nameuser}. ¡Tú puedes!');
+                  }, text: '¡Sigue Estudiando!'),
                   const SizedBox(height: 30),
-                  ButtonPrimary(onPressed: (){}, text: 'Comenzar')
+                  ButtonPrimary(onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LevelsScreen()),
+                    );
+                  }, text: 'Comenzar')
                 ],
               ),
             ),

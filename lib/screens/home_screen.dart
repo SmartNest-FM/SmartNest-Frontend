@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/screens/levels_screen.dart';
@@ -28,10 +29,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   UserModel? _user;
 
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    speak('Bienvenido ${_user?.nameuser} a SmartNest, tu aplicación de aprendizaje de comprensión de lectura.');
+  }
+
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> _signOut() async {

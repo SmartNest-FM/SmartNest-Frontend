@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/env/env.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/phonological_awareness.dart';
 import 'package:smartnest/model/user.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:flutter_tts/flutter_tts.dart';
 
 class Level1Screen10 extends StatefulWidget {
   const Level1Screen10({super.key});
@@ -52,6 +54,9 @@ class _Level1Screen10State extends State<Level1Screen10> {
 
   String answerRecorder = ''; 
 
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +64,15 @@ class _Level1Screen10State extends State<Level1Screen10> {
     fetchPhonologicalAwareness(10); 
     fetchFeedback(10);
     requestPermissions();
+    speak('Responde cuál es la respuesta correcta para la siguiente actividad. Presione click en el botón de reproducir enunciado');
+  }
+
+  //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> requestPermissions() async {
@@ -81,7 +95,7 @@ class _Level1Screen10State extends State<Level1Screen10> {
 
   Future<String> convertSpeechToText(String filePath) async{
 
-    const apiKey = '';
+    const apiKey = apiKeyWhisper;
     var url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({"Authorization":"Bearer $apiKey"});
@@ -139,7 +153,7 @@ class _Level1Screen10State extends State<Level1Screen10> {
         print('Transcribed text: $answerRecorder');
 
         //convertir todo el texto en minuscula y comparar con la repsuesta en estatico
-        if(answerRecorder =='silla'){
+        if(answerRecorder =='silla' || answerRecorder == 'sella' || answerRecorder == 'si ya' || answerRecorder =='see ya' || answerRecorder == 'siya'){
           _showSuccessDialog();
         }else{
           _showRetryDialog();
@@ -213,6 +227,7 @@ class _Level1Screen10State extends State<Level1Screen10> {
   }
 
   Future<void> _showSuccessDialog() async {
+    speak('¡Genial!, ¡Lo hiciste fantástico ${_user?.nameuser}!. Puedes iniciar con el nivel 2. ¡Exitos!');
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // El dialogo no se puede cerrar tocando fuera de él
@@ -337,6 +352,7 @@ class _Level1Screen10State extends State<Level1Screen10> {
   }
 
   Future<void> _showRetryDialog() async {
+    speak('¡Inténtalo de nuevo!. Te daré una pista. ${feedbackMessageG}');
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -605,8 +621,8 @@ class _Level1Screen10State extends State<Level1Screen10> {
                   height: 60.0, // Aquí defines la altura deseada
                   child: IconButton(
                     icon: Image.asset('lib/img/play_button_image.png'),
-                    onPressed: () {
-                      // Aquí va la lógica para reproducir el enunciado
+                    onPressed: () async{
+                      await speak(phonologicalAwarenessModel?.question ?? '');
                     },
                   ),
                 )

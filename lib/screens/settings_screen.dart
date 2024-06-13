@@ -36,6 +36,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     _loadUserData();
+    _checkMicPermission();
+  }
+
+  Future<void> _checkMicPermission() async {
+    var status = await Permission.microphone.status;
+    setState(() {
+      _isMicActive = status.isGranted;
+    });
   }
 
   Future<void> _signOut() async {
@@ -272,15 +280,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onChanged: _toggleMic,
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Probar micrófono',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
+                  ),                  
                 ],
               ),
             ),

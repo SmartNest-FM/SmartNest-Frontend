@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
+import 'package:smartnest/env/env.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/model/vocabulary_verb.dart';
@@ -23,6 +24,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class Level5Screen9 extends StatefulWidget {
   const Level5Screen9({super.key});
@@ -56,6 +58,9 @@ class _Level5Screen9State extends State<Level5Screen9> {
 
   String answerRecorder = ''; 
 
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
@@ -63,6 +68,15 @@ class _Level5Screen9State extends State<Level5Screen9> {
     fetchVocabularyVerb(9);
     fetchFeedback(9);
     requestPermissions();
+    speak('Responde cuál es la respuesta correcta para la siguiente actividad. Presione click en el botón de reproducir enunciado');
+  }
+
+  //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> requestPermissions() async {
@@ -85,7 +99,7 @@ class _Level5Screen9State extends State<Level5Screen9> {
 
   Future<String> convertSpeechToText(String filePath) async{
 
-    const apiKey = '';
+    const apiKey = apiKeyWhisper;
     var url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
     var request = http.MultipartRequest('POST', url);
     request.headers.addAll({"Authorization":"Bearer $apiKey"});
@@ -216,6 +230,7 @@ class _Level5Screen9State extends State<Level5Screen9> {
   }
 
   Future<void> _showSuccessDialog() async {
+    speak('¡Genial!, ¡Lo hiciste fantástico ${_user?.nameuser}!');
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // El dialogo no se puede cerrar tocando fuera de él
@@ -346,6 +361,7 @@ class _Level5Screen9State extends State<Level5Screen9> {
   }
 
   Future<void> _showRetryDialog() async {
+    speak('¡Inténtalo de nuevo!. Te daré una pista. ${feedbackMessageG}');
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -608,11 +624,12 @@ class _Level5Screen9State extends State<Level5Screen9> {
                     style: TextStyle(fontSize: 18,color: Colors.white),
                   ),
                   SizedBox(
-                  height: 60.0, // Aquí defines la altura deseada
+                  height: 60.0, 
                   child: IconButton(
                     icon: Image.asset('lib/img/play_button_image.png'),
-                    onPressed: () {
-                      // Aquí va la lógica para reproducir el enunciado
+                    onPressed: () async{
+                      await speak('Enunciado. ${vocabularyVerbModel?.statement ?? ''}');
+                      await speak('Pregunta. ${vocabularyVerbModel?.question ?? ''}');
                     },
                   ),
                 )
@@ -622,11 +639,11 @@ class _Level5Screen9State extends State<Level5Screen9> {
               
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Ajusta el padding según tus necesidades
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
                     vocabularyVerbModel?.statement ?? '',
                     style: TextStyle(fontSize: 18, color: Colors.white),
-                    textAlign: TextAlign.center, // Asegura que el texto se centre dentro de su contenedor
+                    textAlign: TextAlign.center, 
                   ),
                 ),
               ),
@@ -653,11 +670,11 @@ class _Level5Screen9State extends State<Level5Screen9> {
               const SizedBox(height: 20),
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Ajusta el padding según tus necesidades
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0), 
                   child: Text(
                     vocabularyVerbModel?.question ?? '',
                     style: TextStyle(fontSize: 18, color: Colors.white),
-                    textAlign: TextAlign.center, // Asegura que el texto se centre dentro de su contenedor
+                    textAlign: TextAlign.center, 
                   ),
                 ),
               ),
