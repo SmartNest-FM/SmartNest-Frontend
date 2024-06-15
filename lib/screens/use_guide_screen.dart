@@ -11,9 +11,13 @@ import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_primary2.dart';
 
+
+
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import 'dart:io';
+
 
 class UseGuideScreen extends StatefulWidget {
   const UseGuideScreen({super.key});
@@ -36,6 +40,14 @@ class _UseGuideScreenState extends State<UseGuideScreen> {
   void initState() {
     super.initState();
     _loadUserData();
+
+    
+  }
+  
+  Future<void> _launchUrl(String _url) async {
+    if (!await launchUrl(Uri.parse(_url))) {
+      throw Exception('Could not launch $_url');
+    }
   }
 
   Future<void> _signOut() async {
@@ -209,173 +221,570 @@ class _UseGuideScreenState extends State<UseGuideScreen> {
               width: 370,
               height: 630,
               padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  const Text(
-                    'Guía de Uso',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      Container(
-                        width: 312,
-                        height: 155,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 130, 
-                                  height: 150,
-                                  child: Image.asset(
-                                    'lib/img/youtube_icon.png', 
-                                    fit: BoxFit.contain, 
-                                  ),
-                                ),
-                                const SizedBox(width: 10), 
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        'Cómo ingresas a los ejercicios',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 15),
-                                      ButtonPrimary2(onPressed: (){}, text: 'Ver')
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const Text(
+                      'Guía de Uso',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      Container(
-                        width: 312,
-                        height: 155,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 130, 
-                                  height: 150,
-                                  child: Image.asset(
-                                    'lib/img/youtube_icon.png', 
-                                    fit: BoxFit.contain, 
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 10), 
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text(
-                                          'Como ver mi progreso de aprendizaje',
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Cómo iniciar sesión y registrarse',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 15),
-                                      ButtonPrimary2(onPressed: (){}, text: 'Ver')
-                                    ],
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=g3BPbp1I3vY';
+                                          _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    children: [
-                      Container(
-                        width: 312,
-                        height: 155,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 130, 
-                                  height: 150,
-                                  child: Image.asset(
-                                    'lib/img/youtube_icon.png', 
-                                    fit: BoxFit.contain, 
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 10), 
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      const Text(
-                                        'Como cambiar mi contraseña',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                            'Como restablecer contraseña',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 15),
-                                      ButtonPrimary2(onPressed: (){}, text: 'Ver')
-                                    ],
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=Uu2xN3uHQ1I';
+                                          _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      
-                    ],
-                  ),
-                ],
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Como acceder a la barra de navegación',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=ioPsuz6z-zY';
+                                          _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Como acceder a la guia de uso',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=3oHk_4Mn-ac';
+                                          _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Como acceder a la configuración',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=rpmYr9iE4VU';
+                                          _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Como acceder al progreso actual',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=D9MUTgj_Lww';
+                                         _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Como acceder a los niveles',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=vyE0P5NSxLA';
+                                          _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Como acceder al inicio',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=MlKXBr_9NII';
+                                          _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Como acceder al perfil de usuario',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=ioIc9p21YJo';
+                                         _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Column(
+                      children: [
+                        Container(
+                          width: 312,
+                          height: 155,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 130, 
+                                    height: 150,
+                                    child: Image.asset(
+                                      'lib/img/youtube_icon.png', 
+                                      fit: BoxFit.contain, 
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10), 
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Como resolver una actividad interactiva',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 15),
+                                        ButtonPrimary2(onPressed: () async{
+                                          const url = 'https://www.youtube.com/watch?v=7UHHam_QhAE';
+                                         _launchUrl(url);
+                                        }, text: 'Ver')
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
+                      ],
+                    ),
+                    
+                  ],
+                ),
               ),
             ),
           ),
