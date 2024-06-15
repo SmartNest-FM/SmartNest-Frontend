@@ -251,7 +251,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             color: Colors.white,
             child: Container(
               width: 370,
-              height: 600,
+              height: 400,
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [

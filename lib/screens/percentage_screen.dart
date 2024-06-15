@@ -435,7 +435,7 @@ class _PercentageScreenState extends State<PercentageScreen> {
             color: Colors.white,
             child: Container(
               width: 370,
-              height: 480,
+              height: 515,
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
