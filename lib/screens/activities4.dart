@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/combination_reading_images.dart';
@@ -59,6 +60,9 @@ class _Activities4ScreenState extends State<Activities4Screen> {
   CombinationReadingImagesModel? _combinationReadingImages9;
   CombinationReadingImagesModel? _combinationReadingImages10;
 
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +77,16 @@ class _Activities4ScreenState extends State<Activities4Screen> {
     fetchCombinationReadingImages8(8);
     fetchCombinationReadingImages9(9);
     fetchCombinationReadingImages10(10);
+    speak('Bienvenido al nivel 4, aquí encontrarás 10 actividades para mejorar la comprensión lectora utilizando la combinación de Lectura e Imágenes. ¡Vamos a empezar!. Presionar click en una actividad para comenzar.');
+  
+  }
+
+   //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> fetchCombinationReadingImages(int id) async {

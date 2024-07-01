@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/fluent_reading.dart';
@@ -58,6 +59,9 @@ class _Activities2ScreenState extends State<Activities2Screen> {
   FluentReadingModel? _fluentReading9;
   FluentReadingModel? _fluentReading10;
 
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
@@ -72,6 +76,16 @@ class _Activities2ScreenState extends State<Activities2Screen> {
     fetchFluentReading8(8);
     fetchFluentReading9(9);
     fetchFluentReading10(10);
+    speak('Bienvenido al nivel 2, aquí encontrarás 10 actividades para mejorar tu Lectura Fluida. ¡Vamos a empezar!. Presionar click en una actividad para comenzar.');
+  
+  }
+
+   //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> fetchFluentReading(int id) async {

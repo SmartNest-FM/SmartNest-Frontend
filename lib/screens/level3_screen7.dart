@@ -625,8 +625,7 @@ class _Level3Screen7State extends State<Level3Screen7> {
                   child: IconButton(
                     icon: Image.asset('lib/img/play_button_image.png'),
                     onPressed: () async{
-                      await speak('Enunciado. ${readingComprehensionModel?.statement ?? ''}');
-                      await speak('Pregunta. ${readingComprehensionModel?.question ?? ''}');
+                      await speak('Enunciado. ${readingComprehensionModel?.statement ?? ''} Pregunta. ${readingComprehensionModel?.question ?? ''}');
                     },
                   ),
                 )

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
@@ -59,6 +60,8 @@ class _Activities5ScreenState extends State<Activities5Screen> {
   VocabularyVerbModel? vocabularyVerbModel9;
   VocabularyVerbModel? vocabularyVerbModel10;
 
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -74,6 +77,16 @@ class _Activities5ScreenState extends State<Activities5Screen> {
     fetchVocabularyVerb8(8);
     fetchVocabularyVerb9(9);
     fetchVocabularyVerb10(10);
+    speak('Bienvenido al nivel 5, aquí encontrarás 10 actividades para mejorar tu Vocabulario y identificación de Verbos. ¡Vamos a empezar!. Presionar click en una actividad para comenzar.');
+  
+  }
+
+   //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> fetchVocabularyVerb(int id) async {

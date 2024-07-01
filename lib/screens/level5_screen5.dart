@@ -630,8 +630,7 @@ class _Level5Screen5State extends State<Level5Screen5> {
                   child: IconButton(
                     icon: Image.asset('lib/img/play_button_image.png'),
                     onPressed: () async{
-                      await speak('Enunciado. ${vocabularyVerbModel?.statement ?? ''}');
-                      await speak('Pregunta. ${vocabularyVerbModel?.question ?? ''}');
+                      await speak('Enunciado. ${vocabularyVerbModel?.statement ?? ''} Pregunta. ${vocabularyVerbModel?.question ?? ''}');
                     },
                   ),
                 )
@@ -681,7 +680,8 @@ class _Level5Screen5State extends State<Level5Screen5> {
                 ),
               ),
               const SizedBox(height: 20),
-              ButtonVocabulary(onPressed: (){
+              ButtonVocabulary(onPressed: ()async{
+                await speak('El verbo identificado en esta actividad es la palabra: ${vocabularyVerbModel?.word_select_verb ?? ''}. A continuación, se presentará palabras similares al verbo identificado: ${vocabularyVerbModel?.word_select_verb ?? ''}. Las palabras similares son: 1. ${vocabularyVerbModel?.verb_synonym_one ?? ''}, 2. ${vocabularyVerbModel?.verb_synonym_two ?? ''}, 3. ${vocabularyVerbModel?.verb_synonym_three ?? ''}, 4. ${vocabularyVerbModel?.verb_synonym_four ?? ''}');
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {

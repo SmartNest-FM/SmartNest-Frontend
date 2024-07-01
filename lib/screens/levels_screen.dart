@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
@@ -43,6 +46,10 @@ class _LevelsScreenState extends State<LevelsScreen> {
   LevelModel? _level4;
   LevelModel? _level5;
 
+  //TTS
+  final FlutterSoundRecorder _soundRecorder = FlutterSoundRecorder();
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +59,33 @@ class _LevelsScreenState extends State<LevelsScreen> {
     _loadLevelData(3); // Cargar datos del nivel 3
     _loadLevelData(4); // Cargar datos del nivel 4
     _loadLevelData(5); // Cargar datos del nivel 5
+    speak('Bienvenido a la sección de niveles. Aquí podrás encontrar los diferentes niveles de aprendizaje. ¡Comencemos!. Presiona el botón de iniciar en un nivel.');
+  }
+
+  //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
+  }
+
+  Future<void> requestPermissions() async {
+    if (await Permission.microphone.request().isGranted &&
+        await Permission.storage.request().isGranted) {
+        _initRecorder();
+    } else {
+      print('Permission denied' );
+    }
+  }
+
+  void _initRecorder() async {
+    try {
+      await _soundRecorder.openAudioSession();
+      print('Audio session opened');
+    } catch (e) {
+      print('Error opening audio session: $e');
+    }
   }
 
   Future<void> _signOut() async {

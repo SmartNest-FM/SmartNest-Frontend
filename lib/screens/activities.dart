@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/phonological_awareness.dart';
@@ -48,6 +50,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
   PhonologicalAwarenessModel? phonologicalAwareness9;
   PhonologicalAwarenessModel? phonologicalAwareness10;
 
+  //TTS
+  FlutterTts flutterTts = FlutterTts();
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +67,15 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
     fetchPhonologicalAwareness8(8);
     fetchPhonologicalAwareness9(9);
     fetchPhonologicalAwareness10(10);
+    speak('Bienvenido al nivel 1, aquí encontrarás 10 actividades para mejorar tu conciencia fonológica. ¡Vamos a empezar!. Presionar click en una actividad para comenzar.');
+  }
+
+  //TTS
+  Future<void> speak(String text) async {
+    await flutterTts.setLanguage("es-ES");
+    await flutterTts.setPitch(1);
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.speak(text);
   }
 
   Future<void> fetchPhonologicalAwareness(int id) async {

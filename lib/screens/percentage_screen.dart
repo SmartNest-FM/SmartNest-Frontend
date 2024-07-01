@@ -465,7 +465,7 @@ class _PercentageScreenState extends State<PercentageScreen> {
                   ),
                   const SizedBox(height: 25),
                   ButtonSecondary2(onPressed: (){
-                    speak('Vamos por buen camino ${_user?.nameuser}. ¡Tú puedes!');
+                    speak('Vamos por buen camino ${_user?.nameuser!=null ? _user?.nameuser: ''}. ¡Tú puedes!');
                   }, text: '¡Sigue Estudiando!'),
                   const SizedBox(height: 25),
                   ButtonPrimary(onPressed: (){

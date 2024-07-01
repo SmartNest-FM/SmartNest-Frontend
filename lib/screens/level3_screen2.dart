@@ -628,14 +628,13 @@ class _Level3Screen2State extends State<Level3Screen2> {
                   child: IconButton(
                     icon: Image.asset('lib/img/play_button_image.png'),
                     onPressed: () async{
-                      await speak('Enunciado. ${readingComprehensionModel?.statement ?? ''}');
-                      await speak('Pregunta. ${readingComprehensionModel?.question ?? ''}');
+                      await speak('Enunciado. ${readingComprehensionModel?.statement ?? ''}. Pregunta. ${readingComprehensionModel?.question ?? ''}');
                     },
                   ),
                 )
                 ],
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 5),
               Container(
                 constraints: BoxConstraints(maxWidth: 300), // Define un ancho máximo para el contenedor
                 child: Center(

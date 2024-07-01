@@ -625,8 +625,7 @@ class _Level2Screen9State extends State<Level2Screen9> {
                   child: IconButton(
                     icon: Image.asset('lib/img/play_button_image.png'),
                     onPressed: () async{
-                      await speak('Enunciado. ${fluentReadingModel?.statement ?? ''}');
-                      await speak('Pregunta. ${fluentReadingModel?.question ?? ''}');
+                      await speak('Enunciado. ${fluentReadingModel?.statement ?? ''} Pregunta. ${fluentReadingModel?.question ?? ''}');
                     },
                   ),
                 )
