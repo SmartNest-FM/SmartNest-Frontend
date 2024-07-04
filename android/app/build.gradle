@@ -28,11 +28,23 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        release {
+            keyAlias 'faridgosue'
+            keyPassword 'gosurray123'
+            storeFile file('C:\\Users\\Job\\Documents\\GitHub\\SmartNest\\my-release-key.jks')
+            storePassword 'gosurray123'
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Agrega tu propia configuración de firma para la compilación de lanzamiento.
             // Actualmente, estamos firmando con las claves de depuración para que `flutter run --release` funcione.
-            signingConfig = signingConfigs.debug
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
