@@ -57,17 +57,7 @@ class _MainLoginState extends State<MainLogin> {
                   child: Column(
                     children: [
                       const SizedBox(height: 50),
-                      ButtonFb(
-                        onPressed: () async { },
-                        text: 'Facebook',
-                        imageAsset: 'lib/img/social_network/facebook.png', // Ruta de la imagen para Facebook
-                      ),
-                      const SizedBox(height: 30),
-                      ButtonGoogle(
-                        onPressed: () {},
-                        text: 'Google',
-                        imageAsset: 'lib/img/social_network/google.png', // Ruta de la imagen para Google
-                      ),
+                      
                       const SizedBox(height: 270),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
