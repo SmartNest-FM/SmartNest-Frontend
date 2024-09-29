@@ -757,6 +757,21 @@ class _Level5Screen9State extends State<Level5Screen9> {
               }, text: 'Verbo - ${vocabularyVerbModel?.word_select_verb ?? ''}'),
               const SizedBox(height: 20),
               ButtonActivities(
+                text: vocabularyVerbModel?.answer_three ?? '',
+                onPressed: () async{
+                  String? userResponse = vocabularyVerbModel?.answer_three;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 10),
+              ButtonActivities(
                 text: vocabularyVerbModel?.answer_one ?? '',
                 onPressed: () async{
                   String? userResponse = vocabularyVerbModel?.answer_one;
@@ -785,21 +800,7 @@ class _Level5Screen9State extends State<Level5Screen9> {
                   }
                 },
               ),
-              const SizedBox(height: 10),
-              ButtonActivities(
-                text: vocabularyVerbModel?.answer_three ?? '',
-                onPressed: () async{
-                  String? userResponse = vocabularyVerbModel?.answer_three;
-                  if (userResponse != null) {
-                    await updateUserResponse(userResponse);
-                  } else {
-                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
-                    );
-                  }
-                },
-              ),
+              
               const SizedBox(height: 10),
               if(microphone_active==false)
                 Row(

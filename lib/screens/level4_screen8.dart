@@ -701,21 +701,6 @@ class _Level4Screen8State extends State<Level4Screen8> {
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: combinationReadingImagesModel?.answer_two ?? '',
-                onPressed: () async{
-                  String? userResponse = combinationReadingImagesModel?.answer_two;
-                  if (userResponse != null) {
-                    await updateUserResponse(userResponse);
-                  } else {
-                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 10),
-              ButtonActivities(
                 text: combinationReadingImagesModel?.answer_three ?? '',
                 onPressed: () async{
                   String? userResponse = combinationReadingImagesModel?.answer_three;
@@ -729,6 +714,22 @@ class _Level4Screen8State extends State<Level4Screen8> {
                   }
                 },
               ),
+              const SizedBox(height: 10),
+              ButtonActivities(
+                text: combinationReadingImagesModel?.answer_two ?? '',
+                onPressed: () async{
+                  String? userResponse = combinationReadingImagesModel?.answer_two;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
+              ),
+              
               const SizedBox(height: 30),
               if(microphone_active==false)
                 Row(

@@ -670,6 +670,21 @@ class _Level2Screen9State extends State<Level2Screen9> {
               ),
               const SizedBox(height: 30),
               ButtonActivities(
+                text: fluentReadingModel?.answer_three ?? '',
+                onPressed: () async{
+                  String? userResponse = fluentReadingModel?.answer_three;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 10),
+              ButtonActivities(
                 text: fluentReadingModel?.answer_one ?? '',
                 onPressed: () async{
                   String? userResponse = fluentReadingModel?.answer_one;
@@ -698,21 +713,7 @@ class _Level2Screen9State extends State<Level2Screen9> {
                   }
                 },
               ),
-              const SizedBox(height: 10),
-              ButtonActivities(
-                text: fluentReadingModel?.answer_three ?? '',
-                onPressed: () async{
-                  String? userResponse = fluentReadingModel?.answer_three;
-                  if (userResponse != null) {
-                    await updateUserResponse(userResponse);
-                  } else {
-                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
-                    );
-                  }
-                },
-              ),
+              
               const SizedBox(height: 30),
               if(microphone_active==false)
                 Row(

@@ -672,21 +672,6 @@ class _Level1Screen8State extends State<Level1Screen8> {
               ),
               const SizedBox(height: 10),
               ButtonActivities(
-                text: phonologicalAwarenessModel?.answer_two ?? '',
-                onPressed: () async{
-                  String? userResponse = phonologicalAwarenessModel?.answer_two;
-                  if (userResponse != null) {
-                    await updateUserResponse(userResponse);
-                  } else {
-                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 10),
-              ButtonActivities(
                 text: phonologicalAwarenessModel?.answer_three ?? '',
                 onPressed: () async{
                   String? userResponse = phonologicalAwarenessModel?.answer_three;
@@ -700,6 +685,22 @@ class _Level1Screen8State extends State<Level1Screen8> {
                   }
                 },
               ),
+              const SizedBox(height: 10),
+              ButtonActivities(
+                text: phonologicalAwarenessModel?.answer_two ?? '',
+                onPressed: () async{
+                  String? userResponse = phonologicalAwarenessModel?.answer_two;
+                  if (userResponse != null) {
+                    await updateUserResponse(userResponse);
+                  } else {
+                    // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                    );
+                  }
+                },
+              ),
+              
               const SizedBox(height: 30),
               if(microphone_active==false)
                 Row(
