@@ -16,7 +16,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Future<void> _resetPassword() async {
     String email = _emailController.text.trim();
-    if (_auth.currentUser != null) {
       try {
         await _auth.sendPasswordResetEmail(email: email);
         showDialog(
@@ -106,53 +105,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             );
           },
         );
-      }
-    }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: Colors.black.withOpacity(0.75),
-              content: Card(
-                color: Colors.black.withOpacity(0.75),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        'Error al enviar correo',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'No se ha encontrado ningun usuario registradodas con ese correo electrónico',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      ButtonPrimary(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        text: 'Aceptar',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-    }
-    
+      }   
   }
 
 
@@ -221,7 +174,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   
                   const SizedBox(height: 35),
                   SizedBox(
-                    width: 200 ,
+                    width: 230 ,
                     child: ButtonPrimary(
                       onPressed: () {
                         _resetPassword();
