@@ -33,8 +33,6 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
     _edadController.text = '';
   }
 
-  bool aceptarTerminos = false;
-
   String? _imagePath;
 
   
@@ -211,26 +209,6 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                   const SizedBox(height: 15),
                   _buildInputField('Edad', Icons.cake, controller: _edadController),
                   const SizedBox(height: 25),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Checkbox(
-                        value: aceptarTerminos,
-                        onChanged: (value) {
-                          setState(() {
-                            aceptarTerminos = value ?? false;
-                          });
-                        },
-                      ),
-                      const Text(
-                        'Aceptar términos y condiciones',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -250,27 +228,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                   const SizedBox(height: 35),
                   ButtonPrimary(
                     onPressed: () {
-                        if (aceptarTerminos) {
-                          _updateUser();
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("Error"),
-                                content: Text("Debe aceptar los términos y condiciones."),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text("Cerrar"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
+                      _updateUser();
                       },
                     text: 'Registrarse',
                   ),
