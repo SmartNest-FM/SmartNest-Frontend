@@ -90,7 +90,7 @@ class _Level4Screen7State extends State<Level4Screen7> {
 
   void _initRecorder() async {
     try {
-      await _soundRecorder.openAudioSession();
+      await _soundRecorder.openRecorder();
       print('Audio session opened');
     } catch (e) {
       print('Error opening audio session: $e');
@@ -121,6 +121,9 @@ class _Level4Screen7State extends State<Level4Screen7> {
     audioFilePathG = audioFilePath;
 
     try {
+      // Inicializa el grabador sin await, ya que no se espera valor de retorno.
+      _initRecorder(); // Llamar a la función de inicialización sin await
+
       await _soundRecorder.startRecorder(
         toFile: audioFilePath, // Ruta donde se guardará el archivo de audio
         codec: Codec.pcm16WAV,

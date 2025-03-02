@@ -93,7 +93,7 @@ class _Level3Screen3State extends State<Level3Screen3> {
 
   void _initRecorder() async {
     try {
-      await _soundRecorder.openAudioSession();
+      await _soundRecorder.openRecorder();
       print('Audio session opened');
     } catch (e) {
       print('Error opening audio session: $e');
@@ -124,6 +124,9 @@ class _Level3Screen3State extends State<Level3Screen3> {
     audioFilePathG = audioFilePath;
 
     try {
+      // Inicializa el grabador sin await, ya que no se espera valor de retorno.
+      _initRecorder(); // Llamar a la función de inicialización sin await
+
       await _soundRecorder.startRecorder(
         toFile: audioFilePath, // Ruta donde se guardará el archivo de audio
         codec: Codec.pcm16WAV,
@@ -160,7 +163,7 @@ class _Level3Screen3State extends State<Level3Screen3> {
         print('Transcribed text: $answerRecorder');
 
         //convertir todo el texto en minuscula y comparar con la repsuesta en estatico
-        if(answerRecorder =='brillante' || answerRecorder =='brillantes'){
+        if(answerRecorder =='parque' || answerRecorder =='paque'){
           _showSuccessDialog();
         }else{
           _showRetryDialog();

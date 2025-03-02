@@ -22,11 +22,8 @@ import 'dart:convert';
 import 'package:smartnest/widgets/button/button_primary2.dart';
 import 'package:path_provider/path_provider.dart';
 
-
-
 class Level1Screen extends StatefulWidget {
   const Level1Screen({super.key});
-
 
   @override
   State<Level1Screen> createState() => _Level1ScreenState();
@@ -37,7 +34,7 @@ class _Level1ScreenState extends State<Level1Screen> {
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
   PhonologicalAwarenessModel? phonologicalAwarenessModel;
-  
+
   UserModel? _user;
 
   bool _isCorrectAnswer = false;
@@ -48,7 +45,7 @@ class _Level1ScreenState extends State<Level1Screen> {
   String feedbackMessageG = ''; // Definir feedbackMessage
 
   final FlutterSoundRecorder _soundRecorder = FlutterSoundRecorder();
-  
+
   String audioFilePathG = '';
 
   bool microphone_active = false;
@@ -64,10 +61,11 @@ class _Level1ScreenState extends State<Level1Screen> {
   void initState() {
     super.initState();
     _loadUserData();
-    fetchPhonologicalAwareness(1); 
-    fetchFeedback(1); 
+    fetchPhonologicalAwareness(1);
+    fetchFeedback(1);
     requestPermissions();
-    speak('Responde cuál es la respuesta correcta para la siguiente actividad. Presione click en el botón de reproducir enunciado');
+    speak(
+        'Responde cuál es la respuesta correcta para la siguiente actividad. Presione click en el botón de reproducir enunciado');
   }
 
   //TTS
@@ -78,38 +76,36 @@ class _Level1ScreenState extends State<Level1Screen> {
     await flutterTts.speak(text);
   }
 
-
   Future<void> requestPermissions() async {
     if (await Permission.microphone.request().isGranted &&
         await Permission.storage.request().isGranted) {
-        _initRecorder();
+      _initRecorder();
     } else {
-      print('Permission denied' );
+      print('Permission denied');
     }
   }
 
   void _initRecorder() async {
     try {
-      await _soundRecorder.openAudioSession();
+      await _soundRecorder.openRecorder();
       print('Audio session opened');
     } catch (e) {
       print('Error opening audio session: $e');
     }
   }
 
-  Future<String> convertSpeechToText(String filePath) async{
-
+  Future<String> convertSpeechToText(String filePath) async {
     const apiKey = apiKeyWhisper;
     var url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
     var request = http.MultipartRequest('POST', url);
-    request.headers.addAll({"Authorization":"Bearer $apiKey"});
+    request.headers.addAll({"Authorization": "Bearer $apiKey"});
     request.fields["model"] = "whisper-1";
     request.fields["language"] = "es";
     request.files.add(await http.MultipartFile.fromPath('file', filePath));
     var response = await request.send();
-    var newresponse =await http.Response.fromStream(response);
+    var newresponse = await http.Response.fromStream(response);
     final responseData = json.decode(newresponse.body);
-    
+
     return responseData['text'] ?? '';
   }
 
@@ -121,6 +117,9 @@ class _Level1ScreenState extends State<Level1Screen> {
     audioFilePathG = audioFilePath;
 
     try {
+      // Inicializa el grabador sin await, ya que no se espera valor de retorno.
+      _initRecorder(); // Llamar a la función de inicialización sin await
+
       await _soundRecorder.startRecorder(
         toFile: audioFilePath, // Ruta donde se guardará el archivo de audio
         codec: Codec.pcm16WAV,
@@ -138,16 +137,16 @@ class _Level1ScreenState extends State<Level1Screen> {
   }
 
   Future<void> stopRecording() async {
-      try {
+    try {
       String? path = await _soundRecorder.stopRecorder();
       if (path != null) {
         print('Recording stopped, audio file saved at: $gosuPath');
-         // Aquí se envia el archivo de audio para su transcripción
+        // Aquí se envia el archivo de audio para su transcripción
         String transcribedText = await convertSpeechToText('$gosuPath');
 
         // Limpiar el texto transcrito
         String cleanedText = transcribedText.trim().toLowerCase();
-      
+
         // Enviar al metodo clean para limpiar caracteres
         cleanedText = cleanText(cleanedText);
 
@@ -157,9 +156,9 @@ class _Level1ScreenState extends State<Level1Screen> {
         print('Transcribed text: $answerRecorder');
 
         //convertir todo el texto en minuscula y comparar con la repsuesta en estatico
-        if(answerRecorder == 'jirafa' || answerRecorder == 'jirafa'){
+        if (answerRecorder == 'jirafa' || answerRecorder == 'jirafa') {
           _showSuccessDialog();
-        }else{
+        } else {
           _showRetryDialog();
         }
 
@@ -190,14 +189,15 @@ class _Level1ScreenState extends State<Level1Screen> {
 
   Future<void> fetchPhonologicalAwareness(int id) async {
     try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/phonologicalAwareness/$id'));
+      var response = await http.get(Uri.parse(
+          'https://smartnest.azurewebsites.net/phonologicalAwareness/$id'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          phonologicalAwarenessModel = PhonologicalAwarenessModel.fromMap(jsonResponse); 
-          
+        setState(() {
+          phonologicalAwarenessModel =
+              PhonologicalAwarenessModel.fromMap(jsonResponse);
         });
-        print( phonologicalAwarenessModel?.main_image ?? '');
+        print(phonologicalAwarenessModel?.main_image ?? '');
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
@@ -210,7 +210,8 @@ class _Level1ScreenState extends State<Level1Screen> {
     speak('¡Genial!, ¡Lo hiciste fantástico ${_user?.nameuser}!');
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // El dialogo no se puede cerrar tocando fuera de él
+      barrierDismissible:
+          false, // El dialogo no se puede cerrar tocando fuera de él
       builder: (BuildContext context) {
         return Center(
           child: AlertDialog(
@@ -264,14 +265,14 @@ class _Level1ScreenState extends State<Level1Screen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ButtonPrimary2(
-                      onPressed: (){
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Level1Screen2()),
-                        );
-                      },
-                      text: 'Continuar'
-                    )
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Level1Screen2()),
+                          );
+                        },
+                        text: 'Continuar')
                   ],
                 ),
                 SizedBox(
@@ -287,11 +288,13 @@ class _Level1ScreenState extends State<Level1Screen> {
 
   Future<void> fetchFeedback(int activityId) async {
     try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/phonological/$activityId'));
+      var response = await http.get(Uri.parse(
+          'https://smartnest.azurewebsites.net/phonological/$activityId'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
         if (jsonResponse is List && jsonResponse.isNotEmpty) {
-          var firstActivity = jsonResponse[0]; // Tomar solo el primer elemento de la lista
+          var firstActivity =
+              jsonResponse[0]; // Tomar solo el primer elemento de la lista
           String feedbackImage = firstActivity['image'];
           String feedbackMessage = firstActivity['feedback'];
           setState(() {
@@ -309,9 +312,9 @@ class _Level1ScreenState extends State<Level1Screen> {
     }
   }
 
-
   Future<void> updateUserResponse(String? userResponse) async {
-    if (phonologicalAwarenessModel == null || phonologicalAwarenessModel?.level_id == null) {
+    if (phonologicalAwarenessModel == null ||
+        phonologicalAwarenessModel?.level_id == null) {
       print('Error: phonologicalAwarenessModel or level_id is null');
       return;
     }
@@ -331,7 +334,8 @@ class _Level1ScreenState extends State<Level1Screen> {
 
     try {
       var response = await http.put(
-        Uri.parse('https://smartnest.azurewebsites.net/phonologicalAwareness/${phonologicalAwarenessModel?.id}'),
+        Uri.parse(
+            'https://smartnest.azurewebsites.net/phonologicalAwareness/${phonologicalAwarenessModel?.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -346,7 +350,7 @@ class _Level1ScreenState extends State<Level1Screen> {
 
         if (userResponse == phonologicalAwarenessModel?.correct_answer) {
           _showSuccessDialog();
-        }else {
+        } else {
           _showRetryDialog();
         }
       }
@@ -395,17 +399,20 @@ class _Level1ScreenState extends State<Level1Screen> {
                   child: Image.network(
                     feedbackImageG,
                     fit: BoxFit.contain,
-                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
                       if (loadingProgress == null) return child;
                       return Center(
                         child: CircularProgressIndicator(
                           value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  (loadingProgress.expectedTotalBytes ?? 1)
                               : null,
                         ),
                       );
                     },
-                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                    errorBuilder: (BuildContext context, Object error,
+                        StackTrace? stackTrace) {
                       return Text('Failed to load image: $error');
                     },
                   ),
@@ -428,9 +435,10 @@ class _Level1ScreenState extends State<Level1Screen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ButtonPrimary2(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.pop(context); // Cerrar el diálogo
-                        fetchPhonologicalAwareness(1); // Volver a cargar la actividad
+                        fetchPhonologicalAwareness(
+                            1); // Volver a cargar la actividad
                         fetchFeedback(1); // Volver a cargar el feedback
                       },
                       text: 'Reintentar',
@@ -448,13 +456,11 @@ class _Level1ScreenState extends State<Level1Screen> {
     );
   }
 
-
-
-
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
+      var response = await http.get(
+          Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -463,20 +469,19 @@ class _Level1ScreenState extends State<Level1Screen> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al cargar datos del usuario: ${response.reasonPhrase}')),
-          
+          SnackBar(
+              content: Text(
+                  'Error al cargar datos del usuario: ${response.reasonPhrase}')),
         );
         print(response.reasonPhrase);
       }
     } catch (e) {
-       ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al cargar datos del usuario: $e')),
-       
       );
-       print(e);
+      print(e);
     }
   }
-
 
   Future<void> _signOut() async {
     try {
@@ -497,7 +502,6 @@ class _Level1ScreenState extends State<Level1Screen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -533,9 +537,11 @@ class _Level1ScreenState extends State<Level1Screen> {
               accountName: Text(_user?.nameuser ?? "Nombre no disponible"),
               accountEmail: Text(_user?.emailuser ?? "Email no disponible"),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: _user != null && _user!.photouser != null && File(_user!.photouser!).existsSync()
-                ? FileImage(File(_user!.photouser!))
-                : AssetImage('lib/img/user_no_photo.png'),
+                backgroundImage: _user != null &&
+                        _user!.photouser != null &&
+                        File(_user!.photouser!).existsSync()
+                    ? FileImage(File(_user!.photouser!))
+                    : AssetImage('lib/img/user_no_photo.png'),
               ),
               decoration: BoxDecoration(
                 color: Color(0xFF1D4F7C),
@@ -547,7 +553,8 @@ class _Level1ScreenState extends State<Level1Screen> {
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const ProfileScreen()),
                 );
               },
             ),
@@ -565,9 +572,9 @@ class _Level1ScreenState extends State<Level1Screen> {
               leading: const Icon(Icons.bar_chart),
               title: const Text('Niveles'),
               onTap: () {
-                 Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LevelsScreen()),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LevelsScreen()),
                 );
               },
             ),
@@ -577,7 +584,8 @@ class _Level1ScreenState extends State<Level1Screen> {
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const PercentageScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const PercentageScreen()),
                 );
               },
             ),
@@ -587,7 +595,8 @@ class _Level1ScreenState extends State<Level1Screen> {
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const SettingsScreen()),
                 );
               },
             ),
@@ -610,69 +619,67 @@ class _Level1ScreenState extends State<Level1Screen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
                     'Reproducir enunciado',
-                    style: TextStyle(fontSize: 18,color: Colors.white),
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
-                  
                   SizedBox(
-                  height: 60.0, // Aquí defines la altura deseada
-                  child: IconButton(
-                    icon: Image.asset('lib/img/play_button_image.png'),
-                    onPressed: () async{
-                      await speak(phonologicalAwarenessModel?.question ?? '');
-                    },
-                  ),
-                )
+                    height: 60.0, // Aquí defines la altura deseada
+                    child: IconButton(
+                      icon: Image.asset('lib/img/play_button_image.png'),
+                      onPressed: () async {
+                        await speak(phonologicalAwarenessModel?.question ?? '');
+                      },
+                    ),
+                  )
                 ],
               ),
               const SizedBox(height: 130),
-
               Image.network(
                 phonologicalAwarenessModel?.main_image ?? '',
                 width: 150,
                 height: 150,
-                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Center(
                     child: CircularProgressIndicator(
                       value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              (loadingProgress.expectedTotalBytes ?? 1)
                           : null,
                     ),
                   );
                 },
-                errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                errorBuilder: (BuildContext context, Object error,
+                    StackTrace? stackTrace) {
                   return Text('Failed to load image: $error');
                 },
               ),
-
               const SizedBox(height: 20),
               Text(
-               phonologicalAwarenessModel?.question ?? '',
-                style: TextStyle(fontSize: 18,color: Colors.white),
+                phonologicalAwarenessModel?.question ?? '',
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
               const SizedBox(height: 30),
-              
               ButtonActivities(
                 text: phonologicalAwarenessModel?.answer_one ?? '',
-                onPressed: () async{
+                onPressed: () async {
                   String? userResponse = phonologicalAwarenessModel?.answer_one;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
                     // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                      SnackBar(
+                          content: Text('Por favor, selecciona una respuesta')),
                     );
                   }
                 },
@@ -680,14 +687,16 @@ class _Level1ScreenState extends State<Level1Screen> {
               const SizedBox(height: 10),
               ButtonActivities(
                 text: phonologicalAwarenessModel?.answer_three ?? '',
-                onPressed: () async{
-                  String? userResponse = phonologicalAwarenessModel?.answer_three;
+                onPressed: () async {
+                  String? userResponse =
+                      phonologicalAwarenessModel?.answer_three;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
                     // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                      SnackBar(
+                          content: Text('Por favor, selecciona una respuesta')),
                     );
                   }
                 },
@@ -695,56 +704,56 @@ class _Level1ScreenState extends State<Level1Screen> {
               const SizedBox(height: 10),
               ButtonActivities(
                 text: phonologicalAwarenessModel?.answer_two ?? '',
-                onPressed: () async{
+                onPressed: () async {
                   String? userResponse = phonologicalAwarenessModel?.answer_two;
                   if (userResponse != null) {
                     await updateUserResponse(userResponse);
                   } else {
                     // Manejar el caso de respuesta nula, por ejemplo, mostrando un mensaje al usuario
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Por favor, selecciona una respuesta')),
+                      SnackBar(
+                          content: Text('Por favor, selecciona una respuesta')),
                     );
                   }
                 },
               ),
-              
               const SizedBox(height: 30),
-              if(microphone_active==false)
+              if (microphone_active == false)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
                       'Responder',
-                      style: TextStyle(fontSize: 18,color: Colors.white),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                     SizedBox(
-                    height: 60.0, // Aquí defines la altura deseada
-                    child: IconButton(
-                      icon: Image.asset('lib/img/microphone.png'),
-                      onPressed: () async{                      
-                        await startRecording();
-                      },
-                    ),
-                  )
+                      height: 60.0, // Aquí defines la altura deseada
+                      child: IconButton(
+                        icon: Image.asset('lib/img/microphone.png'),
+                        onPressed: () async {
+                          await startRecording();
+                        },
+                      ),
+                    )
                   ],
                 ),
-              if(microphone_active==true) 
+              if (microphone_active == true)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
                       'Grabando...',
-                      style: TextStyle(fontSize: 18,color: Colors.white),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                     SizedBox(
-                    height: 60.0, // Aquí defines la altura deseada
-                    child: IconButton(
-                      icon: Image.asset('lib/img/stop_button_image.jpg'),
-                      onPressed: () async{
-                        await stopRecording();
-                      },
-                    ),
-                  )
+                      height: 60.0, // Aquí defines la altura deseada
+                      child: IconButton(
+                        icon: Image.asset('lib/img/stop_button_image.jpg'),
+                        onPressed: () async {
+                          await stopRecording();
+                        },
+                      ),
+                    )
                   ],
                 ),
             ],
@@ -753,8 +762,4 @@ class _Level1ScreenState extends State<Level1Screen> {
       ),
     );
   }
-
-
 }
-
- 

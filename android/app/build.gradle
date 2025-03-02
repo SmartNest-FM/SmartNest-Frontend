@@ -9,20 +9,24 @@ plugins {
 
 android {
     namespace = "com.example.smartnest"
-    compileSdk = flutter.compileSdkVersion
+    compileSdkVersion 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
+    kotlinOptions {
+        jvmTarget = "17" // Establece el jvmTarget a 17
+    }
+    
     defaultConfig {
         // TODO: Especifica tu propio ID de aplicación único (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.smartnest"
         // Puedes actualizar los siguientes valores para que coincidan con las necesidades de tu aplicación.
         // Para obtener más información, consulta: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = 23
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName

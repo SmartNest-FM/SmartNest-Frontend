@@ -90,7 +90,7 @@ class _Level4Screen6State extends State<Level4Screen6> {
 
   void _initRecorder() async {
     try {
-      await _soundRecorder.openAudioSession();
+      await _soundRecorder.openRecorder();
       print('Audio session opened');
     } catch (e) {
       print('Error opening audio session: $e');
@@ -121,6 +121,9 @@ class _Level4Screen6State extends State<Level4Screen6> {
     audioFilePathG = audioFilePath;
 
     try {
+      // Inicializa el grabador sin await, ya que no se espera valor de retorno.
+      _initRecorder(); // Llamar a la función de inicialización sin await
+
       await _soundRecorder.startRecorder(
         toFile: audioFilePath, // Ruta donde se guardará el archivo de audio
         codec: Codec.pcm16WAV,
@@ -157,7 +160,7 @@ class _Level4Screen6State extends State<Level4Screen6> {
         print('Transcribed text: $answerRecorder');
 
         //convertir todo el texto en minuscula y comparar con la repsuesta en estatico
-        if(answerRecorder =='El león está en su jaula' || answerRecorder =='El leon esta en su jaula' || answerRecorder =='El león esta en su jaula'){
+        if(answerRecorder =='El león está en su jaula' || answerRecorder =='El leon esta en su jaula' || answerRecorder =='El león esta en su jaula' || answerRecorder =='jaula' || answerRecorder =='el len est en su jaula'){
           _showSuccessDialog();
         }else{
           _showRetryDialog();

@@ -81,7 +81,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
 
   void _initRecorder() async {
     try {
-      await _soundRecorder.openAudioSession();
+      await _soundRecorder.openRecorder();
       print('Audio session opened');
     } catch (e) {
       print('Error opening audio session: $e');
