@@ -1,40 +1,23 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:smartnest/config/api.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/fluent_reading.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
-import 'package:smartnest/screens/level1_screen.dart';
-import 'package:smartnest/screens/level1_screen10.dart';
-import 'package:smartnest/screens/level1_screen2.dart';
-import 'package:smartnest/screens/level1_screen3.dart';
-import 'package:smartnest/screens/level1_screen4.dart';
-import 'package:smartnest/screens/level1_screen5.dart';
-import 'package:smartnest/screens/level1_screen6.dart';
-import 'package:smartnest/screens/level1_screen7.dart';
-import 'package:smartnest/screens/level1_screen8.dart';
-import 'package:smartnest/screens/level1_screen9.dart';
-import 'package:smartnest/screens/level2_screen.dart';
-import 'package:smartnest/screens/level2_screen10.dart';
-import 'package:smartnest/screens/level2_screen2.dart';
-import 'package:smartnest/screens/level2_screen3.dart';
-import 'package:smartnest/screens/level2_screen4.dart';
-import 'package:smartnest/screens/level2_screen5.dart';
-import 'package:smartnest/screens/level2_screen6.dart';
-import 'package:smartnest/screens/level2_screen7.dart';
-import 'package:smartnest/screens/level2_screen8.dart';
-import 'package:smartnest/screens/level2_screen9.dart';
+import 'package:smartnest/screens/level2_screenG.dart';
+import 'package:smartnest/screens/levels_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
 import 'package:smartnest/widgets/button/button_activities.dart';
-
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Activities2Screen extends StatefulWidget {
   const Activities2Screen({super.key});
@@ -46,41 +29,33 @@ class Activities2Screen extends StatefulWidget {
 class _Activities2ScreenState extends State<Activities2Screen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
+
+  static const int startId = 11;
+  static const int endId = 20;
+
   UserModel? _user;
+  double levelPercentage = 0.0;
+  bool get levelCompleted => levelPercentage == 100;
 
-  FluentReadingModel? _fluentReading;
-  FluentReadingModel? _fluentReading2;
-  FluentReadingModel? _fluentReading3;
-  FluentReadingModel? _fluentReading4;
-  FluentReadingModel? _fluentReading5;
-  FluentReadingModel? _fluentReading6;
-  FluentReadingModel? _fluentReading7;
-  FluentReadingModel? _fluentReading8;
-  FluentReadingModel? _fluentReading9;
-  FluentReadingModel? _fluentReading10;
+  // ✅ tamaño correcto para indexar 11..20
+  final List<FluentReadingModel?> fluentReading = List.filled(endId + 1, null);
+  final List<bool> activityCompleted = List.filled(endId + 1, false);
 
-  //TTS
-  FlutterTts flutterTts = FlutterTts();
+  final FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    fetchFluentReading(1);
-    fetchFluentReading2(2);
-    fetchFluentReading3(3);
-    fetchFluentReading4(4);
-    fetchFluentReading5(5);
-    fetchFluentReading6(6);
-    fetchFluentReading7(7);
-    fetchFluentReading8(8);
-    fetchFluentReading9(9);
-    fetchFluentReading10(10);
-    speak('Bienvenido al nivel 2, aquí encontrarás 10 actividades para mejorar tu Lectura Fluida. ¡Vamos a empezar!. Presionar click en una actividad para comenzar.');
-  
+    loadAllFluentReading();
+    loadActivityStatus();
+    loadLevelPercentage();
+
+    speak(
+      "Bienvenido al nivel 2, aquí encontrarás 10 actividades para mejorar tu Lectura Fluida. Presiona una actividad para comenzar.",
+    );
   }
 
-   //TTS
   Future<void> speak(String text) async {
     await flutterTts.setLanguage("es-ES");
     await flutterTts.setPitch(1);
@@ -88,221 +63,121 @@ class _Activities2ScreenState extends State<Activities2Screen> {
     await flutterTts.speak(text);
   }
 
+  Future<void> loadLevelPercentage() async {
+    final uid = _auth.currentUser!.uid;
+
+    // ✅ NIVEL 2 (antes tenías 1)
+    final url = "${Api.baseUrl}/progress/percentage/2?uid=$uid";
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        setState(() {
+          levelPercentage = (json["percentage"] ?? 0).toDouble();
+        });
+      }
+    } catch (e) {
+      print("loadLevelPercentage error: $e");
+    }
+  }
+
+  Future<void> loadAllFluentReading() async {
+    for (int id = startId; id <= endId; id++) {
+      await fetchFluentReading(id);
+    }
+  }
+
   Future<void> fetchFluentReading(int id) async {
     try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
+      final response = await http.get(Uri.parse(Api.fluentById(id)));
       if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading = FluentReadingModel.fromMap(jsonResponse); 
-          
+        final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+        setState(() {
+          fluentReading[id] = FluentReadingModel.fromMap(jsonResponse);
         });
       } else {
-        print('Request failed with status: ${response.statusCode}.');
+        print("fetchFluentReading($id) status: ${response.statusCode}");
       }
     } catch (e) {
-      print(e.toString());
+      print("fetchFluentReading($id) error: $e");
     }
   }
 
-  Future<void> fetchFluentReading2(int id) async {
+  Future<bool> fetchActivityStatus(int activityId) async {
+    final uid = _auth.currentUser!.uid;
+    final url = "${Api.baseUrl}/progress/status/FLUENT/$activityId?uid=$uid";
+
     try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
+      final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading2 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
+        final json = jsonDecode(response.body);
+        return json["completed"] ?? false;
       }
     } catch (e) {
-      print(e.toString());
+      print("fetchActivityStatus error: $e");
     }
+    return false;
   }
 
-  Future<void> fetchFluentReading3(int id) async {
-    try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading3 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print(e.toString());
+  Future<void> loadActivityStatus() async {
+    for (int id = startId; id <= endId; id++) {
+      final completed = await fetchActivityStatus(id);
+      setState(() {
+        activityCompleted[id] = completed;
+      });
     }
   }
-
-  Future<void> fetchFluentReading4(int id) async {
-    try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading4 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> fetchFluentReading5(int id) async {
-    try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading5 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> fetchFluentReading6(int id) async {
-    try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading6 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> fetchFluentReading7(int id) async {
-    try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading7 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> fetchFluentReading8(int id) async {
-    try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading8 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> fetchFluentReading9(int id) async {
-    try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading9 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> fetchFluentReading10(int id) async {
-    try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/fluentReading/$id'));
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-         setState(() {
-          _fluentReading10 = FluentReadingModel.fromMap(jsonResponse); 
-          
-        });
-      } else {
-        print('Request failed with status: ${response.statusCode}.');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-
 
   Future<void> _loadUserData() async {
     try {
-      String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
-
+      final uid = _auth.currentUser!.uid;
+      final response = await http.get(Uri.parse(Api.userByUid(uid)));
       if (response.statusCode == 200) {
-        var userData = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
-          _user = UserModel.fromMap(userData);
+          _user = UserModel.fromMap(jsonDecode(utf8.decode(response.bodyBytes)));
         });
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al cargar datos del usuario: ${response.reasonPhrase}')),
-          
-        );
-        print(response.reasonPhrase);
       }
     } catch (e) {
-       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al cargar datos del usuario: $e')),
-       
-      );
-       print(e);
+      print("Error cargando usuario: $e");
     }
   }
 
-
   Future<void> _signOut() async {
-    try {
-      await _auth.signOut();
-      Navigator.push(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-      );
-    } catch (e) {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error al cerrar sesión: $e'),
+    await _auth.signOut();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+    );
+  }
+
+  // ✅ Muestra Actividad 1..10 pero navega con IDs reales 11..20
+  Widget activityItem(int realId) {
+    final shown = realId - startId + 1; // 11->1, 12->2 ... 20->10
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ButtonActivities(
+          text: "Actividad $shown",
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => Level2ScreenG(activityId: realId)),
+            );
+          },
         ),
-      );
-    }
+        ClipOval(
+          child: Image.asset(
+            activityCompleted[realId]
+                ? "lib/img/activitie_check.png"
+                : "lib/img/activitie_none.png",
+            width: 50,
+            height: 50,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -310,97 +185,80 @@ class _Activities2ScreenState extends State<Activities2Screen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Nivel 2', style: TextStyle(color: Colors.white)),
+        title: const Text("Nivel 2", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.red,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
+          iconSize: 40,
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              MaterialPageRoute(builder: (_) => const LevelsScreen()),
             );
           },
-          iconSize: 40,
-          color: Colors.white,
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.menu),
-            onPressed: () {
-              _scaffoldKey.currentState?.openDrawer();
-            },
             iconSize: 40,
             color: Colors.white,
-          )
+            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+          ),
         ],
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: <Widget>[
+          children: [
             UserAccountsDrawerHeader(
-                accountName: Text(_user?.nameuser ?? "Nombre no disponible"),
-                accountEmail: Text(_user?.emailuser ?? "Email no disponible"),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: _user != null && _user!.photouser != null  && File(_user!.photouser!).existsSync()
-                  ? FileImage(File(_user!.photouser!))
-                  : AssetImage('lib/img/user_no_photo.png'),
-                ),
-                decoration: BoxDecoration(
-                  color: Color(0xFF1D4F7C),
-                ),
+              accountName: Text(_user?.nameuser ?? "Nombre no disponible"),
+              accountEmail: Text(_user?.emailuser ?? "Email no disponible"),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: _user != null &&
+                        _user!.photouser != null &&
+                        File(_user!.photouser!).existsSync()
+                    ? FileImage(File(_user!.photouser!))
+                    : const AssetImage("lib/img/user_no_photo.png") as ImageProvider,
               ),
+              decoration: const BoxDecoration(color: Color(0xFF1D4F7C)),
+            ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text('Perfil'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                );
-              },
+              title: const Text("Perfil"),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text('Inicio'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.bar_chart),
-              title: const Text('Niveles'),
-              onTap: () {},
+              title: const Text("Inicio"),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HomeScreen()),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.trending_up),
-              title: const Text('Progreso de aprendizaje'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PercentageScreen()),
-                );
-              },
+              title: const Text("Progreso de aprendizaje"),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PercentageScreen()),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text('Configuración'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                );
-              },
+              title: const Text("Configuración"),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.exit_to_app),
-              title: const Text('Cerrar sesión'),
-              onTap: () {
-                _signOut();
-              },
+              title: const Text("Cerrar sesión"),
+              onTap: _signOut,
             ),
           ],
         ),
@@ -408,19 +266,14 @@ class _Activities2ScreenState extends State<Activities2Screen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              AppTheme.getColorThemes()[0],
-              AppTheme.getColorThemes()[6]
-            ],
+            colors: [AppTheme.getColorThemes()[0], AppTheme.getColorThemes()[6]],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
         child: Center(
           child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(56),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(56)),
             color: Colors.white,
             child: Container(
               width: 370,
@@ -429,255 +282,37 @@ class _Activities2ScreenState extends State<Activities2Screen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text('Ejercicios', style: TextStyle(fontSize: 18)),
-                        Text('Estado', style: TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // Row with button and image
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 1',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
+                    ClipOval(
+                      child: Container(
+                        width: 70,
+                        height: 70,
+                        color: levelCompleted ? Colors.green : Colors.grey.shade400,
+                        child: Center(
+                          child: Text(
+                            "${levelPercentage.toStringAsFixed(0)}%",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    Row(
+                    const SizedBox(height: 30),
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ButtonActivities(
-                          text: 'Actividad 2',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen2()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading2?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
+                        Text("Ejercicios", style: TextStyle(fontSize: 18)),
+                        Text("Estado", style: TextStyle(fontSize: 18)),
                       ],
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 3',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen3()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading3?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 4',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen4()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading4?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 5',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen5()),
-                            );
-                          },
-                        ),
-                       ClipOval(
-                          child: Image.asset(
-                            _fluentReading5?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 6',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen6()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading6?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 7',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen7()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading7?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 8',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen8()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading8?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 9',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen9()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading9?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ButtonActivities(
-                          text: 'Actividad 10',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Level2Screen10()),
-                            );
-                          },
-                        ),
-                        ClipOval(
-                          child: Image.asset(
-                            _fluentReading10?.correct == false
-                            ? 'lib/img/activitie_none.png'
-                            : 'lib/img/activitie_check.png',
-                            width: 50,
-                            height: 50,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
+
+                    for (int id = startId; id <= endId; id++) ...[
+                      activityItem(id),
+                      const SizedBox(height: 20),
+                    ],
                   ],
                 ),
               ),

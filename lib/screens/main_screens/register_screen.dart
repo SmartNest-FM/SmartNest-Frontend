@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:smartnest/config/api.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
@@ -50,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
       var response = await http.post(
-        Uri.parse('https://smartnest.azurewebsites.net/user'),  
+        Uri.parse(Api.createUser()), 
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

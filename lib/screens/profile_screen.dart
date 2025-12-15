@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartnest/config/api.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/user.dart';
@@ -84,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String uid = _auth.currentUser!.uid;
 
     // Realizar una solicitud GET para obtener el ID del usuario basado en su UID
-    var getUserResponse = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
+    var getUserResponse = await http.get(Uri.parse(Api.userByUid(uid)));
 
     print("GET" + getUserResponse.body);
 
@@ -106,7 +107,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       // Realizar una solicitud PUT para actualizar la foto del usuario
       var updateUserResponse = await http.put(
-        Uri.parse('https://smartnest.azurewebsites.net/user/$userId'),
+        Uri.parse(Api.updateUser(int.parse(userId))),
         headers: {"Content-Type": "application/json"},
         body: requestBody,
       );
@@ -115,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       if (updateUserResponse.statusCode == 200) {
         // Si la solicitud PUT es exitosa, realizar otra solicitud GET para obtener los datos actualizados del usuario
-        var updatedUserResponse = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/$userId'));
+        var updatedUserResponse = await http.get(Uri.parse(Api.getUserById(int.parse(userId))));
 
         if (updatedUserResponse.statusCode == 200) {
           // Actualizar el estado con los datos del usuario actualizados
@@ -164,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       String uid = _auth.currentUser!.uid;
 
       // Realizar una solicitud GET para obtener el ID del usuario basado en su UID
-      var getUserResponse = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
+      var getUserResponse = await http.get(Uri.parse(Api.userByUid(uid)));
 
       if (getUserResponse.statusCode == 200) {
         // Obtener los datos del usuario de la respuesta
@@ -188,14 +189,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         // Realizar una solicitud PUT para actualizar los datos del usuario
         var updateUserResponse = await http.put(
-          Uri.parse('https://smartnest.azurewebsites.net/user/$userId'),
+          Uri.parse(Api.updateUser(int.parse(userId))),
           headers: {"Content-Type": "application/json"},
           body: requestBody,
         );
 
         if (updateUserResponse.statusCode == 200) {
           // Si la solicitud PUT es exitosa, realizar otra solicitud GET para obtener los datos actualizados del usuario
-          var updatedUserResponse = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/$userId'));
+          var updatedUserResponse = await http.get(Uri.parse(Api.getUserById(int.parse(userId))));
 
           if (updatedUserResponse.statusCode == 200) {
             // Actualizar el estado con los datos del usuario actualizados
@@ -244,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse(Api.userByUid(uid)));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));

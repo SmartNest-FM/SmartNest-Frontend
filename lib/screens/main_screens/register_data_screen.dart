@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartnest/config/api.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/home_screen.dart';
@@ -35,8 +36,35 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
 
   String? _imagePath;
 
-  
+  void _showError(String msg) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Error"),
+        content: Text(msg),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cerrar"),
+          )
+        ],
+      ),
+    );
+  }
+
   Future<void> _updateUser() async {
+    if (_apoderadoController.text.isEmpty ||
+        _nombreController.text.isEmpty ||
+        _edadController.text.isEmpty) {
+      _showError("Completa todos los campos antes de continuar.");
+      return;
+    }
+
+    int? edad = int.tryParse(_edadController.text);
+    if (edad == null || edad <= 0) {
+      _showError("La edad debe ser un número válido.");
+      return;
+    }
 
     UserModel updatedUser = UserModel(
       id: widget.userSend.id,
@@ -49,7 +77,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
     );
 
     var response = await http.put(
-      Uri.parse('https://smartnest.azurewebsites.net/user/${updatedUser.id}'), // Asegúrate de usar la URL correcta
+      Uri.parse(Api.updateUser(updatedUser.id)), // Asegúrate de usar la URL correcta
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

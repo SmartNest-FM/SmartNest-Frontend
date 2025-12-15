@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:smartnest/config/api.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
+import 'package:smartnest/main.dart';
 import 'package:smartnest/model/user.dart';
 import 'package:smartnest/screens/activities.dart';
 import 'package:smartnest/screens/activities2.dart';
@@ -11,11 +13,6 @@ import 'package:smartnest/screens/activities3.dart';
 import 'package:smartnest/screens/activities4.dart';
 import 'package:smartnest/screens/activities5.dart';
 import 'package:smartnest/screens/home_screen.dart';
-import 'package:smartnest/screens/level1_screen.dart';
-import 'package:smartnest/screens/level2_screen.dart';
-import 'package:smartnest/screens/level3_screen.dart';
-import 'package:smartnest/screens/level5_screen.dart';
-import 'package:smartnest/screens/level4_screen.dart';
 import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
@@ -49,16 +46,15 @@ class _LevelsScreenState extends State<LevelsScreen> {
   //TTS
   final FlutterSoundRecorder _soundRecorder = FlutterSoundRecorder();
   FlutterTts flutterTts = FlutterTts();
+  List<LevelModel?> levels = List.filled(6, null); 
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    _loadLevelData(1); // Cargar datos del nivel 1
-    _loadLevelData(2); // Cargar datos del nivel 2
-    _loadLevelData(3); // Cargar datos del nivel 3
-    _loadLevelData(4); // Cargar datos del nivel 4
-    _loadLevelData(5); // Cargar datos del nivel 5
+    for (int i = 1; i <= 5; i++) {
+      _loadLevelData(i);
+    }
     speak('Bienvenido a la sección de niveles. Aquí podrás encontrar los diferentes niveles de aprendizaje. ¡Comencemos!. Presiona el botón de iniciar en un nivel.');
   }
 
@@ -109,7 +105,7 @@ class _LevelsScreenState extends State<LevelsScreen> {
   Future<void> _loadUserData() async {
     try {
       String uid = _auth.currentUser!.uid;
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/user/by-uid/$uid'));
+      var response = await http.get(Uri.parse(Api.userByUid(uid)));
 
       if (response.statusCode == 200) {
         var userData = jsonDecode(utf8.decode(response.bodyBytes));
@@ -135,28 +131,12 @@ class _LevelsScreenState extends State<LevelsScreen> {
   
   Future<void> _loadLevelData(int levelNumber) async {
     try {
-      var response = await http.get(Uri.parse('https://smartnest.azurewebsites.net/level/$levelNumber'));
+      var response = await http.get(Uri.parse(Api.getLevel(levelNumber)));
       if (response.statusCode == 200) {
         var levelData = jsonDecode(response.body);
         var level = LevelModel.fromMap(levelData);
         setState(() {
-          switch (levelNumber) {
-            case 1:
-              _level1 = level;
-              break;
-            case 2:
-              _level2 = level;
-              break;
-            case 3:
-              _level3 = level;
-              break;
-            case 4:
-              _level4 = level;
-              break;
-            case 5:
-              _level5 = level;
-              break;
-          }
+          levels[levelNumber] = level;
         });
       } else {
         // Manejar el error si no se pudo cargar los datos del nivel
@@ -166,6 +146,63 @@ class _LevelsScreenState extends State<LevelsScreen> {
     }
   }
 
+  Widget levelCard(LevelModel? level, Widget screen) {
+    return Container(
+      height: 120,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          level != null
+              ? Image.network(level.urlImg, height: 80)
+              : Container(width: 80),
+
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                level?.name ?? "Cargando...",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue[800],
+                ),
+              ),
+              const Text(
+                "10 actividades",
+                style: TextStyle(fontSize: 15, color: Colors.grey),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    navigatorKey.currentContext!,
+                    MaterialPageRoute(builder: (_) => screen),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(110, 20),
+                  backgroundColor: Colors.blue[400],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text(
+                  "Iniciar",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -301,299 +338,21 @@ class _LevelsScreenState extends State<LevelsScreen> {
                 child: ListView(
                   padding: EdgeInsets.all(16.0),
                   shrinkWrap: true,
-                  children: <Widget>[
-                    
-                    Container(
-                        height: 120,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _level1 != null ? Image.network(
-                              _level1!.urlImg,
-                              height: 80,
-                            ) : Container(),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(_level1 != null ? _level1!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue[800]
-                                  ),
-                                ),
-                                Text('10 actividades',
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.grey)),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const ActivitiesScreen()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    fixedSize: Size(110, 20),
-                                    backgroundColor: Colors.blue[400],
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    // Color de fondo del botón
-                                  ),
-                                  child: Text(
-                                    "Iniciar",
-                                    style: TextStyle(
-                                      color: Colors.white, // Color del texto
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        )),
-                    SizedBox(height: 8.0),
-                    Container(
-                        height: 120,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _level2 != null ? Image.network(
-                              _level2!.urlImg,
-                              height: 80,
-                            ) : Container(),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(_level2 != null ? _level2!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue[800]
-                                  ),
-                                ),
-                                Text('10 actividades',
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.grey)),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const Activities2Screen()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    fixedSize: Size(110, 20),
-                                    backgroundColor: Colors.blue[400],
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    // Color de fondo del botón
-                                  ),
-                                  child: Text(
-                                    "Iniciar",
-                                    style: TextStyle(
-                                      color: Colors.white, // Color del texto
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        )),
-                    SizedBox(height: 8.0),
-                    Container(
-                        height: 120,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _level3 != null ? Image.network(
-                              _level3!.urlImg,
-                              height: 80,
-                            ) : Container(),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(_level3 != null ? _level3!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue[800]
-                                  ),
-                                ),
-                                Text('10 actividades',
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.grey)
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const Activities3Screen()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    fixedSize: Size(110, 20),
-                                    backgroundColor: Colors.blue[400],
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    // Color de fondo del botón
-                                  ),
-                                  child: Text(
-                                    "Iniciar",
-                                    style: TextStyle(
-                                      color: Colors.white, // Color del texto
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        )),
-                    SizedBox(height: 8.0),
-                    Container(
-                        height: 120,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _level4 != null ? Image.network(
-                              _level4!.urlImg,
-                              height: 80,
-                            ) : Container(),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(_level4 != null ? _level4!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue[800]
-                                  ),
-                                ),
-                                Text('10 actividades',
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.grey)),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const Activities4Screen()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    fixedSize: Size(110, 20),
-                                    backgroundColor: Colors.blue[400],
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    // Color de fondo del botón
-                                  ),
-                                  child: Text(
-                                    "Iniciar",
-                                    style: TextStyle(
-                                      color: Colors.white, // Color del texto
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        )),
-                    SizedBox(height: 8.0),
-                    Container(
-                        height: 120,
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _level5 != null ? Image.network(
-                              _level5!.urlImg,
-                              height: 80,
-                            ) : Container(),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(_level5 != null ? _level5!.name : 'Cargando...', // Mostrar el nombre del nivel 1 si los datos están disponibles, o 'Cargando...' si no
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue[800]
-                                  ),
-                                ),
-                                Text('10 actividades',
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.grey)),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const Activities5Screen()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    fixedSize: Size(110, 20),
-                                    backgroundColor: Colors.blue[400],
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    // Color de fondo del botón
-                                  ),
-                                  child: Text(
-                                    "Iniciar",
-                                    style: TextStyle(
-                                      color: Colors.white, // Color del texto
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        )
-                      ),
+                  children:  [
+
+                    levelCard(levels[1], const ActivitiesScreen()),
+                    const SizedBox(height: 8),
+
+                    levelCard(levels[2], const Activities2Screen()),
+                    const SizedBox(height: 8),
+
+                    levelCard(levels[3], const Activities3Screen()),
+                    const SizedBox(height: 8),
+
+                    levelCard(levels[4], const Activities4Screen()),
+                    const SizedBox(height: 8),
+
+                    levelCard(levels[5], const Activities5Screen()),
                   ],
                 ),
               ),

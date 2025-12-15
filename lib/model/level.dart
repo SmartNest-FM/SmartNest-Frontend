@@ -14,7 +14,7 @@ class LevelModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'urlImg': urlImg,
+      'url_img': urlImg,
       'name': name,
       'percentage': percentage,
     };
@@ -23,9 +23,9 @@ class LevelModel {
   factory LevelModel.fromMap(Map<String, dynamic> map) {
     return LevelModel(
       id: map['id'],
-      urlImg: map['urlImg'],
+      urlImg: map['url_img'] ?? map['urlImg'],
       name: map['name'],
-      percentage: map['percentage'],
+      percentage: map['percentage'] ?? 0,
     );
   }
 }
