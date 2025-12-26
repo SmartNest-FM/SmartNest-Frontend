@@ -124,7 +124,7 @@ class _PercentageScreenState extends State<PercentageScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
           },
           iconSize: 40,
           color: Colors.white,
@@ -169,7 +169,7 @@ class _PercentageScreenState extends State<PercentageScreen> {
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
               },
             ),
             ListTile(

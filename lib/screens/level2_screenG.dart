@@ -22,6 +22,7 @@ import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
+import 'package:smartnest/utils/celebration_helper.dart';
 
 import 'package:smartnest/widgets/button/button_activities.dart';
 import 'package:smartnest/widgets/button/button_primary2.dart';
@@ -52,10 +53,13 @@ class _Level2ScreenGState extends State<Level2ScreenG> {
 
   final FlutterTts flutterTts = FlutterTts();
 
+  late CelebrationHelper _celebration;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _celebration = CelebrationHelper();
 
     fetchFluentReading(widget.activityId);
     fetchFeedback(widget.activityId);
@@ -65,6 +69,12 @@ class _Level2ScreenGState extends State<Level2ScreenG> {
     speak(
       'Actividad ${widget.activityId}. Responde cuál es la respuesta correcta. Presiona el botón de reproducir enunciado.',
     );
+  }
+
+  @override
+  void dispose() {
+    _celebration.dispose();
+    super.dispose();
   }
 
   // =======================
@@ -228,8 +238,13 @@ class _Level2ScreenGState extends State<Level2ScreenG> {
     }
 
     final len = correct.length;
-    final maxEdits =
-        (len <= 3) ? 0 : (len == 4) ? 1 : (len <= 7) ? 2 : 3;
+    final maxEdits = (len <= 3)
+        ? 0
+        : (len == 4)
+            ? 1
+            : (len <= 7)
+                ? 2
+                : 3;
 
     if (correct.length <= 4 && spoken.length <= 2) return false;
 
@@ -339,6 +354,8 @@ class _Level2ScreenGState extends State<Level2ScreenG> {
   //        DIALOGS
   // =======================
   Future<void> _showSuccessDialog() async {
+    await _celebration.celebrate();
+
     await speak('¡Genial!, ¡Lo hiciste fantástico ${_user?.nameuser ?? ""}!');
 
     if (!mounted) return;
@@ -346,74 +363,78 @@ class _Level2ScreenGState extends State<Level2ScreenG> {
       context: context,
       barrierDismissible: false,
       builder: (_) {
-        return Center(
-          child: AlertDialog(
-            contentPadding: EdgeInsets.zero,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    color: Colors.blue,
-                    padding: const EdgeInsets.all(8),
-                    child: const Center(
-                      child: Text(
-                        '¡Genial!',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Container(
+                      color: Colors.blue,
+                      padding: const EdgeInsets.all(8),
+                      child: const Center(
+                        child: Text(
+                          '¡Genial!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Image.network(
-                    'https://cdn-icons-png.flaticon.com/512/6142/6142783.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text('¡Lo hiciste fantástico!',
-                    style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ButtonPrimary2(
-                      onPressed: () {
-                        Navigator.pop(context);
-
-                        final nextId = widget.activityId + 1;
-                        if (nextId <= 20) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  Level2ScreenG(activityId: nextId),
-                            ),
-                          );
-                        } else {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const Activities2Screen()),
-                          );
-                        }
-                      },
-                      text: 'Continuar',
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: Image.network(
+                      'https://cdn-icons-png.flaticon.com/512/6142/6142783.png',
+                      fit: BoxFit.contain,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-              ],
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('¡Lo hiciste fantástico!',
+                      style: TextStyle(fontSize: 18)),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ButtonPrimary2(
+                        onPressed: () {
+                          Navigator.pop(context);
+
+                          final nextId = widget.activityId + 1;
+                          if (nextId <= 20) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    Level2ScreenG(activityId: nextId),
+                              ),
+                            );
+                          } else {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const Activities2Screen()),
+                            );
+                          }
+                        },
+                        text: 'Continuar',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                ],
+              ),
             ),
-          ),
+            _celebration.buildConfetti(),
+          ],
         );
       },
     );
@@ -555,7 +576,6 @@ class _Level2ScreenGState extends State<Level2ScreenG> {
           ),
         ],
       ),
-
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -621,16 +641,17 @@ class _Level2ScreenGState extends State<Level2ScreenG> {
           ],
         ),
       ),
-
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [AppTheme.getColorThemes()[0], AppTheme.getColorThemes()[6]],
+            colors: [
+              AppTheme.getColorThemes()[0],
+              AppTheme.getColorThemes()[6]
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
         ),
-
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

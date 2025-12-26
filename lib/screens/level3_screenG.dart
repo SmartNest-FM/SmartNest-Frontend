@@ -22,6 +22,7 @@ import 'package:smartnest/screens/main_screens/welcome_screen.dart';
 import 'package:smartnest/screens/percentage_screen.dart';
 import 'package:smartnest/screens/profile_screen.dart';
 import 'package:smartnest/screens/settings_screen.dart';
+import 'package:smartnest/utils/celebration_helper.dart';
 
 import 'package:smartnest/widgets/button/button_activities.dart';
 import 'package:smartnest/widgets/button/button_primary2.dart';
@@ -55,10 +56,12 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
 
   final FlutterTts flutterTts = FlutterTts();
 
+  late CelebrationHelper _celebration;
   @override
   void initState() {
     super.initState();
     _loadUserData();
+    _celebration = CelebrationHelper();
 
     fetchReading(widget.activityId);
     fetchFeedback(widget.activityId);
@@ -69,6 +72,12 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
     speak(
       'Actividad $shown. Responde cuál es la respuesta correcta. Presiona el botón de reproducir enunciado.',
     );
+  }
+
+  @override
+  void dispose() {
+    _celebration.dispose();
+    super.dispose();
   }
 
   Future<void> speak(String text) async {
@@ -170,7 +179,8 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
     if (a.isEmpty) return b.length;
     if (b.isEmpty) return a.length;
 
-    final dp = List.generate(a.length + 1, (_) => List<int>.filled(b.length + 1, 0));
+    final dp =
+        List.generate(a.length + 1, (_) => List<int>.filled(b.length + 1, 0));
     for (int i = 0; i <= a.length; i++) dp[i][0] = i;
     for (int j = 0; j <= b.length; j++) dp[0][j] = j;
 
@@ -203,7 +213,13 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
     }
 
     final len = correct.length;
-    final maxEdits = (len <= 3) ? 0 : (len == 4) ? 1 : (len <= 7) ? 2 : 3;
+    final maxEdits = (len <= 3)
+        ? 0
+        : (len == 4)
+            ? 1
+            : (len <= 7)
+                ? 2
+                : 3;
 
     if (correct.length <= 4 && spoken.length <= 2) return false;
     return bestDist <= maxEdits;
@@ -244,18 +260,21 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
     final uid = _auth.currentUser?.uid;
     if (uid == null) return;
 
-    final url = "${Api.saveReadingProgress(widget.activityId)}?uid=$uid&score=$score";
+    final url =
+        "${Api.saveReadingProgress(widget.activityId)}?uid=$uid&score=$score";
     try {
       await http.post(Uri.parse(url));
     } catch (_) {}
   }
 
-  Future<void> updateUserResponse(String userResponse, {bool fromVoice = false}) async {
+  Future<void> updateUserResponse(String userResponse,
+      {bool fromVoice = false}) async {
     if (readingModel == null) return;
 
     final correct = fromVoice
         ? fuzzyMatch(userResponse, readingModel?.correct_answer ?? '')
-        : normalizeText(userResponse) == normalizeText(readingModel?.correct_answer ?? '');
+        : normalizeText(userResponse) ==
+            normalizeText(readingModel?.correct_answer ?? '');
 
     final update = ReadingComprehensionModel(
       id: readingModel?.id ?? 0,
@@ -290,6 +309,7 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
   }
 
   Future<void> _showSuccessDialog() async {
+    await _celebration.celebrate();
     await speak('¡Genial!, ¡Lo hiciste fantástico ${_user?.nameuser ?? ""}!');
 
     if (!mounted) return;
@@ -297,69 +317,77 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
       context: context,
       barrierDismissible: false,
       builder: (_) {
-        return Center(
-          child: AlertDialog(
-            contentPadding: EdgeInsets.zero,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: Container(
-                    color: Colors.blue,
-                    padding: const EdgeInsets.all(8),
-                    child: const Center(
-                      child: Text(
-                        '¡Genial!',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Container(
+                      color: Colors.blue,
+                      padding: const EdgeInsets.all(8),
+                      child: const Center(
+                        child: Text(
+                          '¡Genial!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Image.network(
-                    'https://cdn-icons-png.flaticon.com/512/6142/6142783.png',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text('¡Lo hiciste fantástico!', style: TextStyle(fontSize: 18)),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ButtonPrimary2(
-                      onPressed: () {
-                        Navigator.pop(context);
-
-                        final nextId = widget.activityId + 1;
-                        if (nextId <= endId) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => Level3ScreenG(activityId: nextId)),
-                          );
-                        } else {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (_) => const Activities3Screen()),
-                          );
-                        }
-                      },
-                      text: 'Continuar',
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: Image.network(
+                      'https://cdn-icons-png.flaticon.com/512/6142/6142783.png',
+                      fit: BoxFit.contain,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-              ],
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('¡Lo hiciste fantástico!',
+                      style: TextStyle(fontSize: 18)),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ButtonPrimary2(
+                        onPressed: () {
+                          Navigator.pop(context);
+
+                          final nextId = widget.activityId + 1;
+                          if (nextId <= endId) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      Level3ScreenG(activityId: nextId)),
+                            );
+                          } else {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const Activities3Screen()),
+                            );
+                          }
+                        },
+                        text: 'Continuar',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                ],
+              ),
             ),
-          ),
+            _celebration.buildConfetti()
+          ],
         );
       },
     );
@@ -403,7 +431,8 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
                   child: Image.network(
                     feedbackImageG,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Text('No se pudo cargar la imagen'),
+                    errorBuilder: (_, __, ___) =>
+                        const Text('No se pudo cargar la imagen'),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -454,7 +483,8 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
   Future<void> _signOut() async {
     await _auth.signOut();
     if (!mounted) return;
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const WelcomeScreen()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (_) => const WelcomeScreen()));
   }
 
   @override
@@ -464,14 +494,16 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('Actividad $shown', style: const TextStyle(color: Colors.white)),
+        title: Text('Actividad $shown',
+            style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.red,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           iconSize: 40,
           color: Colors.white,
           onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const Activities3Screen()));
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (_) => const Activities3Screen()));
           },
         ),
         actions: [
@@ -495,34 +527,40 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
                         _user!.photouser != null &&
                         File(_user!.photouser!).existsSync()
                     ? FileImage(File(_user!.photouser!))
-                    : const AssetImage('lib/img/user_no_photo.png') as ImageProvider,
+                    : const AssetImage('lib/img/user_no_photo.png')
+                        as ImageProvider,
               ),
               decoration: const BoxDecoration(color: Color(0xFF1D4F7C)),
             ),
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Perfil'),
-              onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ProfileScreen())),
+              onTap: () => Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const ProfileScreen())),
             ),
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('Inicio'),
-              onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen())),
+              onTap: () => Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const HomeScreen())),
             ),
             ListTile(
               leading: const Icon(Icons.bar_chart),
               title: const Text('Niveles'),
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => LevelsScreen())),
+              onTap: () => Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => LevelsScreen())),
             ),
             ListTile(
               leading: const Icon(Icons.trending_up),
               title: const Text('Progreso de aprendizaje'),
-              onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const PercentageScreen())),
+              onTap: () => Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const PercentageScreen())),
             ),
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text('Configuración'),
-              onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SettingsScreen())),
+              onTap: () => Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const SettingsScreen())),
             ),
             ListTile(
               leading: const Icon(Icons.exit_to_app),
@@ -535,7 +573,10 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [AppTheme.getColorThemes()[0], AppTheme.getColorThemes()[6]],
+            colors: [
+              AppTheme.getColorThemes()[0],
+              AppTheme.getColorThemes()[6]
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -547,7 +588,8 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Reproducir enunciado', style: TextStyle(fontSize: 18, color: Colors.white)),
+                  const Text('Reproducir enunciado',
+                      style: TextStyle(fontSize: 18, color: Colors.white)),
                   SizedBox(
                     height: 60,
                     child: IconButton(
@@ -576,7 +618,8 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
                 readingModel?.main_image ?? '',
                 width: 150,
                 height: 150,
-                errorBuilder: (_, __, ___) => const Text('No se pudo cargar la imagen'),
+                errorBuilder: (_, __, ___) =>
+                    const Text('No se pudo cargar la imagen'),
               ),
               const SizedBox(height: 20),
               Text(
@@ -585,12 +628,12 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 30),
-
               ButtonActivities(
                 text: readingModel?.answer_one ?? '',
                 onPressed: () async {
                   final userResponse = readingModel?.answer_one ?? '';
-                  if (userResponse.isNotEmpty) await updateUserResponse(userResponse);
+                  if (userResponse.isNotEmpty)
+                    await updateUserResponse(userResponse);
                 },
               ),
               const SizedBox(height: 10),
@@ -598,7 +641,8 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
                 text: readingModel?.answer_three ?? '',
                 onPressed: () async {
                   final userResponse = readingModel?.answer_three ?? '';
-                  if (userResponse.isNotEmpty) await updateUserResponse(userResponse);
+                  if (userResponse.isNotEmpty)
+                    await updateUserResponse(userResponse);
                 },
               ),
               const SizedBox(height: 10),
@@ -606,17 +650,17 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
                 text: readingModel?.answer_two ?? '',
                 onPressed: () async {
                   final userResponse = readingModel?.answer_two ?? '';
-                  if (userResponse.isNotEmpty) await updateUserResponse(userResponse);
+                  if (userResponse.isNotEmpty)
+                    await updateUserResponse(userResponse);
                 },
               ),
-
               const SizedBox(height: 30),
-
               if (!microphoneActive)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Responder', style: TextStyle(fontSize: 18, color: Colors.white)),
+                    const Text('Responder',
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
                     SizedBox(
                       height: 60,
                       child: IconButton(
@@ -626,12 +670,12 @@ class _Level3ScreenGState extends State<Level3ScreenG> {
                     ),
                   ],
                 ),
-
               if (microphoneActive)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Grabando...', style: TextStyle(fontSize: 18, color: Colors.white)),
+                    const Text('Grabando...',
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
                     SizedBox(
                       height: 60,
                       child: IconButton(

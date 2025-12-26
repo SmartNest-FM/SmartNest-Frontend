@@ -220,7 +220,7 @@ class _Activities5ScreenState extends State<Activities5Screen> {
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text("Inicio"),
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen())),
+              onTap: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen())),
             ),
             ListTile(
               leading: const Icon(Icons.bar_chart),

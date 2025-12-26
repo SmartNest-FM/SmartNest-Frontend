@@ -32,11 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   FlutterTts flutterTts = FlutterTts();
 
+  bool _hasSpoken = false;
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
-    speak('Bienvenido ${_user?.nameuser} a SmartNest, tu aplicación de aprendizaje de comprensión de lectura.');
   }
 
   Future<void> speak(String text) async {
@@ -73,6 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           _user = UserModel.fromMap(userData);
         });
+        if (!_hasSpoken) {
+          _hasSpoken = true;
+          speak(
+            'Bienvenido ${_user!.nameuser} a SmartNest, tu aplicación de aprendizaje de comprensión de lectura.',
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al cargar datos del usuario: ${response.reasonPhrase}')),
@@ -138,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.home), 
               title: const Text('Inicio'),
               onTap: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => HomeScreen()),
                 );

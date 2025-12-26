@@ -55,7 +55,7 @@ dependencies:
   flutter_tts: ^4.0.2
   url_launcher: ^6.3.0
   flutter_launcher_icons: ^0.14.3
-
+  confetti: ^0.7.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -104,7 +104,7 @@ flutter:
     - lib/img/activitie_error.png
     - lib/img/activitie_none.png
     - lib/img/stop_button_image.jpg
-
+    - assets/sounds/confetti.mp3
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

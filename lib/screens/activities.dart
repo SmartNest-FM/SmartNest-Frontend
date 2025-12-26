@@ -221,7 +221,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text("Inicio"),
-              onTap: () => Navigator.push(
+              onTap: () => Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (_) => const HomeScreen()),
               ),

@@ -24,7 +24,7 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
   TextEditingController _apoderadoController = TextEditingController();
   TextEditingController _nombreController = TextEditingController();
   TextEditingController _edadController = TextEditingController();
-
+  bool _termsAccepted = false;
 
   @override
   void initState() {
@@ -148,6 +148,107 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
     }
   }
 
+  void _showTermsAndConditionsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.black.withOpacity(0.75),
+          content: SingleChildScrollView(
+            child: Card(
+              color: Colors.black.withOpacity(0.75),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Términos y Condiciones',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      '1. Introducción:\n'
+                      'Bienvenido a SmartNest (en adelante, "el Aplicativo"). Al utilizar el Aplicativo, usted acepta estar sujeto a los siguientes términos y condiciones (en adelante, "los Términos"). Si no está de acuerdo con estos Términos, no debe utilizar el Aplicativo.\n\n'
+                      '2. Descripción del Servicio:\n'
+                      'El Aplicativo utiliza inteligencia artificial (IA) para mejorar la comprensión lectora de los usuarios, especialmente niños con síndrome de Down, mediante ejercicios y análisis personalizados que incluyen el uso reconocimiento de voz y conversión de texto a voz.\n\n'
+                      '3. Elegibilidad y Autorización de Padres:\n'
+                      'Para los usuarios menores de 18 años, se requiere el consentimiento explícito de los padres o tutores legales. Al aceptar estos Términos, los padres o tutores legales confirman que tienen la autoridad para permitir el uso del Aplicativo por parte del menor y que han leído y entendido estos Términos y la Política de Privacidad.\n\n'
+                      '4. Uso Aceptable:\n'
+                      'Usted se compromete a utilizar el Aplicativo de manera responsable y a no:\n'
+                      '• Utilizar el Aplicativo para cualquier propósito ilegal o no autorizado.\n'
+                      '• Interferir o interrumpir el funcionamiento del Aplicativo.\n'
+                      '• Intentar acceder sin autorización a otros sistemas informáticos a través del Aplicativo.\n\n'
+                      '5. Propiedad Intelectual:\n'
+                      'Todos los contenidos, marcas registradas, logotipos y otros elementos del Aplicativo son propiedad de SmartNest o de sus respectivos propietarios. Usted no adquiere ningún derecho de propiedad intelectual al utilizar el Aplicativo.\n\n'
+                      '6. Modificaciones:\n'
+                      'SmartNest se reserva el derecho de modificar estos Términos en cualquier momento. Las modificaciones serán efectivas una vez publicadas en el Aplicativo. Es su responsabilidad revisar periódicamente estos Términos.\n\n'
+                      '7. Terminación:\n'
+                      'SmartNest puede suspender o terminar su acceso al Aplicativo en cualquier momento y por cualquier motivo, incluyendo pero no limitado a, el incumplimiento de estos Términos.\n\n'
+                      'Política de Privacidad\n'
+                      '1. Introducción:\n'
+                      'La privacidad de nuestros usuarios es de suma importancia para SmartNest. Esta Política de Privacidad describe cómo recopilamos, utilizamos y protegemos la información personal de los usuarios del Aplicativo.\n\n'
+                      '2. Información Recopilada:\n'
+                      'Recopilamos información personal de los usuarios cuando se registran en el Aplicativo, incluyendo pero no limitado a:\n'
+                      '• Nombres y apellidos del tutor a cargo del menor\n'
+                      '• Nombres y apellidos del menor de edad\n'
+                      '• Dirección de correo electrónico\n'
+                      '• Edad\n'
+                      '• Datos de uso del Aplicativo y rendimiento en los ejercicios de comprensión lectora\n\n'
+                      '3. Uso de la Información:\n'
+                      'La información recopilada se utiliza para:\n'
+                      '• Personalizar y mejorar la experiencia de aprendizaje.\n'
+                      '• Analizar el rendimiento y proporcionar informes a los padres o tutores.\n'
+                      '• Enviar comunicaciones relacionadas con el Aplicativo.\n\n'
+                      '4. Compartición de la Información:\n'
+                      'No compartimos información personal con terceros, excepto en los siguientes casos:\n'
+                      '• Con el consentimiento explícito de los padres o tutores legales.\n'
+                      '• Para cumplir con requisitos legales o responder a procesos judiciales.\n\n'
+                      '5. Seguridad:\n'
+                      'Implementamos medidas de seguridad técnicas y organizativas para proteger la información personal de los usuarios contra el acceso no autorizado, la pérdida o el uso indebido.\n\n'
+                      '6. Derechos de los Usuarios:\n'
+                      'Los usuarios tienen derecho a:\n'
+                      '• Acceder a su información personal.\n'
+                      '• Solicitar la corrección de datos inexactos.\n'
+                      '• Solicitar la eliminación de sus datos personales.\n'
+                      '• Retirar el consentimiento para el tratamiento de sus datos.\n\n'
+                      '7. Cumplimiento con Normativas:\n'
+                      'Nos comprometemos a cumplir con las leyes de protección de datos aplicables, incluyendo la Ley 29733 de Protección de Datos Personales y la Ley 29973 de Normativa para Personas con Discapacidad en Perú. Esto implica que tomaremos todas las medidas necesarias para asegurar la privacidad y seguridad de los datos personales de los usuarios.\n\n'
+                      '8. Contacto:\n'
+                      'Si tiene alguna pregunta o inquietud sobre esta Política de Privacidad, puede contactarnos en:\n'
+                      'smartnest@gmail.com',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.justify,
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _termsAccepted = true;
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('Aceptar'),
+                        ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,26 +339,50 @@ class _RegisterDataScreenState extends State<RegisterDataScreen> {
                   _buildInputField('Edad', Icons.cake, controller: _edadController),
                   const SizedBox(height: 25),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                      );
-                    },
-                    child: const Text(
-                      'Tienes una cuenta? Iniciar sesion',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        decoration: TextDecoration.underline,
+                    onTap: _showTermsAndConditionsDialog,
+                    child: SizedBox(
+                      width: 300,
+                      child: Center(
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                            children: [
+                              const TextSpan(
+                                text: 'Al usar SmartNest, acepto ',
+                              ),
+                              TextSpan(
+                                text: 'términos de uso y políticas de privacidad',
+                                style: const TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),  
+                  ),
                   const SizedBox(height: 35),
-                  ButtonPrimary(
+                 ButtonPrimary(
                     onPressed: () {
-                      _updateUser();
-                      },
+                      if (!_termsAccepted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Debe aceptar los términos y condiciones para continuar',
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                        return;
+                      }
+                      _updateUser(); 
+                    },
                     text: 'Registrarse',
                   ),
                 ],
