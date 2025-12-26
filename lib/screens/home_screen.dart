@@ -187,6 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Container(
+        width: double.infinity,
         decoration:  BoxDecoration(
           gradient: LinearGradient(
             colors: [
