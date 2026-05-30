@@ -40,7 +40,7 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
-  static const int startId = 31;
+  static const int startId = 1;
   static const int endId = 40;
 
   UserModel? _user;
@@ -107,11 +107,11 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
 
   Future<String> convertSpeechToText(String filePath) async {
     const apiKey = apiKeyWhisper;
-    final url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
+    final url = Uri.https("api.groq.com", "/openai/v1/audio/transcriptions");
 
     final request = http.MultipartRequest('POST', url);
     request.headers.addAll({"Authorization": "Bearer $apiKey"});
-    request.fields["model"] = "whisper-1";
+    request.fields["model"] = "whisper-large-v3-turbo";
     request.fields["language"] = "es";
     request.files.add(await http.MultipartFile.fromPath('file', filePath));
 
@@ -145,13 +145,24 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
       if (path == null) return;
 
       final transcribed = await convertSpeechToText(gosuPath);
+      print('🎤 TRANSCRIPCIÓN: "$transcribed"');
       final correctRaw = model?.correct_answer ?? '';
-      final ok = fuzzyMatch(transcribed, correctRaw);
+      print('✅ RESPUESTA CORRECTA: "$correctRaw"');
 
-      if (ok) {
-        await updateUserResponse(transcribed, fromVoice: true);
+      // Evaluación con IA (embedding semántico + léxico + fonético)
+      final aiResult = await evaluateWithAI(transcribed, correctRaw, 'combination_images');
+      final verdict = aiResult['verdict'] as String;
+      final score = aiResult['scorePercentage'] as int;
+      print('🤖 IA EVALUACIÓN → Veredicto: $verdict | Puntuación: $score% | Mensaje: ${aiResult['message']}');
+
+      if (verdict == 'correct' || verdict == 'partial') {
+        await updateUserResponse(transcribed,
+            fromVoice: true,
+            aiVerdict: verdict,
+            aiMessage: aiResult['message'] as String,
+            aiScore: aiResult['scorePercentage'] as int);
       } else {
-        await _showRetryDialog();
+        await _showRetryDialog(aiMessage: aiResult['message'] as String);
       }
 
       final audioFile = File(gosuPath);
@@ -196,6 +207,37 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
       }
     }
     return dp[a.length][b.length];
+  }
+
+  // =======================
+  //   EVALUACION CON IA
+  // =======================
+  Future<Map<String, dynamic>> evaluateWithAI(
+      String answer, String expected, String activityType) async {
+    try {
+      final response = await http.post(
+        Uri.parse(Api.aiEvaluate()),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode({
+          'answer': answer,
+          'expected': expected,
+          'activityType': activityType,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
+        return {
+          'verdict': data['verdict'] ?? 'wrong',
+          'message': data['message'] ?? 'Intentemos de nuevo.',
+          'scorePercentage': data['scorePercentage'] ?? 0,
+        };
+      }
+    } catch (_) {}
+    return {
+      'verdict': 'wrong',
+      'message': 'Intentemos de nuevo.',
+      'scorePercentage': 0,
+    };
   }
 
   bool fuzzyMatch(String spokenRaw, String correctRaw) {
@@ -268,13 +310,13 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
   }
 
   Future<void> updateUserResponse(String userResponse,
-      {bool fromVoice = false}) async {
+      {bool fromVoice = false,
+      String aiVerdict = 'correct',
+      String aiMessage = '',
+      int aiScore = 100}) async {
     if (model == null) return;
 
-    final correct = fromVoice
-        ? fuzzyMatch(userResponse, model?.correct_answer ?? '')
-        : normalizeText(userResponse) ==
-            normalizeText(model?.correct_answer ?? '');
+    final bool correct = (aiVerdict == 'correct' || aiVerdict == 'partial');
 
     final update = CombinationReadingImagesModel(
       id: model?.id ?? 0,
@@ -300,11 +342,14 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
       );
 
       if (response.statusCode == 200) {
-        if (correct) {
+        if (aiVerdict == 'correct') {
           await saveProgress(score: 100);
           await _showSuccessDialog();
+        } else if (aiVerdict == 'partial') {
+          await saveProgress(score: aiScore);
+          await _showPartialDialog(aiMessage: aiMessage);
         } else {
-          await _showRetryDialog();
+          await _showRetryDialog(aiMessage: aiMessage);
         }
       }
     } catch (_) {}
@@ -395,8 +440,9 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
     );
   }
 
-  Future<void> _showRetryDialog() async {
-    await speak('¡Inténtalo de nuevo!. Te daré una pista. $feedbackMessageG');
+  Future<void> _showRetryDialog({String aiMessage = ''}) async {
+    final hint = aiMessage.isNotEmpty ? aiMessage : feedbackMessageG;
+    await speak('¡Inténtalo de nuevo!. Te daré una pista. $hint');
 
     if (!mounted) return;
     return showDialog<void>(
@@ -441,10 +487,78 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Text(
-                    'Pista: $feedbackMessageG',
+                    'Pista: $hint',
                     style: const TextStyle(fontSize: 18, color: Colors.black),
                     textAlign: TextAlign.center,
                   ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonPrimary2(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        fetchCombination(widget.activityId);
+                        fetchFeedback(widget.activityId);
+                      },
+                      text: 'Reintentar',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showPartialDialog({required String aiMessage}) async {
+    await speak('¡Casi lo tienes! $aiMessage');
+    if (!mounted) return;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return Center(
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    color: Colors.orange,
+                    padding: const EdgeInsets.all(8),
+                    child: const Center(
+                      child: Text(
+                        '¡Casi!',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Text(
+                    aiMessage,
+                    style: const TextStyle(fontSize: 18, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Image.asset(
+                  'lib/img/CASI.png',
+                  width: 100,
+                  height: 100,
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -647,8 +761,13 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
                 text: model?.answer_one ?? '',
                 onPressed: () async {
                   final userResponse = model?.answer_one ?? '';
-                  if (userResponse.isNotEmpty)
-                    await updateUserResponse(userResponse);
+                  if (userResponse.isNotEmpty) {
+                    final correct = model?.correct_answer ?? '';
+                    final isCorrect = userResponse.trim().toLowerCase() == correct.trim().toLowerCase();
+                    await updateUserResponse(userResponse,
+                        aiVerdict: isCorrect ? 'correct' : 'wrong',
+                        aiScore: isCorrect ? 100 : 0);
+                  }
                 },
               ),
               const SizedBox(height: 10),
@@ -656,8 +775,13 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
                 text: model?.answer_three ?? '',
                 onPressed: () async {
                   final userResponse = model?.answer_three ?? '';
-                  if (userResponse.isNotEmpty)
-                    await updateUserResponse(userResponse);
+                  if (userResponse.isNotEmpty) {
+                    final correct = model?.correct_answer ?? '';
+                    final isCorrect = userResponse.trim().toLowerCase() == correct.trim().toLowerCase();
+                    await updateUserResponse(userResponse,
+                        aiVerdict: isCorrect ? 'correct' : 'wrong',
+                        aiScore: isCorrect ? 100 : 0);
+                  }
                 },
               ),
               const SizedBox(height: 10),
@@ -665,8 +789,13 @@ class _Level4ScreenGState extends State<Level4ScreenG> {
                 text: model?.answer_two ?? '',
                 onPressed: () async {
                   final userResponse = model?.answer_two ?? '';
-                  if (userResponse.isNotEmpty)
-                    await updateUserResponse(userResponse);
+                  if (userResponse.isNotEmpty) {
+                    final correct = model?.correct_answer ?? '';
+                    final isCorrect = userResponse.trim().toLowerCase() == correct.trim().toLowerCase();
+                    await updateUserResponse(userResponse,
+                        aiVerdict: isCorrect ? 'correct' : 'wrong',
+                        aiScore: isCorrect ? 100 : 0);
+                  }
                 },
               ),
               const SizedBox(height: 30),

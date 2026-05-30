@@ -115,11 +115,11 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
   // =======================
   Future<String> convertSpeechToText(String filePath) async {
     const apiKey = apiKeyWhisper;
-    final url = Uri.https("api.openai.com", "/v1/audio/transcriptions");
+    final url = Uri.https("api.groq.com", "/openai/v1/audio/transcriptions");
 
     final request = http.MultipartRequest('POST', url);
     request.headers.addAll({"Authorization": "Bearer $apiKey"});
-    request.fields["model"] = "whisper-1";
+    request.fields["model"] = "whisper-large-v3-turbo";
     request.fields["language"] = "es";
     request.files.add(await http.MultipartFile.fromPath('file', filePath));
 
@@ -162,16 +162,25 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
       if (path == null) return;
 
       final transcribedText = await convertSpeechToText(gosuPath);
-      final answerRecorder = transcribedText;
-
-      // Compara con el correct_answer real del backend
+      print('🎤 TRANSCRIPCIÓN: "$transcribedText"');
       final correctAnswerRaw = phonologicalAwarenessModel?.correct_answer ?? '';
-      final ok = fuzzyMatch(answerRecorder, correctAnswerRaw);
+      print('✅ RESPUESTA CORRECTA: "$correctAnswerRaw"');
 
-      if (ok) {
-        await updateUserResponse(answerRecorder, fromVoice: true);
+      // Evaluación con IA (embedding semántico + léxico + fonético)
+      final aiResult = await evaluateWithAI(transcribedText, correctAnswerRaw, 'phonology');
+      final verdict = aiResult['verdict'] as String;
+      final score = aiResult['scorePercentage'] as int;
+      print('🤖 IA EVALUACIÓN → Veredicto: $verdict | Puntuación: $score% | Mensaje: ${aiResult['message']}');
+
+      if (verdict == 'correct' || verdict == 'partial') {
+        await updateUserResponse(transcribedText,
+            fromVoice: true,
+            aiVerdict: verdict,
+            aiMessage: aiResult['message'] as String,
+            aiScore: aiResult['scorePercentage'] as int);
       } else {
-        await _showRetryDialog();
+        // Siempre mostrar la pista personalizada de la BD
+        await _showRetryDialog(aiMessage: '');
       }
 
       // borrar audio temporal
@@ -258,14 +267,13 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
   //   UPDATE USER RESPONSE
   // =======================
   Future<void> updateUserResponse(String userResponse,
-      {bool fromVoice = false}) async {
+      {bool fromVoice = false,
+      String aiVerdict = 'correct',
+      String aiMessage = '',
+      int aiScore = 100}) async {
     if (phonologicalAwarenessModel == null) return;
 
-    final correct = fromVoice
-        ? fuzzyMatch(
-            userResponse, phonologicalAwarenessModel?.correct_answer ?? '')
-        : normalizeText(userResponse) ==
-            normalizeText(phonologicalAwarenessModel?.correct_answer ?? '');
+    final bool correct = (aiVerdict == 'correct' || aiVerdict == 'partial');
 
     final update = PhonologicalAwarenessModel(
       id: phonologicalAwarenessModel?.id ?? 0,
@@ -291,12 +299,14 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
       );
 
       if (response.statusCode == 200) {
-        if (correct) {
-          // ✅ aquí guardamos progreso en tu endpoint real
+        if (aiVerdict == 'correct') {
           await saveProgress(score: 100);
           await _showSuccessDialog();
+        } else if (aiVerdict == 'partial') {
+          await saveProgress(score: aiScore);
+          await _showPartialDialog(aiMessage: aiMessage);
         } else {
-          await _showRetryDialog();
+          await _showRetryDialog(aiMessage: aiMessage);
         }
       } else {
         // print('Failed PUT: ${response.statusCode} - ${response.body}');
@@ -347,6 +357,37 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
     }
 
     return dp[a.length][b.length];
+  }
+
+  // =======================
+  //   EVALUACION CON IA
+  // =======================
+  Future<Map<String, dynamic>> evaluateWithAI(
+      String answer, String expected, String activityType) async {
+    try {
+      final response = await http.post(
+        Uri.parse(Api.aiEvaluate()),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode({
+          'answer': answer,
+          'expected': expected,
+          'activityType': activityType,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(utf8.decode(response.bodyBytes));
+        return {
+          'verdict': data['verdict'] ?? 'wrong',
+          'message': data['message'] ?? 'Intentemos de nuevo.',
+          'scorePercentage': data['scorePercentage'] ?? 0,
+        };
+      }
+    } catch (_) {}
+    return {
+      'verdict': 'wrong',
+      'message': 'Intentemos de nuevo.',
+      'scorePercentage': 0,
+    };
   }
 
   bool fuzzyMatch(String spokenRaw, String correctRaw) {
@@ -466,8 +507,9 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
     );
   }
 
-  Future<void> _showRetryDialog() async {
-    await speak('¡Inténtalo de nuevo!. Te daré una pista. $feedbackMessageG');
+  Future<void> _showRetryDialog({String aiMessage = ''}) async {
+    final hint = aiMessage.isNotEmpty ? aiMessage : feedbackMessageG;
+    await speak('¡Inténtalo de nuevo!. Te daré una pista. $hint');
 
     if (!mounted) return;
     return showDialog<void>(
@@ -512,10 +554,78 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: Text(
-                    'Pista: $feedbackMessageG',
+                    'Pista: $hint',
                     style: const TextStyle(fontSize: 18, color: Colors.black),
                     textAlign: TextAlign.center,
                   ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ButtonPrimary2(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        fetchPhonologicalAwareness(widget.activityId);
+                        fetchFeedback(widget.activityId);
+                      },
+                      text: 'Reintentar',
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showPartialDialog({required String aiMessage}) async {
+    await speak('¡Casi lo tienes! $aiMessage');
+    if (!mounted) return;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return Center(
+          child: AlertDialog(
+            contentPadding: EdgeInsets.zero,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    color: Colors.orange,
+                    padding: const EdgeInsets.all(8),
+                    child: const Center(
+                      child: Text(
+                        '¡Casi!',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Text(
+                    aiMessage,
+                    style: const TextStyle(fontSize: 18, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Image.asset(
+                  'lib/img/CASI.png',
+                  width: 100,
+                  height: 100,
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -725,30 +835,45 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
                     ButtonActivities(
                       text: phonologicalAwarenessModel?.answer_one ?? '',
                       onPressed: () async {
-                        final userResponse =
-                            phonologicalAwarenessModel?.answer_one ?? '';
-                        if (userResponse.isNotEmpty)
-                          await updateUserResponse(userResponse);
+                        final userResponse = phonologicalAwarenessModel?.answer_one ?? '';
+                        if (userResponse.isNotEmpty) {
+                          final correct = phonologicalAwarenessModel?.correct_answer ?? '';
+                          final isCorrect = userResponse.trim().toLowerCase() == correct.trim().toLowerCase();
+                          print('🔘 BOTÓN: "$userResponse" | Esperado: "$correct" | ${isCorrect ? "✅ CORRECTO (100%)" : "❌ INCORRECTO (0%)"}');
+                          await updateUserResponse(userResponse,
+                              aiVerdict: isCorrect ? 'correct' : 'wrong',
+                              aiScore: isCorrect ? 100 : 0);
+                        }
                       },
                     ),
                     const SizedBox(height: 10),
                     ButtonActivities(
                       text: phonologicalAwarenessModel?.answer_three ?? '',
                       onPressed: () async {
-                        final userResponse =
-                            phonologicalAwarenessModel?.answer_three ?? '';
-                        if (userResponse.isNotEmpty)
-                          await updateUserResponse(userResponse);
+                        final userResponse = phonologicalAwarenessModel?.answer_three ?? '';
+                        if (userResponse.isNotEmpty) {
+                          final correct = phonologicalAwarenessModel?.correct_answer ?? '';
+                          final isCorrect = userResponse.trim().toLowerCase() == correct.trim().toLowerCase();
+                          print('🔘 BOTÓN: "$userResponse" | Esperado: "$correct" | ${isCorrect ? "✅ CORRECTO (100%)" : "❌ INCORRECTO (0%)"}');
+                          await updateUserResponse(userResponse,
+                              aiVerdict: isCorrect ? 'correct' : 'wrong',
+                              aiScore: isCorrect ? 100 : 0);
+                        }
                       },
                     ),
                     const SizedBox(height: 10),
                     ButtonActivities(
                       text: phonologicalAwarenessModel?.answer_two ?? '',
                       onPressed: () async {
-                        final userResponse =
-                            phonologicalAwarenessModel?.answer_two ?? '';
-                        if (userResponse.isNotEmpty)
-                          await updateUserResponse(userResponse);
+                        final userResponse = phonologicalAwarenessModel?.answer_two ?? '';
+                        if (userResponse.isNotEmpty) {
+                          final correct = phonologicalAwarenessModel?.correct_answer ?? '';
+                          final isCorrect = userResponse.trim().toLowerCase() == correct.trim().toLowerCase();
+                          print('🔘 BOTÓN: "$userResponse" | Esperado: "$correct" | ${isCorrect ? "✅ CORRECTO (100%)" : "❌ INCORRECTO (0%)"}');
+                          await updateUserResponse(userResponse,
+                              aiVerdict: isCorrect ? 'correct' : 'wrong',
+                              aiScore: isCorrect ? 100 : 0);
+                        }
                       },
                     ),
                     const SizedBox(height: 30),

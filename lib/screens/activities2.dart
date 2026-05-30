@@ -30,14 +30,14 @@ class _Activities2ScreenState extends State<Activities2Screen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
-  static const int startId = 11;
-  static const int endId = 20;
+  static const int startId = 1;
+  static const int endId = 10;
 
   UserModel? _user;
   double levelPercentage = 0.0;
   bool get levelCompleted => levelPercentage == 100;
 
-  // ✅ tamaño correcto para indexar 11..20
+  // ✅ tamaño correcto para indexar 1..10
   final List<FluentReadingModel?> fluentReading = List.filled(endId + 1, null);
   final List<bool> activityCompleted = List.filled(endId + 1, false);
 

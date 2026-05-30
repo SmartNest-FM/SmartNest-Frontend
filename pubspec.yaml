@@ -95,7 +95,6 @@ flutter:
     - lib/img/level2.png
     - lib/img/level3.png
     - lib/img/level4.png
-    - lib/img/level5.png
     - lib/img/play_button_image.png
     - lib/img/microphone.png
     - lib/img/level_1/img_cat.png
@@ -103,6 +102,7 @@ flutter:
     - lib/img/activitie_check.png
     - lib/img/activitie_error.png
     - lib/img/activitie_none.png
+    - lib/img/CASI.png
     - lib/img/stop_button_image.jpg
     - assets/sounds/confetti.mp3
 

@@ -57,7 +57,9 @@ class Api {
 
   static String activityStatus(String type, int activityId, String uid) =>
       "$baseUrl/progress/status/$type/$activityId?uid=$uid";
-      
+
+  // ===== IA - EVALUACION CON MODELO DE EMBEDDINGS =====
+  static String aiEvaluate() => "$baseUrl/ai/evaluate";
   // ===== USUARIO =====
   static String getUserById(int id) =>
       "$baseUrl/user/$id";
