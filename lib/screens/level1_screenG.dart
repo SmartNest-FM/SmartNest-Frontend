@@ -10,7 +10,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:smartnest/config/api.dart';
 import 'package:smartnest/config/theme/app_theme.dart';
-import 'package:smartnest/env/env.dart';
 import 'package:smartnest/firebase_auth_project/firebase_auth_services.dart';
 import 'package:smartnest/model/phonological_awareness.dart';
 import 'package:smartnest/model/user.dart';
@@ -114,13 +113,9 @@ class _Level1ScreenGState extends State<Level1ScreenG> {
   //   SPEECH -> TEXT (WHISPER)
   // =======================
   Future<String> convertSpeechToText(String filePath) async {
-    const apiKey = apiKeyWhisper;
-    final url = Uri.https("api.groq.com", "/openai/v1/audio/transcriptions");
+    final url = Uri.parse(Api.transcription());
 
     final request = http.MultipartRequest('POST', url);
-    request.headers.addAll({"Authorization": "Bearer $apiKey"});
-    request.fields["model"] = "whisper-large-v3-turbo";
-    request.fields["language"] = "es";
     request.files.add(await http.MultipartFile.fromPath('file', filePath));
 
     final response = await request.send();

@@ -7,6 +7,12 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace = "com.example.smartnest"
     compileSdkVersion 35
@@ -34,10 +40,10 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'faridgosue'
-            keyPassword 'gosurray123'
-            storeFile file('C:\\Users\\Job\\Documents\\GitHub\\SmartNest\\my-release-key.jks')
-            storePassword 'gosurray123'
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? rootProject.file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
         }
     }
 

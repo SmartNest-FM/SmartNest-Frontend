@@ -1,5 +1,8 @@
 class Api {
-  static const String baseUrl = "http://192.168.100.26:8080";
+  static const String baseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://10.0.2.2:8080',
+  );
 
    // ===== LEVEL =====
   static String getLevel(int id) =>
@@ -60,6 +63,10 @@ class Api {
 
   // ===== IA - EVALUACION CON MODELO DE EMBEDDINGS =====
   static String aiEvaluate() => "$baseUrl/ai/evaluate";
+
+  // ===== TRANSCRIPCION DE AUDIO =====
+  static String transcription() => "$baseUrl/transcription";
+
   // ===== USUARIO =====
   static String getUserById(int id) =>
       "$baseUrl/user/$id";
